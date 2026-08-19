@@ -1,0 +1,8 @@
+# Sortie de build Hugo
+/public/
+/resources/_gen/
+/.hugo_build.lock
+
+# Divers
+.DS_Store
+*.log

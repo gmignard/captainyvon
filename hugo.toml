@@ -1,0 +1,76 @@
+baseURL = "https://captainyvon.fr/"
+languageCode = "fr-FR"
+defaultContentLanguage = "fr"
+title = "Captain Yvon Studio"
+timeZone = "Europe/Paris"
+enableRobotsTXT = true
+enableEmoji = false
+disableKinds = ["taxonomy", "term", "rss"]
+
+[pagination]
+  pagerSize = 100
+
+[[menus.main]]
+  name = "Work"
+  url = "/"
+  weight = 10
+  [menus.main.params]
+    accueil = true
+    prefixes = ["/work/"]
+
+[[menus.main]]
+  name = "Studio"
+  url = "/studio/"
+  weight = 20
+
+[[menus.main]]
+  name = "Contact"
+  url = "/contact/"
+  weight = 30
+
+[params]
+  description = "Captain Yvon Studio, duo de réalisateurs et photographes entre le Finistère Nord et Lille."
+  logo = "img/logo-captainyvon-noir.svg"
+  logoAlt = "Captain Yvon Studio"
+  # Dimensions intrinseques du fichier logo, pour eviter tout decalage de mise en page.
+  logoLargeur = 220
+  logoHauteur = 36
+  ogImageDefaut = "img/og-defaut.jpg"
+  email = "studio@captainyvon.fr"
+  lieu = "Finistère Nord et Lille"
+  fondation = 2016
+  onePercent = true
+
+[[params.social]]
+  nom = "Instagram"
+  url = "https://www.instagram.com/captainyvon/"
+  icone = "instagram"
+
+[[params.social]]
+  nom = "YouTube"
+  url = "https://www.youtube.com/captainyvon"
+  icone = "youtube"
+
+[[params.social]]
+  nom = "LinkedIn"
+  url = "https://www.linkedin.com/company/captainyvon/"
+  icone = "linkedin"
+
+[imaging]
+  quality = 82
+  resampleFilter = "Lanczos"
+  hint = "photo"
+  [imaging.exif]
+    disableDate = true
+    disableLatLong = true
+
+[markup.goldmark.renderer]
+  unsafe = false
+
+[minify]
+  minifyOutput = true
+
+[outputs]
+  home = ["HTML"]
+  page = ["HTML"]
+  section = ["HTML"]

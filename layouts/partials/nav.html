@@ -1,0 +1,29 @@
+{{- /*
+  Navigation principale.
+  Boucle sur site.Menus.main : ajouter une entree dans hugo.toml suffit,
+  ce fichier n'a jamais besoin d'etre modifie.
+
+  Une entree est active si :
+    - son URL egale le RelPermalink de la page courante, ou
+    - son parametre `accueil` vaut true et la page courante est l'accueil, ou
+    - le RelPermalink de la page commence par l'un de ses `prefixes`.
+*/ -}}
+{{- $page := . -}}
+{{- with site.Menus.main }}
+<nav class="nav" aria-label="Navigation principale">
+  <ul>
+    {{- range . }}
+      {{- $url := .URL | relURL -}}
+      {{- $actif := false -}}
+      {{- if eq $url $page.RelPermalink }}{{ $actif = true }}{{ end -}}
+      {{- if and .Params.accueil $page.IsHome }}{{ $actif = true }}{{ end -}}
+      {{- range .Params.prefixes -}}
+        {{- if hasPrefix $page.RelPermalink (. | relURL) }}{{ $actif = true }}{{ end -}}
+      {{- end }}
+    <li>
+      <a href="{{ $url }}"{{ if $actif }} class="actif" aria-current="page"{{ end }}>{{ .Name }}</a>
+    </li>
+    {{- end }}
+  </ul>
+</nav>
+{{- end }}

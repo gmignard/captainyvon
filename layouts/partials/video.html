@@ -1,0 +1,74 @@
+{{- /*
+  Facade video : aucune iframe au chargement, donc aucune requete vers un
+  domaine tiers et aucun cookie avant action de l'utilisateur.
+  Le bouton de lecture EST un lien direct vers la video : sans JavaScript
+  il ouvre la plateforme, avec JavaScript il injecte l'iframe sur place.
+*/ -}}
+{{- $page := . -}}
+{{- with .Params.video -}}
+  {{- $id := .id -}}
+  {{- if $id -}}
+    {{- $plateforme := lower (.plateforme | default "youtube") -}}
+    {{- $ratio := .ratio | default "16:9" -}}
+    {{- $ratioCSS := replace (replace $ratio ":" " / ") "x" " / " -}}
+
+    {{- $embed := "" -}}
+    {{- $direct := "" -}}
+    {{- $nomPlateforme := "" -}}
+    {{- if eq $plateforme "vimeo" -}}
+      {{- $embed = printf "https://player.vimeo.com/video/%s?dnt=1&autoplay=1" $id -}}
+      {{- $direct = printf "https://vimeo.com/%s" $id -}}
+      {{- $nomPlateforme = "Vimeo" -}}
+    {{- else -}}
+      {{- $embed = printf "https://www.youtube-nocookie.com/embed/%s?autoplay=1&rel=0" $id -}}
+      {{- $direct = printf "https://www.youtube.com/watch?v=%s" $id -}}
+      {{- $nomPlateforme = "YouTube" -}}
+    {{- end -}}
+
+    {{- /* Poster : la couverture du projet, jamais une vignette distante. */ -}}
+    {{- $couverture := "" -}}
+    {{- with $page.Params.couverture }}{{ $couverture = $page.Resources.GetMatch . }}{{ end -}}
+    {{- if not $couverture }}{{ $couverture = $page.Resources.GetMatch "couverture.*" }}{{ end -}}
+    {{- $poster := "" -}}
+    {{- with $couverture -}}
+      {{- $l := cond (gt .Width 1600) 1600 .Width -}}
+      {{- $poster = .Resize (printf "%dx webp q82" $l) -}}
+    {{- end }}
+
+<div class="video" style="{{ printf "--ratio: %s;" $ratioCSS | safeCSS }}">
+  {{- with $poster }}
+  <img src="{{ .RelPermalink }}" width="{{ .Width }}" height="{{ .Height }}" alt="" loading="eager" decoding="async">
+  {{- end }}
+  <a class="video-bouton" href="{{ $direct }}" data-embed="{{ $embed }}"
+     data-titre="{{ printf "%s — %s" $page.Title site.Title }}"
+     aria-label="Lire la vidéo : {{ $page.Title }}"></a>
+</div>
+
+<p class="video-lien"><a href="{{ $direct }}" rel="noopener" target="_blank">Ouvrir la vidéo sur {{ $nomPlateforme }}</a></p>
+
+<noscript>
+  <p class="video-noscript">
+    JavaScript est désactivé : la lecture se fait sur
+    <a href="{{ $direct }}" rel="noopener">{{ $nomPlateforme }}</a>.
+  </p>
+</noscript>
+
+<script>
+document.querySelectorAll('.video-bouton').forEach(function (b) {
+  b.addEventListener('click', function (e) {
+    var src = b.getAttribute('data-embed');
+    var hote = b.closest('.video');
+    if (!src || !hote) { return; }
+    e.preventDefault();
+    var f = document.createElement('iframe');
+    f.src = src;
+    f.title = b.getAttribute('data-titre') || 'Vidéo';
+    f.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen';
+    f.referrerPolicy = 'strict-origin-when-cross-origin';
+    f.setAttribute('allowfullscreen', '');
+    hote.replaceChildren(f);
+  });
+});
+</script>
+  {{- end -}}
+{{- end -}}

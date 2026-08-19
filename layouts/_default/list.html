@@ -1,0 +1,24 @@
+{{ define "main" }}
+{{- /* Repli de titre : si `title` manque, on humanise le nom du dossier
+       plutot que de rendre un <h1> vide. */ -}}
+{{- $titre := .Title -}}
+{{- if not $titre }}{{ with .File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
+<div class="enveloppe">
+
+  <div class="page-texte">
+    {{- with $titre }}
+    <h1>{{ . }}</h1>
+    {{- end }}
+    {{- with .Content }}{{ . }}{{ end }}
+  </div>
+
+  {{- with .RegularPages.ByWeight }}
+  <ul class="grille-projets">
+    {{- range . }}
+    {{ partial "vignette.html" . }}
+    {{- end }}
+  </ul>
+  {{- end }}
+
+</div>
+{{ end }}

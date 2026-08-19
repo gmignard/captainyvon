@@ -1,0 +1,35 @@
+{{ define "main" }}
+{{- /* Repli de titre : si `title` manque, on humanise le nom du dossier
+       plutot que de rendre un <h1> vide. */ -}}
+{{- $titre := .Title -}}
+{{- if not $titre }}{{ with .File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
+<div class="enveloppe">
+  <article class="page-texte">
+
+    {{- with $titre }}
+    <h1>{{ . }}</h1>
+    {{- end }}
+
+    {{- with .Params.extrait }}
+    <p class="projet-extrait">{{ . }}</p>
+    {{- end }}
+
+    {{ .Content }}
+
+    {{- /* Bloc coordonnees, active par `coordonnees: true` dans l'entete.
+           Les valeurs viennent de [params], jamais de ce template. */ -}}
+    {{- if .Params.coordonnees }}
+    <hr>
+    <ul class="coordonnees">
+      {{- with site.Params.email }}
+      <li><a href="mailto:{{ . }}">{{ . }}</a></li>
+      {{- end }}
+      {{- with site.Params.lieu }}
+      <li>{{ . }}</li>
+      {{- end }}
+    </ul>
+    {{- end }}
+
+  </article>
+</div>
+{{ end }}

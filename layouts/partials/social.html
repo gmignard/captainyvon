@@ -1,0 +1,28 @@
+{{- /*
+  Reseaux sociaux, alimentes par [[params.social]] dans hugo.toml.
+  Les SVG sont injectes en ligne depuis assets/icones/<icone>.svg :
+  aucune requete HTTP, aucune police d'icones.
+  Les fichiers ne portent ni width ni height ni fill : la taille vient
+  de .icone svg dans la CSS, la couleur de currentColor.
+*/ -}}
+{{- with site.Params.social }}
+<div class="social">
+  <ul>
+    {{- range . }}
+      {{- $reseau := . -}}
+      {{- $svg := "" -}}
+      {{- with $reseau.icone }}{{ $svg = resources.Get (printf "icones/%s.svg" .) }}{{ end }}
+    <li>
+      <a href="{{ $reseau.url }}" aria-label="{{ $reseau.nom }}" rel="me noopener" target="_blank">
+        {{- with $svg -}}
+          {{- /* aria-hidden est injecte ici, il n'a pas a figurer dans le fichier source. */ -}}
+          <span class="icone">{{ replaceRE `<svg` `<svg aria-hidden="true" focusable="false"` .Content 1 | safeHTML }}</span>
+        {{- else -}}
+          <span class="icone-texte">{{ $reseau.nom }}</span>
+        {{- end -}}
+      </a>
+    </li>
+    {{- end }}
+  </ul>
+</div>
+{{- end }}

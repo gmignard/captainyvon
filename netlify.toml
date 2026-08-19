@@ -1,0 +1,37 @@
+# Déploiement Netlify — Captain Yvon Studio
+# La version de Hugo est épinglée sur celle utilisée pour construire le site.
+# Vérifier avec `hugo version` avant de la changer.
+
+[build]
+  publish = "public"
+  command = "hugo --gc --minify"
+
+[build.environment]
+  HUGO_VERSION = "0.148.2"
+  TZ = "Europe/Paris"
+
+# Les previews de branche et de PR sont construites sur leur propre URL,
+# sinon les URLs absolues (canonical, Open Graph) pointeraient vers la prod.
+[context.deploy-preview]
+  command = "hugo --gc --minify --baseURL $DEPLOY_PRIME_URL"
+
+[context.branch-deploy]
+  command = "hugo --gc --minify --baseURL $DEPLOY_PRIME_URL"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+
+# Les fichiers passés au fingerprint de Hugo Pipes sont immuables.
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/work/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"

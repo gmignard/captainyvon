@@ -1,0 +1,49 @@
+{{- /*
+  Fiche projet : accordeons natifs <details> / <summary>, aucun JavaScript.
+  L'indicateur + / - est purement CSS (.fiche-bloc[open] summary::after).
+  Un bloc dont le champ est vide n'est pas rendu du tout.
+*/ -}}
+{{- $client := .Params.client -}}
+{{- $services := .Params.services -}}
+{{- $livrables := .Params.livrables -}}
+{{- $avec := .Params.avec -}}
+
+{{- if or $client $services $livrables $avec }}
+<div class="fiche">
+
+  {{- with $client }}
+  <details class="fiche-bloc">
+    <summary>Client</summary>
+    <div class="fiche-corps"><p>{{ . }}</p></div>
+  </details>
+  {{- end }}
+
+  {{- with $services }}
+  <details class="fiche-bloc">
+    <summary>Services</summary>
+    <div class="fiche-corps">
+      <ul>{{ range . }}<li>{{ . }}</li>{{ end }}</ul>
+    </div>
+  </details>
+  {{- end }}
+
+  {{- with $livrables }}
+  <details class="fiche-bloc">
+    <summary>Livrables</summary>
+    <div class="fiche-corps">
+      <ul>{{ range . }}<li>{{ . }}</li>{{ end }}</ul>
+    </div>
+  </details>
+  {{- end }}
+
+  {{- with $avec }}
+  <details class="fiche-bloc">
+    <summary>Avec</summary>
+    <div class="fiche-corps">
+      <ul>{{ range . }}<li>{{ . }}</li>{{ end }}</ul>
+    </div>
+  </details>
+  {{- end }}
+
+</div>
+{{- end -}}

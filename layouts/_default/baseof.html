@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="{{ site.Language.LanguageCode | default "fr-FR" }}">
+<head>
+{{ partial "head.html" . }}
+</head>
+<body>
+  <a class="saut" href="#contenu">Aller au contenu</a>
+
+  {{ partial "header.html" . }}
+
+  <main id="contenu">
+    {{ block "main" . }}{{ end }}
+  </main>
+
+  {{ partial "footer.html" . }}
+</body>
+</html>

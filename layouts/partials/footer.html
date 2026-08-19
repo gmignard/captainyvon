@@ -1,0 +1,23 @@
+{{- /* Pied de page. Toutes les donnees viennent de [params]. */ -}}
+<footer class="pied">
+  <div class="enveloppe pied-grille">
+
+    <p>
+      &copy;
+      {{- with site.Params.fondation }} {{ . }}&ndash;{{ end }}{{ now.Format "2006" }}
+      {{ site.Title }}
+      {{- with site.Params.lieu }} &mdash; {{ . }}{{ end }}
+    </p>
+
+    {{- with site.Params.email }}
+    <p><a href="mailto:{{ . }}">{{ . }}</a></p>
+    {{- end }}
+
+    {{- if site.Params.onePercent }}
+    <p>Membre de 1% for the Planet</p>
+    {{- end }}
+
+    <div class="pied-social">{{ partial "social.html" . }}</div>
+
+  </div>
+</footer>

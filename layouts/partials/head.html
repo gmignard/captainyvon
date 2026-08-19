@@ -1,0 +1,65 @@
+{{- /* Metadonnees, SEO, Open Graph et feuille de style. */ -}}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+{{- /* Titre : le nom du site seul sur l'accueil, sinon « Page — Site ». */ -}}
+{{- $titrePage := .Title -}}
+{{- if not $titrePage }}{{ with .File }}{{ $titrePage = humanize .ContentBaseName }}{{ end }}{{ end -}}
+{{- $titre := site.Title -}}
+{{- if and (not .IsHome) $titrePage -}}
+  {{- $titre = printf "%s — %s" $titrePage site.Title -}}
+{{- end }}
+<title>{{ $titre }}</title>
+
+{{- /* Description : l'extrait du projet, sinon la description de page, sinon celle du site. */ -}}
+{{- $description := "" -}}
+{{- with .Params.extrait }}{{ $description = . }}{{ end -}}
+{{- if not $description }}{{ with .Description }}{{ $description = . }}{{ end }}{{ end -}}
+{{- if not $description }}{{ with site.Params.description }}{{ $description = . }}{{ end }}{{ end -}}
+{{- with $description }}
+<meta name="description" content="{{ . | plainify | htmlUnescape | chomp | truncate 155 }}">
+{{- end }}
+
+<link rel="canonical" href="{{ .Permalink }}">
+
+{{- /* Image Open Graph : la couverture du projet, sinon l'image de repli du site. */ -}}
+{{- $ogImage := "" -}}
+{{- $couverture := "" -}}
+{{- with .Params.couverture }}{{ $couverture = $.Resources.GetMatch . }}{{ end -}}
+{{- if not $couverture }}{{ $couverture = .Resources.GetMatch "couverture.*" }}{{ end -}}
+{{- with $couverture }}
+  {{- with .Fill "1200x630 webp q82 Center" }}{{ $ogImage = .Permalink }}{{ end -}}
+{{- end -}}
+{{- if not $ogImage }}
+  {{- with site.Params.ogImageDefaut }}
+    {{- with resources.Get . }}{{ $ogImage = .Permalink }}{{ end -}}
+  {{- end -}}
+{{- end }}
+
+<meta property="og:site_name" content="{{ site.Title }}">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
+<meta property="og:title" content="{{ $titre }}">
+<meta property="og:url" content="{{ .Permalink }}">
+{{- with $description }}
+<meta property="og:description" content="{{ . | plainify | htmlUnescape | chomp | truncate 155 }}">
+{{- end }}
+{{- with $ogImage }}
+<meta property="og:image" content="{{ . }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{{ . }}">
+{{- else }}
+<meta name="twitter:card" content="summary">
+{{- end }}
+<meta name="twitter:title" content="{{ $titre }}">
+{{- with $description }}
+<meta name="twitter:description" content="{{ . | plainify | htmlUnescape | chomp | truncate 155 }}">
+{{- end }}
+
+{{- /* Feuille de style unique : Hugo Pipes, minifiee et empreintee. */ -}}
+{{- with resources.Get "css/main.css" }}
+  {{- $css := . | minify | fingerprint "sha256" }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}">
+{{- end }}
+
+{{ hugo.Generator }}

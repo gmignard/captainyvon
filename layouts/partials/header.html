@@ -1,0 +1,30 @@
+{{- /*
+  En-tete sur une ligne en desktop : nav a gauche, logo centre, reseaux a droite.
+  En mobile la CSS empile logo puis nav, et renvoie les reseaux au pied de page.
+  Logo, largeur et hauteur viennent de [params], jamais d'une valeur en dur.
+*/ -}}
+<header class="entete">
+  <div class="enveloppe entete-grille">
+
+    <div class="entete-nav">{{ partial "nav.html" . }}</div>
+
+    <div class="entete-logo">
+      <a href="{{ "/" | relURL }}"{{ if .IsHome }} aria-current="page"{{ end }}>
+        {{- $logo := "" -}}
+        {{- with site.Params.logo }}{{ $logo = resources.Get . }}{{ end -}}
+        {{- with $logo -}}
+          <img src="{{ .RelPermalink }}"
+               alt="{{ site.Params.logoAlt | default site.Title }}"
+               width="{{ site.Params.logoLargeur | default 220 }}"
+               height="{{ site.Params.logoHauteur | default 36 }}"
+               loading="eager" decoding="async">
+        {{- else -}}
+          <span class="entete-titre">{{ site.Title }}</span>
+        {{- end -}}
+      </a>
+    </div>
+
+    <div class="entete-social">{{ partial "social.html" . }}</div>
+
+  </div>
+</header>
