@@ -1,23 +1,59 @@
-{{- /* Pied de page. Toutes les donnees viennent de [params]. */ -}}
+{{- /*
+  Pied de page : bande sombre pleine largeur, presente au bas de chaque page.
+
+  Quatre zones alignees sur une meme ligne de base au-dela de 900px, empilees
+  en dessous dans l'ordre du document : logo, identite, reseaux, pilule.
+
+  Aucune donnee n'est ecrite en dur ici : les coordonnees et les reseaux
+  viennent de [params] dans hugo.toml, le reste de data/pied.yaml.
+*/ -}}
+{{- $pied := site.Data.pied -}}
 <footer class="pied">
-  <div class="enveloppe pied-grille">
+  <div class="enveloppe enveloppe--pleine">
 
-    <p>
-      &copy;
-      {{- with site.Params.fondation }} {{ . }}&ndash;{{ end }}{{ now.Format "2006" }}
-      {{ site.Title }}
-      {{- with site.Params.lieu }} &mdash; {{ . }}{{ end }}
+    <div class="pied-grille">
+
+      {{- /* 1. Logo clair, ou repli texte si le fichier n'est pas depose. */ -}}
+      <div class="pied-logo">
+        {{- $logo := "" -}}
+        {{- with $pied.logo_clair }}{{ $logo = resources.Get . }}{{ end -}}
+        {{- with $logo -}}
+          <img src="{{ .RelPermalink }}" alt="{{ site.Params.logoAlt | default site.Title }}"
+               loading="lazy" decoding="async">
+        {{- else -}}
+          <span class="pied-logo-texte">{{ site.Title }}</span>
+        {{- end -}}
+      </div>
+
+      {{- /* 2. Bloc d'identite, trois lignes. */ -}}
+      <ul class="pied-identite">
+        {{- with $pied.activite }}<li>{{ . }}</li>{{ end }}
+        {{- with site.Params.lieu }}<li>{{ . }}</li>{{ end }}
+        {{- if site.Params.onePercent }}{{ with $pied.un_pourcent }}<li>{{ . }}</li>{{ end }}{{ end }}
+      </ul>
+
+      {{- /* 3. Reseaux sociaux en texte, un par ligne. */ -}}
+      {{- with site.Params.social }}
+      <ul class="pied-reseaux">
+        {{- range . }}
+        <li><a href="{{ .url }}" rel="noopener" target="_blank">{{ .nom }}</a></li>
+        {{- end }}
+      </ul>
+      {{- end }}
+
+      {{- /* 4. Pilule de contact. */ -}}
+      {{- with site.Params.email }}
+      <div class="pied-action">
+        {{ partial "pilule.html" (dict "href" (printf "mailto:%s" .) "libelle" ($pied.action | default "Écrire au studio")) }}
+      </div>
+      {{- end }}
+
+    </div>
+
+    {{- /* Millesime de fin genere depuis la date de build. */ -}}
+    <p class="pied-mention">
+      &copy;{{ with site.Params.fondation }} {{ . }}-{{ end }}{{ now.Format "2006" }} {{ site.Title }}
     </p>
-
-    {{- with site.Params.email }}
-    <p><a href="mailto:{{ . }}">{{ . }}</a></p>
-    {{- end }}
-
-    {{- if site.Params.onePercent }}
-    <p>Membre de 1% for the Planet</p>
-    {{- end }}
-
-    <div class="pied-social">{{ partial "social.html" . }}</div>
 
   </div>
 </footer>

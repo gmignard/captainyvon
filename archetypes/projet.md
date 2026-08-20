@@ -1,36 +1,34 @@
 ---
 title: "{{ replace .File.ContentBaseName "-" " " | title }}"
 
-# nature : film | photo | mixte
-#   film   -> bloc vidéo en tête, galerie en bas
-#   photo  -> aucun bloc vidéo, la galerie est le corps principal
-#   mixte  -> bloc vidéo en tête et galerie en bas
-# Si le champ est absent, il est déduit : vidéo renseignée => film, sinon photo.
-nature: "film"
-
-# Nom du client ou de la structure commanditaire.
-client: ""
-
-# Année de réalisation, ex. 2024. Laisser vide si inconnue.
-annee:
-
+# date : date de livraison du projet. Elle donne l'année affichée à côté du
+# titre, sur l'accueil comme sur la page projet, et elle donne l'ordre de la
+# grille, du plus récent au plus ancien.
 date: {{ .Date }}
 
-# extrait : une à trois phrases. Sert de description sur la vignette d'accueil,
-# de texte italique sous le titre, et de meta description SEO.
+# client : nom du client ou de la structure commanditaire.
+client: ""
+
+# extrait : une à trois phrases. Sert de meta description SEO.
+# N'apparaît ni sur l'accueil ni dans le corps de la page projet, dont
+# l'introduction est le corps de ce fichier.
 extrait: ""
 
-# Listes affichées en accordéon. Une liste vide n'affiche aucun bloc.
+# services, livrables, avec : listes affichées dans le bloc de métadonnées
+# de la page projet, chacune sur une ligne, les entrées jointes par une
+# virgule. Une liste vide n'affiche aucune ligne.
 services: []
 livrables: []
-
-# avec : collaborateurs, structures partenaires. Liste vide = pas de bloc.
 avec: []
 
-# couverture : nom du fichier image de ce dossier. Il est exclu de la galerie.
-# Tous les autres fichiers image du dossier composent la galerie,
-# triés par nom de fichier. Préfixer 01_, 02_... pour maîtriser l'ordre.
+# couverture : nom du fichier image de ce dossier. C'est la vignette de
+# l'accueil et l'image du lecteur vidéo. Le titre du projet y est incrusté.
 couverture: "couverture.jpg"
+
+# galerie : liste explicite des fichiers image de ce dossier à afficher,
+# dans l'ordre voulu. Indispensable aux projets photographiques, qui n'ont
+# pas de vidéo. Liste vide ou absente = aucune galerie.
+galerie: []
 
 # video : laisser id vide pour un projet sans vidéo.
 video:
@@ -40,11 +38,11 @@ video:
   # ratio : 16:9 par défaut. Ex. 4:3, 2.39:1, 9:16
   ratio: ""
 
-# mise_en_avant : remonte le projet en tête de la grille d'accueil.
+# mise_en_avant : réservé, sans effet sur l'ordre de la grille.
 mise_en_avant: false
-
-# weight : ordre croissant sur l'accueil et pour la navigation Précédent / Suivant.
-weight: 10
 
 draft: true
 ---
+
+Note d'intention, trois à cinq lignes. Ce texte est l'introduction de la
+page projet, en colonne étroite sous le titre.

@@ -1,6 +1,9 @@
 ---
 title: "Studio"
 description: "Captain Yvon Studio, duo de réalisateurs et photographes entre le Finistère Nord et Lille."
+# coordonnees : reporte depuis content/contact.md lors de la fusion.
+# Affiche l'adresse et le lieu depuis [params] de hugo.toml.
+coordonnees: true
 ---
 
 Fondé en 2016 par Grégory Mignard et Jeremy Janin, Captain Yvon est un studio de création visuelle dédié à la vie en plein air et à l'aventure. Depuis près de 10 ans, nous racontons les histoires de ceux qui vivent, travaillent et s'épanouissent dans la nature.
@@ -12,3 +15,10 @@ Notre force réside dans notre polyvalence et notre authenticité. Nous sommes �
 Voici un aperçu de nos vies en tournage
 
 ↓
+
+## Contact {#contact}
+
+<!-- TEXTE À VALIDER — voir README, section « À remplacer avant mise en ligne ». -->
+
+Pour un projet de film ou de photographie, une demande de devis
+ou simplement pour échanger, écrivez-nous.

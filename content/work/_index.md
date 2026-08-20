@@ -1,4 +1,19 @@
 ---
-title: "Work"
-description: "Les réalisations de Captain Yvon Studio : films de marque, documentaires et photographies."
+title: "Réalisations"
+
+# cascade.layout : force le gabarit des pages projet.
+# `type` est un mot-clé réservé de Hugo : il pilote la résolution des
+# gabarits. Comme le schéma de projet utilise `type` pour un libellé
+# affiché (« film documentaire », « photographie »…), Hugo irait chercher
+# layouts/<ce libellé>/single.html et retomberait sur _default/single.html.
+# Fixer `layout` ici court-circuite cette résolution : toutes les pages de
+# la section utilisent layouts/_default/projet.html, quelle que soit la
+# valeur de `type`.
+#
+# _target limite la cascade aux pages régulières : sans lui, cette page de
+# section adopterait elle aussi le gabarit projet au lieu de la liste.
+cascade:
+  - _target:
+      kind: page
+    layout: "projet"
 ---

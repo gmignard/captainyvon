@@ -1,32 +1,130 @@
 /* =========================================================================
    Captain Yvon Studio — feuille de style unique
-   Noir sur fond blanc. Sobre, documentaire, sans animation.
+   Charte studio : fond ivoire, texte noir, Montserrat auto-hebergee.
+   Mise en page calquee sur la production : header a logo centre,
+   grille de vignettes cinemascope sur deux colonnes, aucun texte entre
+   les images.
+   Aucune dependance externe, aucun CDN, aucun JavaScript requis.
    ========================================================================= */
 
 /* -------------------------------------------------------------------------
    PALETTE
-   Ces quatre lignes, et elles seules, definissent la palette.
-   Pour inverser le site (blanc sur noir) il suffit de les permuter :
-     --fond: #000000; --texte: #ffffff; --texte-doux: #a8a8a8; --trait: #333333;
-   Les icones sociales heritent de currentColor, elles suivent sans retouche.
-   Le logo est un fichier image : voir params.logo dans hugo.toml.
+   Ce bloc, et lui seul, contient des valeurs hexadecimales.
+   Tout le reste de la feuille passe par ces variables ou par currentColor,
+   pour qu'un changement de charte tienne dans ce bloc.
+   Le blanc casse remplace le blanc pur partout, y compris sur les survols,
+   les bordures et le fond des icones : il n'y a aucun blanc pur dans le site.
+   Il est pose sur html ET sur body, pour qu'aucune page — 404, studio,
+   page projet — ne retombe sur le fond par defaut du navigateur.
    ------------------------------------------------------------------------- */
 :root {
-  --fond: #ffffff;
-  --texte: #111111;
-  --texte-doux: #5a5a5a;
-  --trait: #d9d9d9;
+  --noir: #0D0D0D;
+  --blanc-casse: #F9F8F4;   /* fond general du site, mesure sur la reference */
+  --surface: #EBEBE3;       /* fonds de pilules et blocs secondaires */
+  --kaki: #9BA184;
+  --vert-foret: #3D5941;
+  --bleu-ocean: #4E6771;
+  --gris: #ACAAA4;
 
-  /* Typographie systeme, aucune police distante. */
-  --pile: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
-          Helvetica, Arial, "Noto Sans", sans-serif;
+  /* Arrondis. --rayon est mesure sur la reference et s'applique a toutes
+     les images ; --rayon-pilule produit un demi-cercle a toute hauteur. */
+  --rayon: 16px;
+  --rayon-pilule: 999px;
 
-  /* Rythme */
+  /* Roles. Le contraste est inverse par rapport a la maquette precedente :
+     fond ivoire, texte sombre. Le pied de page inverse a nouveau. */
+  --fond: var(--blanc-casse);
+  --texte: var(--noir);
+  --texte-doux: var(--gris);
+  --trait: var(--gris);
+  --focus: var(--kaki);
+}
+
+/* -------------------------------------------------------------------------
+   TYPOGRAPHIE
+   Montserrat et Courier Prime, auto-hebergees dans static/fonts/.
+   Aucun appel a Google Fonts ni a aucun domaine tiers.
+   Montserrat est une fonte variable : un seul fichier par style couvre
+   toutes les graisses de 100 a 900. Le latin etendu est un fichier separe,
+   charge par le navigateur uniquement si la page contient un caractere de
+   sa plage. font-display: swap evite tout texte invisible au chargement.
+   Seul montserrat-latin-wght-normal est preleve en preload, dans head.html.
+   ------------------------------------------------------------------------- */
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/montserrat-latin-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/montserrat-latin-wght-italic.woff2") format("woff2-variations");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/montserrat-latin-ext-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+@font-face {
+  font-family: "Courier Prime";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/courier-prime-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Courier Prime";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/courier-prime-latin-400-italic.woff2") format("woff2");
+}
+
+/* Piles de la charte. Aucune famille n'est ecrite en dur ailleurs. */
+:root {
+  --font-ui: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Courier Prime", "Courier New", Courier, monospace;
+}
+
+/* -------------------------------------------------------------------------
+   MISE EN PAGE — variables d'ajustement fin
+   Ces valeurs suffisent a caler la page sur la production : marge laterale,
+   gouttiere de grille, ratio des vignettes, hauteur du logo, respiration
+   au-dessus et au-dessous du logo. L'arrondi vient de --rayon (palette).
+   ------------------------------------------------------------------------- */
+:root {
+  --site-marge: 3.9vw;      /* marge laterale, identique a gauche et a droite */
+  --grille-gap: 2vw;        /* gouttiere horizontale et verticale */
+  --ratio-vignette: 2.39/1; /* cinemascope */
+  --logo-hauteur: 50px;
+
+  /* Respiration de l'entete. Ces deux valeurs, plus la hauteur du logo — et
+     sur mobile la nav empilee sous celui-ci — forment la distance entre le
+     haut de l'ecran et la premiere vignette. Reglees pour doubler l'espace
+     precedent : environ 272px en mise en page empilee et 244px a 1440px,
+     contre 136px et 122px auparavant. */
+  --entete-espace-haut: clamp(6.5rem, 7.5vw, 7rem);
+  --entete-espace-bas: clamp(5rem, 6vw, 5.5rem);
+
+  /* Rythme vertical et largeurs de lecture, hors grille d'accueil. */
   --pas: 1rem;
   --gouttiere: 1.5rem;
-  --marge-page: clamp(1.25rem, 4vw, 3.5rem);
   --largeur-max: 1600px;
   --largeur-texte: 62ch;
+}
+
+/* Sous 700px : une seule colonne, marge laterale reduite. */
+@media (max-width: 700px) {
+  :root { --site-marge: 5vw; }
 }
 
 /* -------------------------------------------------------------------------
@@ -37,7 +135,12 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  background: var(--fond);
 }
+
+/* Les ancres (#contact sur la page studio) ne doivent pas coller au haut
+   de la fenetre. L'entete n'etant pas collante, une marge sobre suffit. */
+[id] { scroll-margin-top: clamp(1.5rem, 4vw, 3rem); }
 
 body {
   margin: 0;
@@ -46,10 +149,11 @@ body {
   flex-direction: column;
   background: var(--fond);
   color: var(--texte);
-  font-family: var(--pile);
+  font-family: var(--font-ui);
   font-size: 1rem;
   line-height: 1.6;
   font-weight: 400;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -60,23 +164,39 @@ a { color: inherit; text-decoration: underline; text-underline-offset: 0.2em; }
 a:hover { text-decoration-thickness: 2px; }
 
 :focus-visible {
-  outline: 2px solid var(--texte);
+  outline: 2px solid var(--focus);
   outline-offset: 3px;
 }
 
+/* Charte : titres forts en 800, titres secondaires en 300. */
 h1, h2, h3 {
-  font-weight: 600;
-  line-height: 1.15;
+  line-height: 1.2;
   letter-spacing: -0.01em;
   margin: 0 0 var(--pas);
 }
-h1 { font-size: clamp(1.6rem, 3.2vw, 2.4rem); }
-h2 { font-size: clamp(1.25rem, 2.2vw, 1.6rem); }
-h3 { font-size: 1.05rem; }
+h1 { font-size: clamp(1.6rem, 3.2vw, 2.4rem); font-weight: 800; }
+h2 { font-size: clamp(1.25rem, 2.2vw, 1.6rem); font-weight: 300; }
+h3 { font-size: 1.05rem; font-weight: 300; }
 
-p { margin: 0 0 var(--pas); }
+/* Sous-titre : graisse 400, kaki. */
+.sous-titre, .projet-section {
+  font-weight: 400;
+  color: var(--kaki);
+}
+
+p { margin: 0 0 var(--pas); line-height: 1.5; }
 
 hr { border: 0; border-top: 1px solid var(--trait); margin: calc(var(--pas) * 3) 0; }
+
+/* Citations : seule occurrence de Courier New sur le site. */
+blockquote, .citation {
+  font-family: var(--font-mono);
+  font-style: italic;
+  line-height: 2;
+  margin: calc(var(--pas) * 1.5) 0;
+  padding-left: var(--pas);
+  border-left: 1px solid var(--trait);
+}
 
 /* Lien d'evitement */
 .saut {
@@ -89,22 +209,31 @@ hr { border: 0; border-top: 1px solid var(--trait); margin: calc(var(--pas) * 3)
   border: 1px solid var(--texte);
   z-index: 100;
 }
-.saut:focus { left: var(--marge-page); top: 0.5rem; }
+.saut:focus { left: var(--site-marge); top: 0.5rem; }
 
+/* Conteneur commun : marge laterale unique, partagee par l'entete,
+   la grille et les pages de texte. */
 .enveloppe {
   max-width: var(--largeur-max);
   margin-inline: auto;
-  padding-inline: var(--marge-page);
+  padding-inline: var(--site-marge);
 }
+
+/* Variante pleine largeur : pas de max-width, la largeur suit le viewport
+   moins les marges, comme en production. Utilisee par l'entete et par la
+   grille d'accueil pour qu'elles restent alignees a toute largeur. */
+.enveloppe--pleine { max-width: none; }
 
 /* -------------------------------------------------------------------------
    EN-TETE
-   Desktop : nav a gauche, logo centre, reseaux a droite.
-   Mobile  : logo puis nav empiles, reseaux renvoyes au pied de page.
+   Desktop : nav a gauche, logo centre.
+   Mobile  : logo puis nav empiles.
+   Les liens sociaux vivent uniquement dans le pied de page.
+   Ni bordure ni separateur : l'espacement fait le travail, comme en
+   production. L'entete n'est pas collante.
    ------------------------------------------------------------------------- */
 .entete {
-  border-bottom: 1px solid var(--trait);
-  padding-block: 1.25rem;
+  padding-block: var(--entete-espace-haut) var(--entete-espace-bas);
 }
 
 .entete-grille {
@@ -117,24 +246,32 @@ hr { border: 0; border-top: 1px solid var(--trait); margin: calc(var(--pas) * 3)
 
 .entete-logo { grid-area: logo; }
 .entete-logo a { text-decoration: none; display: block; }
-.entete-logo img { width: 220px; height: auto; }
+/* Le logo est cale sur sa hauteur, la largeur suit le ratio du fichier.
+   max-width + object-fit: contain evitent tout debordement sur les tres
+   petits ecrans, ou la largeur induite depasserait la zone disponible :
+   le logo y retrecit proportionnellement au lieu de s'ecraser. */
+.entete-logo img {
+  height: var(--logo-hauteur);
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
 
 .entete-nav { grid-area: nav; }
-.entete-social { display: none; }
 
 @media (min-width: 46em) {
   .entete-grille {
-    grid-template-areas: "nav logo social";
+    grid-template-areas: "nav logo vide";
     grid-template-columns: 1fr auto 1fr;
     gap: var(--gouttiere);
   }
-  .entete-nav    { justify-self: start; }
-  .entete-social { grid-area: social; justify-self: end; display: block; }
-  .pied-social   { display: none; }
+  .entete-nav { justify-self: start; }
 }
 
 /* -------------------------------------------------------------------------
    NAVIGATION
+   Bas de casse, comme en production : les libelles restent capitalises
+   dans hugo.toml, c'est le rendu qui les met en minuscules.
    ------------------------------------------------------------------------- */
 .nav ul {
   list-style: none;
@@ -147,103 +284,90 @@ hr { border: 0; border-top: 1px solid var(--trait); margin: calc(var(--pas) * 3)
 .nav a {
   text-decoration: none;
   font-size: 0.9rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
   padding-bottom: 2px;
   border-bottom: 1px solid transparent;
 }
 .nav a:hover { border-bottom-color: var(--trait); }
-
-.nav a.actif {
-  border-bottom-color: var(--texte);
-}
-
-/* -------------------------------------------------------------------------
-   RESEAUX SOCIAUX
-   Le dimensionnement se fait ici, jamais dans les fichiers SVG.
-   ------------------------------------------------------------------------- */
-.social ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-.social a {
-  display: block;
-  text-decoration: none;
-  color: var(--texte);
-}
-.social a:hover { color: var(--texte-doux); }
-
-.icone svg {
-  width: 1.25rem;
-  height: 1.25rem;
-  display: block;
-}
+.nav a.actif { border-bottom-color: var(--texte); }
 
 /* -------------------------------------------------------------------------
    MISE EN PAGE GENERALE
    ------------------------------------------------------------------------- */
-main { display: block; flex: 1 0 auto; padding-block: clamp(2rem, 5vw, 4rem); }
+main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); }
 
-.page-texte { max-width: var(--largeur-texte); }
+.page-texte { max-width: var(--largeur-texte); padding-block: clamp(1rem, 3vw, 2rem) 0; }
 .page-texte h1 { margin-bottom: calc(var(--pas) * 1.5); }
 .page-texte ul { padding-left: 1.2em; }
 
 /* -------------------------------------------------------------------------
    ACCUEIL — grille des projets
+   Deux colonnes en CSS Grid, jamais trois. Largeur fluide : la grille
+   occupe toute la largeur disponible moins les marges, sans max-width.
+   Chaque vignette porte la couverture puis, en dessous, le titre du projet
+   en capitales suivi de l'annee entre parentheses quand elle est renseignee.
+   Aucune hauteur en dur : le cadrage vient de aspect-ratio + object-fit.
    ------------------------------------------------------------------------- */
 .grille-projets {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: 1fr;
-  gap: clamp(2rem, 4vw, 3.5rem) var(--gouttiere);
+  grid-template-columns: repeat(2, 1fr);
+  /* La gouttiere verticale a un plancher depuis l'ajout des legendes : a
+     2vw seuls, sur petit ecran, une legende se retrouvait plus pres de la
+     vignette suivante que de la sienne. Au-dela de ~2000px, 2vw reprend
+     la main. */
+  column-gap: var(--grille-gap);
+  row-gap: max(var(--grille-gap), 2.5rem);
 }
 
-@media (min-width: 40em) {
-  .grille-projets { grid-template-columns: repeat(2, 1fr); }
-}
-@media (min-width: 68em) {
-  .grille-projets { grid-template-columns: repeat(3, 1fr); }
+/* Une seule colonne sous 700px, meme ratio de vignette. */
+@media (max-width: 700px) {
+  .grille-projets { grid-template-columns: 1fr; }
 }
 
-/* Un projet mis en avant remonte en tete de grille, sans trou de mise en page. */
-.vignette--avant { order: -1; }
-
-.vignette a {
-  text-decoration: none;
+/* La vignette entiere — couverture et legende — est un lien unique :
+   aucun lien imbrique. Son nom accessible vient de la legende, qui est du
+   texte visible ; l'image porte donc un alt vide pour ne pas doubler le
+   titre a la lecture d'ecran. */
+.vignette-lien {
   display: block;
+  text-decoration: none;
   color: inherit;
 }
-.vignette a:hover .vignette-titre { text-decoration: underline; text-underline-offset: 0.2em; }
 
-.vignette-image { background: var(--trait); margin-bottom: 0.85rem; }
-.vignette-image img { width: 100%; }
-
-.vignette-titre {
-  font-size: 1.05rem;
-  font-weight: 600;
-  margin: 0 0 0.35rem;
-  line-height: 1.25;
+.vignette-lien:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
 }
 
-.vignette-extrait {
-  margin: 0 0 0.5rem;
-  color: var(--texte-doux);
-  font-size: 0.925rem;
+.vignette-image {
+  width: 100%;
+  aspect-ratio: var(--ratio-vignette);
+  object-fit: cover;
+  background: var(--trait);
+  border-radius: var(--rayon);
+  transition: opacity 200ms ease;
+}
+
+/* Survol discret : opacite seule. Pas de zoom, pas de voile.
+   Le bloc « mouvement reduit » en fin de feuille neutralise la transition. */
+.vignette-lien:hover .vignette-image { opacity: 0.85; }
+
+/* Legende : titre en capitales, cale a gauche sous la couverture.
+   Les capitales viennent du rendu, pas du contenu : le titre reste lisible
+   dans le front matter et correctement restitue par les lecteurs d'ecran. */
+.vignette-legende {
+  margin: 0.85rem 0 0;
+  font-size: 0.8rem;
+  font-weight: 500;
   line-height: 1.5;
-}
-
-.etiquette-nature {
-  display: inline-block;
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--texte-doux);
+  text-align: left;
+  color: var(--texte);
 }
 
 /* -------------------------------------------------------------------------
@@ -251,27 +375,84 @@ main { display: block; flex: 1 0 auto; padding-block: clamp(2rem, 5vw, 4rem); }
    ------------------------------------------------------------------------- */
 .projet { max-width: var(--largeur-max); }
 
-.projet-entete { max-width: var(--largeur-texte); margin-block: clamp(2rem, 4vw, 3rem) 0; }
-.projet-entete h1 { margin-bottom: 0.5rem; }
+/* a. Ligne de titre : titre + annee a gauche, type a droite, filet dessous.
+   space-between laisse le titre seul et cale a gauche quand `type` est
+   absent : aucune reserve d'espace, aucun separateur orphelin. */
+.projet-titre {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.35rem 2rem;
+  margin-block: clamp(2rem, 4vw, 3rem) 0;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--noir);
+}
+.projet-titre h1 { margin: 0; }
 
+.projet-section {
+  margin: 0;
+  text-transform: lowercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+}
+
+/* Sous 700px le type passe sous le titre. */
+@media (max-width: 700px) {
+  .projet-titre { flex-direction: column; align-items: flex-start; }
+}
+
+/* b + c. Note d'intention a gauche, metadonnees a droite.
+   La grille tient aussi bien avec un seul des deux blocs : chacun est rendu
+   uniquement si son contenu existe. */
+.projet-haut {
+  display: grid;
+  grid-template-columns: minmax(0, var(--largeur-texte)) minmax(0, 1fr);
+  gap: 1.75rem 4rem;
+  margin-block: clamp(1.75rem, 3.5vw, 2.75rem);
+}
+
+@media (max-width: 900px) {
+  .projet-haut { grid-template-columns: 1fr; }
+}
+
+.projet-intro {
+  max-width: var(--largeur-texte);
+  font-weight: 400;
+  line-height: 1.6;
+}
+.projet-intro p { margin: 0 0 var(--pas); }
+.projet-intro p:last-child { margin-bottom: 0; }
+
+/* c. Metadonnees : liste de definition en deux colonnes. */
 .projet-meta {
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.4rem 1.5rem;
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+.projet-meta dt {
+  color: var(--gris);
+  font-weight: 500;
   text-transform: uppercase;
-  color: var(--texte-doux);
-  margin: 0 0 var(--pas);
+  letter-spacing: 0.1em;
 }
-.projet-meta span + span::before { content: " — "; }
-
-/* La description reprend l'italique du site actuel. */
-.projet-extrait {
-  font-style: italic;
-  font-size: clamp(1.05rem, 1.6vw, 1.2rem);
-  line-height: 1.55;
-  margin: 0 0 calc(var(--pas) * 1.5);
+.projet-meta dd {
+  margin: 0;
+  color: var(--noir);
 }
 
-.projet-corps { max-width: var(--largeur-texte); }
+/* d. Medias : video puis galerie, pleine largeur du contenu. */
+.projet-medias {
+  display: grid;
+  gap: var(--grille-gap);
+  margin-block: clamp(1.75rem, 3.5vw, 2.75rem);
+}
+
+/* e. Navigation de fin. */
+.projet-retour { margin-block: clamp(2rem, 4vw, 3rem); }
 
 /* -------------------------------------------------------------------------
    FICHE — accordeons natifs <details> / <summary>
@@ -323,17 +504,49 @@ main { display: block; flex: 1 0 auto; padding-block: clamp(2rem, 5vw, 4rem); }
 .fiche-corps li { padding: 0.15rem 0; }
 
 /* -------------------------------------------------------------------------
-   VIDEO — facade sans iframe au chargement
+   VIDEO, l'image de couverture EST le lecteur
+   Aucun habillage par-dessus l'image : pas de voile, pas de degrade, pas de
+   bouton de lecture centre, pas de cartouche. Le seul indice visuel est un
+   leger changement d'opacite au survol, neutralise par le bloc
+   « mouvement reduit ». L'iframe n'est inseree qu'au clic.
    ------------------------------------------------------------------------- */
 .video {
   position: relative;
   width: 100%;
   aspect-ratio: var(--ratio, 16 / 9);
-  background: var(--trait);
+  background: var(--surface);
+  border-radius: var(--rayon);
   overflow: hidden;
 }
 
-.video img,
+/* Le bouton n'a aucune apparence propre : il n'est que la zone cliquable
+   de l'image, dont il epouse exactement les dimensions. */
+.video-declencheur {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.video-declencheur img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 200ms ease;
+}
+.video-declencheur:hover img { opacity: 0.85; }
+
+.video-declencheur:focus-visible {
+  outline: 2px solid var(--kaki);
+  outline-offset: 3px;
+}
+
 .video iframe {
   position: absolute;
   inset: 0;
@@ -341,132 +554,142 @@ main { display: block; flex: 1 0 auto; padding-block: clamp(2rem, 5vw, 4rem); }
   height: 100%;
   border: 0;
 }
-.video img { object-fit: cover; }
 
-.video-bouton {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: 0;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-  color: var(--texte);
-  font: inherit;
-}
-
-.video-bouton::before {
-  content: "";
-  width: clamp(56px, 7vw, 84px);
-  aspect-ratio: 1;
-  border: 2px solid currentColor;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--fond) 80%, transparent);
-}
-
-/* Triangle en clip-path plutot qu'en bordures transparentes :
-   le minifieur reecrit `border-color: ... currentColor` en `initial`,
-   ce qui invalide la declaration et rend un rectangle plein. */
-.video-bouton::after {
-  content: "";
-  position: absolute;
-  width: 0.95em;
-  height: 1.15em;
-  background: currentColor;
-  clip-path: polygon(0 0, 100% 50%, 0 100%);
-  font-size: clamp(15px, 1.9vw, 21px);
-  margin-left: 0.3em;
-}
-
-.video-bouton:hover::before { background: var(--fond); }
-
-.video-lien {
-  display: block;
-  margin-top: 0.6rem;
-  font-size: 0.8rem;
-  color: var(--texte-doux);
-}
-
-.video-noscript {
-  margin-top: 0.6rem;
+/* Repli sans JavaScript : n'existe que dans <noscript>. */
+.video-repli {
+  margin: 0.6rem 0 0;
   font-size: 0.85rem;
 }
 
 /* -------------------------------------------------------------------------
    GALERIE
-   4 colonnes desktop, 2 tablette, 1 mobile. Ratio natif conserve.
    ------------------------------------------------------------------------- */
+/* Images pleine largeur du contenu, empilees. L'ordre et la selection
+   viennent du champ `galerie` de l'entete, pas du contenu du dossier. */
 .galerie {
-  margin-block: clamp(2.5rem, 5vw, 4rem);
   display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--gouttiere);
-  align-items: start;
+  gap: var(--grille-gap);
 }
 
-@media (min-width: 40em) {
-  .galerie { grid-template-columns: repeat(2, 1fr); }
+.galerie figure { margin: 0; }
+.galerie img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--rayon);
+  background: var(--surface);
 }
-@media (min-width: 68em) {
-  .galerie { grid-template-columns: repeat(4, 1fr); }
-}
-
-.galerie figure { margin: 0; background: var(--trait); }
-.galerie img { width: 100%; }
 
 /* -------------------------------------------------------------------------
-   NAVIGATION PRECEDENT / SUIVANT
+   PILULE
    ------------------------------------------------------------------------- */
-.projet-nav {
-  border-top: 1px solid var(--trait);
-  padding-top: 1.5rem;
-  margin-top: clamp(2rem, 4vw, 3rem);
-  display: flex;
-  gap: var(--gouttiere);
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-
-.projet-nav a { text-decoration: none; max-width: 22rem; }
-.projet-nav a:hover strong { text-decoration: underline; text-underline-offset: 0.2em; }
-.projet-nav .suivant { text-align: right; margin-left: auto; }
-
-.projet-nav .sens {
-  display: block;
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
+/* Composant reutilisable : lien d'action en pastille. Defini une seule
+   fois, utilise par la navigation de fin des pages projet et par le pied.
+   La fleche est du contenu texte, jamais une image ; elle est masquee aux
+   lecteurs d'ecran, qui lisent deja le libelle. */
+.pilule {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5ch;
+  background: var(--surface);
+  color: var(--noir);
+  border: 0;
+  border-radius: var(--rayon-pilule);
+  padding: 0.8rem 1.75rem;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--texte-doux);
-  margin-bottom: 0.2rem;
+  text-decoration: none;
+  transition: background-color 200ms ease;
 }
-.projet-nav strong { font-weight: 600; font-size: 0.95rem; }
+
+/* Assombrissement calcule a partir de la palette : aucune teinte en dur. */
+.pilule:hover { background: color-mix(in srgb, var(--surface) 90%, var(--noir)); }
+
+.pilule:focus-visible {
+  outline: 2px solid var(--kaki);
+  outline-offset: 3px;
+}
+
+.pilule-fleche { font-weight: 400; }
 
 /* -------------------------------------------------------------------------
    PIED DE PAGE
    ------------------------------------------------------------------------- */
+/* Bande sombre pleine largeur : le fond sort des marges du contenu, seul
+   le contenu interieur reprend la marge laterale du site. Aucun arrondi. */
 .pied {
-  border-top: 1px solid var(--trait);
-  padding-block: 2.5rem;
-  font-size: 0.875rem;
-  color: var(--texte-doux);
+  background: var(--noir);
+  color: var(--blanc-casse);
+  padding-block: 48px;
+  font-size: 0.75rem;
 }
 
 .pied-grille {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem var(--gouttiere);
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: baseline;
+  gap: 2rem 3rem;
 }
 
-.pied a { color: var(--texte); }
-.pied p { margin: 0; }
-.pied-social .social a { color: var(--texte); }
+/* Sous 900px les quatre zones s'empilent dans l'ordre du document :
+   logo, identite, reseaux, pilule. */
+@media (max-width: 900px) {
+  .pied-grille {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 2rem;
+  }
+}
+
+.pied-logo img { height: 34px; width: auto; display: block; }
+
+/* Repli quand le logo clair n'est pas dans le depot. */
+.pied-logo-texte {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  color: var(--blanc-casse);
+}
+
+.pied-identite {
+  margin: 0;
+  list-style: none;
+  padding: 0;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1.35;
+}
+
+.pied-reseaux {
+  margin: 0;
+  list-style: none;
+  padding: 0;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1.35;
+}
+.pied-reseaux a { color: var(--blanc-casse); text-decoration: none; }
+.pied-reseaux a:hover { color: var(--gris); }
+
+.pied-action { justify-self: end; }
+@media (max-width: 900px) {
+  .pied-action { justify-self: start; }
+}
+
+.pied-mention {
+  margin: 2.5rem 0 0;
+  color: var(--gris);
+  letter-spacing: 0.06em;
+}
+
+/* Le contour de focus doit rester lisible sur fond noir. */
+.pied :focus-visible { outline-color: var(--kaki); }
 
 /* -------------------------------------------------------------------------
    404
@@ -478,6 +701,7 @@ main { display: block; flex: 1 0 auto; padding-block: clamp(2rem, 5vw, 4rem); }
 
 /* -------------------------------------------------------------------------
    MOUVEMENT REDUIT
+   Neutralise le fondu de survol des vignettes et le defilement doux.
    ------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -492,8 +716,8 @@ main { display: block; flex: 1 0 auto; padding-block: clamp(2rem, 5vw, 4rem); }
    IMPRESSION
    ------------------------------------------------------------------------- */
 @media print {
-  .entete-social, .pied-social, .video-bouton, .projet-nav { display: none; }
-  body { color: #000; background: #fff; }
+  .video-declencheur { display: none; }
+  body { color: var(--noir); background: var(--blanc-casse); }
 }
 
 /* -------------------------------------------------------------------------

@@ -1,6 +1,18 @@
 {{ define "main" }}
-{{- $projets := (where site.RegularPages "Section" "work").ByWeight -}}
-<div class="enveloppe">
+{{- /*
+  Accueil : grille de vignettes seule, sans texte entre les images.
+  Les projets sans couverture sont ecartes avant le rendu, pour qu'aucune
+  case vide ne s'ouvre dans la grille et pour que le rang servant a decider
+  du chargement immediat corresponde a la position reellement affichee.
+*/ -}}
+{{- /* Tri explicite : projet le plus recent en premier. L'ordre par defaut
+       de Hugo applique le poids avant la date, on ne s'y repose pas. */ -}}
+{{- $projets := sort (where site.RegularPages "Section" "work") "Date" "desc" -}}
+{{- $avecCouverture := slice -}}
+{{- range $projets -}}
+  {{- if partial "couverture.html" . }}{{ $avecCouverture = $avecCouverture | append . }}{{ end -}}
+{{- end -}}
+<div class="enveloppe enveloppe--pleine">
 
   <h1 class="visuellement-cache">{{ .Title | default site.Title }}</h1>
 
@@ -8,10 +20,10 @@
   <div class="page-texte">{{ . }}</div>
   {{- end }}
 
-  {{- with $projets }}
+  {{- with $avecCouverture }}
   <ul class="grille-projets">
-    {{- range . }}
-    {{ partial "vignette.html" . }}
+    {{- range $rang, $projet := . }}
+    {{ partial "vignette.html" (dict "page" $projet "rang" $rang) }}
     {{- end }}
   </ul>
   {{- else }}

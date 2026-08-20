@@ -3,7 +3,13 @@
        plutot que de rendre un <h1> vide. */ -}}
 {{- $titre := .Title -}}
 {{- if not $titre }}{{ with .File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
-<div class="enveloppe">
+{{- /* Memes regles qu'a l'accueil : tri explicite par date decroissante,
+       et pas de vignette sans couverture. */ -}}
+{{- $avecCouverture := slice -}}
+{{- range sort .RegularPages "Date" "desc" -}}
+  {{- if partial "couverture.html" . }}{{ $avecCouverture = $avecCouverture | append . }}{{ end -}}
+{{- end -}}
+<div class="enveloppe enveloppe--pleine">
 
   <div class="page-texte">
     {{- with $titre }}
@@ -12,10 +18,10 @@
     {{- with .Content }}{{ . }}{{ end }}
   </div>
 
-  {{- with .RegularPages.ByWeight }}
+  {{- with $avecCouverture }}
   <ul class="grille-projets">
-    {{- range . }}
-    {{ partial "vignette.html" . }}
+    {{- range $rang, $projet := . }}
+    {{ partial "vignette.html" (dict "page" $projet "rang" $rang) }}
     {{- end }}
   </ul>
   {{- end }}

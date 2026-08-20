@@ -1,57 +1,31 @@
 {{- /*
   Galerie du projet.
-  Aucun champ `galerie` dans l'entete : le partial prend TOUTES les ressources
-  images du page bundle sauf la couverture, triees par nom de fichier.
-  Prefixer les fichiers 01_, 02_... permet donc de maitriser l'ordre.
-  Traitement : largeur max 1600 px, WebP q82, srcset 800 / 1600.
+
+  La selection et l'ordre viennent du champ `galerie` de l'entete : une liste
+  de noms de fichiers du page bundle. Sans ce champ, aucune galerie n'est
+  rendue. C'est le seul media des projets photographiques, qui n'ont pas de
+  video.
+
+  Images pleine largeur du contenu, empilees. Chargement differe sauf la
+  premiere.
 */ -}}
 {{- $page := . -}}
-
-{{- /* Resolution de la couverture, pour l'exclure de la galerie. */ -}}
-{{- $couverture := "" -}}
-{{- with .Params.couverture }}{{ $couverture = $page.Resources.GetMatch . }}{{ end -}}
-{{- if not $couverture }}{{ $couverture = $page.Resources.GetMatch "couverture.*" }}{{ end -}}
-{{- $nomCouverture := "" -}}
-{{- with $couverture }}{{ $nomCouverture = .Name }}{{ end -}}
-
 {{- $images := slice -}}
-{{- range .Resources.ByType "image" -}}
-  {{- if ne .Name $nomCouverture -}}
-    {{- $images = $images | append . -}}
-  {{- end -}}
+{{- range .Params.galerie -}}
+  {{- with $page.Resources.GetMatch . }}{{ $images = $images | append . }}{{ end -}}
 {{- end -}}
-{{- $images = sort $images "Name" -}}
+
+{{- $titre := $page.Title -}}
+{{- if not $titre }}{{ with $page.File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
 
 {{- with $images }}
 <div class="galerie">
-  {{- range $i, $r := . -}}
-    {{- $max := 1600 -}}
-    {{- $cible := cond (gt $r.Width $max) $max $r.Width -}}
-    {{- $grand := $r.Resize (printf "%dx webp q82" $cible) -}}
-    {{- $srcset := printf "%s %dw" $grand.RelPermalink $grand.Width -}}
-    {{- if gt $cible 800 -}}
-      {{- $petit := $r.Resize "800x webp q82" -}}
-      {{- $srcset = printf "%s %dw, %s %dw" $petit.RelPermalink $petit.Width $grand.RelPermalink $grand.Width -}}
-    {{- end -}}
-
-    {{- /* Alt : le champ `alt` de la ressource si defini, sinon le nom de
-           fichier sans extension, sans prefixe numerique et sans separateurs. */ -}}
-    {{- $alt := "" -}}
-    {{- with $r.Params.alt }}{{ $alt = . }}{{ end -}}
-    {{- if not $alt -}}
-      {{- $base := path.BaseName $r.Name -}}
-      {{- $base = replaceRE `^[0-9]+[ _-]+` "" $base -}}
-      {{- $base = replaceRE `[_-]+` " " $base -}}
-      {{- $base = trim $base " " -}}
-      {{- with $base }}{{ $alt = printf "%s%s" (upper (substr . 0 1)) (substr . 1) }}{{ end -}}
-    {{- end }}
+  {{- range $i, $r := . }}
   <figure>
-    <img src="{{ $grand.RelPermalink }}"
-         srcset="{{ $srcset }}"
-         sizes="(min-width: 68em) 25vw, (min-width: 40em) 50vw, 100vw"
-         width="{{ $grand.Width }}" height="{{ $grand.Height }}"
-         alt="{{ $alt }}"
-         loading="{{ cond (eq $i 0) "eager" "lazy" }}" decoding="async">
+    {{ partial "image-large.html" (dict
+         "ressource" $r
+         "alt" (printf "%s, image %d" $titre (add $i 1))
+         "immediate" (eq $i 0)) }}
   </figure>
   {{- end }}
 </div>

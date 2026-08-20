@@ -1,0 +1,22 @@
+{{- /*
+  Annee d'affichage d'un projet, ou chaine vide si la date n'est pas encore
+  renseignee. Centralise ici pour que la vignette d'accueil et la page projet
+  appliquent exactement la meme regle.
+
+  Deux cas donnent une chaine vide :
+    - aucune date exploitable dans l'entete, donc .Date a zero ;
+    - le marqueur `date: 0001-01-01`, qui vaut « a remplir ». Le fuseau du
+      site decale la date zero (0001-01-01 00:00:00 +0009 LMT), .Date.IsZero
+      ne suffit donc pas : on compare l'annee formatee.
+
+  Sans ce garde-fou, le repli [frontmatter] de la configuration ferait
+  afficher la date de modification du fichier, soit une annee inventee.
+
+  Contexte attendu : la page projet.
+*/ -}}
+{{- $annee := "" -}}
+{{- if not .Date.IsZero -}}
+  {{- $a := .Date.Format "2006" -}}
+  {{- if ne $a "0001" }}{{ $annee = $a }}{{ end -}}
+{{- end -}}
+{{- return $annee -}}
