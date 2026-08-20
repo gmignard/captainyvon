@@ -18,10 +18,21 @@
   aria-label, l'image et la pastille portent donc respectivement un alt vide
   et aria-hidden pour ne rien annoncer deux fois.
 
-  Un seul clic doit suffire. L'iframe est creee dans le gestionnaire de clic,
-  donc l'activation utilisateur est transmise au document de la plateforme et
-  l'autoplay n'est pas bloque. playsinline evite en prime le passage force en
-  plein ecran sur iOS.
+  Un seul clic lance la lecture, sur tous les navigateurs. Deux conditions le
+  garantissent.
+
+  D'abord l'iframe est creee dans le gestionnaire de clic, et son attribut
+  `allow` est pose avant son `src` : la politique de permissions est lue a la
+  creation du contexte de navigation, la renseigner apres la ferait perdre.
+
+  Ensuite le demarrage est muet. Firefox et Safari bloquent par defaut toute
+  lecture automatique avec son dans une iframe tierce, quoi que delegue la
+  page d'accueil : sans `mute`, ces navigateurs affichent le lecteur arrete et
+  reclament un second clic. Le demarrage muet est le seul qui parte partout du
+  premier coup. Le spectateur retablit le son avec l'icone de volume du
+  lecteur, sans que le site ait a piloter la plateforme.
+
+  playsinline evite en prime le passage force en plein ecran sur iOS.
 
   Aucune requete vers un domaine tiers avant le clic : ni iframe, ni script
   distant, ni vignette hebergee par la plateforme. Le poster est la
@@ -45,10 +56,10 @@
     {{- $embed := "" -}}
     {{- $direct := "" -}}
     {{- if eq $plateforme "vimeo" -}}
-      {{- $embed = printf "https://player.vimeo.com/video/%s?dnt=1&autoplay=1&playsinline=1" $id -}}
+      {{- $embed = printf "https://player.vimeo.com/video/%s?dnt=1&autoplay=1&muted=1&playsinline=1" $id -}}
       {{- $direct = printf "https://vimeo.com/%s" $id -}}
     {{- else -}}
-      {{- $embed = printf "https://www.youtube-nocookie.com/embed/%s?autoplay=1&playsinline=1&rel=0" $id -}}
+      {{- $embed = printf "https://www.youtube-nocookie.com/embed/%s?autoplay=1&mute=1&playsinline=1&rel=0" $id -}}
       {{- $direct = printf "https://www.youtube.com/watch?v=%s" $id -}}
     {{- end -}}
 
