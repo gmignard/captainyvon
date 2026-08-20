@@ -558,10 +558,10 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
 
 /* -------------------------------------------------------------------------
    VIDEO, l'image de couverture EST le lecteur
-   Aucun habillage par-dessus l'image : pas de voile, pas de degrade, pas de
-   bouton de lecture centre, pas de cartouche. Le seul indice visuel est un
-   leger changement d'opacite au survol, neutralise par le bloc
-   « mouvement reduit ». L'iframe n'est inseree qu'au clic.
+   Un seul habillage par-dessus l'image : la pastille de lecture centrale, qui
+   signale qu'il y a une video derriere la couverture. Ni voile, ni degrade,
+   ni cartouche. Le survol se limite a un changement d'opacite, neutralise par
+   le bloc « mouvement reduit ». L'iframe n'est inseree qu'au clic.
    ------------------------------------------------------------------------- */
 .video {
   position: relative;
@@ -576,6 +576,7 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
    de l'image, dont il epouse exactement les dimensions. */
 .video-declencheur {
   display: block;
+  position: relative;
   width: 100%;
   height: 100%;
   padding: 0;
@@ -586,6 +587,51 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   font: inherit;
   color: inherit;
 }
+
+/* Pastille de lecture. Elle n'est affichee que lorsque le script a pose
+   `video-prete` sur le conteneur : sans JavaScript le bouton est inerte, une
+   pastille visible y promettrait une lecture qui n'arriverait jamais.
+   Tout est dimensionne en em a partir de la font-size de la pastille : une
+   seule valeur commande la taille du disque et celle du triangle. */
+.video-lecture {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  place-items: center;
+  font-size: clamp(0.9rem, 1.8vw, 1.25rem);
+  width: 3.4em;
+  aspect-ratio: 1;
+  border-radius: var(--rayon-pilule);
+  /* Disque sombre a triangle clair, et non l'inverse : les couvertures du
+     studio portent souvent un logo client blanc incruste au centre, dans
+     lequel une pastille claire disparaissait. Le noir s'en detache quelle que
+     soit l'image. Legerement translucide pour laisser deviner la couverture,
+     opaque au survol. Le filet clair garde le disque lisible sur une
+     couverture sombre. Toutes les teintes viennent de la palette. */
+  background: color-mix(in srgb, var(--noir) 82%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--blanc-casse) 35%, transparent);
+  transition: background-color 200ms ease;
+}
+
+.video-prete .video-lecture { display: grid; }
+
+/* Triangle de lecture dessine en CSS, jamais un fichier d'icone, comme la
+   fleche de la pilule est du texte. La marge gauche compense le centre
+   optique du triangle, decale par rapport a celui de sa boite. */
+.video-lecture::before {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  margin-left: 0.2em;
+  border-style: solid;
+  border-width: 0.52em 0 0.52em 0.88em;
+  border-color: transparent transparent transparent var(--blanc-casse);
+}
+
+.video-declencheur:hover .video-lecture { background: var(--noir); }
 
 .video-declencheur img {
   width: 100%;
