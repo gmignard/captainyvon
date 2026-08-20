@@ -58,6 +58,15 @@
 <meta name="twitter:description" content="{{ . | plainify | htmlUnescape | chomp | truncate 155 }}">
 {{- end }}
 
+{{- /* Preload de la seule fonte du chemin critique : Montserrat latin,
+       droit. Ni l'italique, ni le latin etendu, ni Courier Prime ne sont
+       preleves, ils ne servent qu'a une partie des pages.
+       crossorigin est obligatoire meme en meme origine : les fontes sont
+       toujours recuperees en mode CORS, sans lui le preload serait ignore
+       et le fichier telecharge deux fois. */ -}}
+<link rel="preload" as="font" type="font/woff2" crossorigin
+      href="{{ "fonts/montserrat-latin-wght-normal.woff2" | relURL }}">
+
 {{- /* Feuille de style unique : Hugo Pipes, minifiee et empreintee. */ -}}
 {{- with resources.Get "css/main.css" }}
   {{- $css := . | minify | fingerprint "sha256" }}
