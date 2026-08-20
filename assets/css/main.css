@@ -559,12 +559,15 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
 .projet-presentation { max-width: var(--mesure); }
 
 /* Extrait : le texte d'accroche de l'entete. En italique et en gris, il se
-   distingue de la note d'intention sans changer de calibre. */
+   distingue de la note d'intention. Son calibre monte au-dessus du texte
+   courant : c'est la premiere phrase que l'oeil rencontre sous le titre.
+   Le gris est celui qui tient le contraste sur fond ivoire. */
 .projet-extrait {
   margin: 0;
+  font-size: clamp(1.2rem, 1.6vw, 1.35rem);
   font-style: italic;
-  line-height: 1.6;
-  color: var(--texte-doux);
+  line-height: 1.45;
+  color: var(--texte-second);
 }
 
 /* Credit photo : une ligne discrete posee juste au-dessus de la galerie, sur
@@ -593,18 +596,25 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
 .projet-intro p { margin: 0 0 var(--pas); }
 .projet-intro p:last-child { margin-bottom: 0; }
 
-/* c. Metadonnees : liste de definition en deux colonnes. */
+/* c. Metadonnees : liste de definition en deux colonnes. Le corps monte
+   legerement, mais c'est l'aeration qui fait le travail : l'espace entre deux
+   paires intitule-valeur est plus de trois fois celui d'avant, et chaque
+   ligne respire. L'intitule reste plus petit que sa valeur, il annonce sans
+   concurrencer.
+   Son gris est --texte-second, seul a tenir 4.5:1 sur le fond ivoire. */
 .projet-meta {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: 0.4rem 1.5rem;
+  gap: 1.35rem 1.75rem;
   margin: 0;
-  font-size: 0.78rem;
-  line-height: 1.5;
+  font-size: 0.95rem;
+  line-height: 1.65;
 }
 .projet-meta dt {
-  color: var(--gris);
+  color: var(--texte-second);
+  font-size: 0.8rem;
   font-weight: 500;
+  line-height: 1.9;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
