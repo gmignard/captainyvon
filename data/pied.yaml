@@ -1,20 +1,26 @@
 # Donnees propres au pied de page.
 #
 # Ce fichier ne contient que ce que hugo.toml ne porte pas deja : l'adresse
-# e-mail, le lieu, l'annee de fondation et les reseaux sociaux viennent de
-# [params] et ne sont pas repetes ici.
+# e-mail, le lieu et les reseaux sociaux viennent de [params] et ne sont pas
+# repetes ici. L'annee de fondation est ecrite en dur dans le partial, avec
+# l'annee courante generee au build.
 
 # Logo en version claire, pose sur la bande noire. Chemin resolu depuis
 # assets/. Tant que le fichier n'est pas dans le depot, le pied replie sur
 # un logo texte : rien n'est telecharge ni invente.
 logo_clair: "img/logo-captainyvon-blanc.svg"
 
-# Premiere ligne du bloc d'identite. Les deux suivantes sont construites
-# depuis params.lieu et params.onePercent.
+# Premiere ligne du bloc d'identite. La suivante vient de params.lieu.
 activite: "Studio de réalisation et de photographie"
 
-# Libelle affiche quand params.onePercent vaut true.
-un_pourcent: "Membre de 1% for the Planet"
+# Collectif de representation. Le libelle encadre le nom, qui porte le lien.
+collectif:
+  intro: "Représenté par le collectif"
+  nom: "AUNORD"
+  url: "https://aunord.fr"
 
-# Libelle de la pilule de contact. Sa cible est un mailto vers params.email.
-action: "Écrire au studio"
+# Podcast du studio, en une ligne discrete sous les coordonnees.
+podcast:
+  nom: "Slow is Beautiful"
+  mention: "notre podcast"
+  url: "https://slowisbeautiful.substack.com/"

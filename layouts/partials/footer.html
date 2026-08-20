@@ -1,11 +1,21 @@
 {{- /*
   Pied de page : bande sombre pleine largeur, presente au bas de chaque page.
 
-  Quatre zones alignees sur une meme ligne de base au-dela de 900px, empilees
-  en dessous dans l'ordre du document : logo, identite, reseaux, pilule.
+  C'est le seul partial de pied du site : il est appele une fois dans
+  baseof.html et sert donc a l'identique l'accueil, la liste, la page studio
+  et les pages projet.
 
-  Aucune donnee n'est ecrite en dur ici : les coordonnees et les reseaux
-  viennent de [params] dans hugo.toml, le reste de data/pied.yaml.
+  Ordre du document, qui est aussi celui du rendu et de la tabulation :
+  nom du studio, activite, lieu, collectif, e-mail, podcast, reseaux,
+  mention de copyright.
+
+  Aucune coordonnee n'est ecrite en dur ici : l'e-mail, le lieu et les
+  reseaux viennent de [params] dans hugo.toml, le reste de data/pied.yaml.
+  Seule l'annee de fondation est en dur, avec l'annee de fin generee au
+  build : c'est la seule graphie du copyright sur tout le site.
+
+  Les liens externes du bloc d'identite — collectif et podcast — s'ouvrent
+  dans le meme onglet.
 */ -}}
 {{- $pied := site.Data.pied -}}
 <footer class="pied">
@@ -13,47 +23,48 @@
 
     <div class="pied-grille">
 
-      {{- /* 1. Logo clair, ou repli texte si le fichier n'est pas depose. */ -}}
-      <div class="pied-logo">
-        {{- $logo := "" -}}
-        {{- with $pied.logo_clair }}{{ $logo = resources.Get . }}{{ end -}}
-        {{- with $logo -}}
-          <img src="{{ .RelPermalink }}" alt="{{ site.Params.logoAlt | default site.Title }}"
-               loading="lazy" decoding="async">
-        {{- else -}}
-          <span class="pied-logo-texte">{{ site.Title }}</span>
-        {{- end -}}
-      </div>
+      {{- /* 1. Nom du studio : logo clair, ou repli texte si le fichier
+             n'est pas depose dans le depot. */ -}}
+      <div class="pied-identite">
+        <div class="pied-logo">
+          {{- $logo := "" -}}
+          {{- with $pied.logo_clair }}{{ $logo = resources.Get . }}{{ end -}}
+          {{- with $logo -}}
+            <img src="{{ .RelPermalink }}" alt="{{ site.Params.logoAlt | default site.Title }}"
+                 loading="lazy" decoding="async">
+          {{- else -}}
+            <span class="pied-logo-texte">{{ site.Title }}</span>
+          {{- end -}}
+        </div>
 
-      {{- /* 2. Bloc d'identite, trois lignes. */ -}}
-      <ul class="pied-identite">
-        {{- with $pied.activite }}<li>{{ . }}</li>{{ end }}
-        {{- with site.Params.lieu }}<li>{{ . }}</li>{{ end }}
-        {{- if site.Params.onePercent }}{{ with $pied.un_pourcent }}<li>{{ . }}</li>{{ end }}{{ end }}
-      </ul>
+        {{- /* 2 a 5. Activite, lieu, collectif, e-mail. */ -}}
+        <ul class="pied-lignes">
+          {{- with $pied.activite }}<li>{{ . }}</li>{{ end }}
+          {{- with site.Params.lieu }}<li>{{ . }}</li>{{ end }}
+          {{- with $pied.collectif }}
+            {{- if .nom }}
+          <li>{{ with .intro }}{{ . }} {{ end }}{{ with .url }}<a href="{{ . }}" rel="noopener">{{ $pied.collectif.nom }}</a>{{ else }}{{ .nom }}{{ end }}</li>
+            {{- end }}
+          {{- end }}
+          {{- with site.Params.email }}<li><a href="mailto:{{ . }}">{{ . }}</a></li>{{ end }}
+        </ul>
 
-      {{- /* 3. Reseaux sociaux en texte, un par ligne. */ -}}
-      {{- with site.Params.social }}
-      <ul class="pied-reseaux">
-        {{- range . }}
-        <li><a href="{{ .url }}" rel="noopener" target="_blank">{{ .nom }}</a></li>
+        {{- /* 6. Podcast : une ligne discrete, en retrait du reste. */ -}}
+        {{- with $pied.podcast }}
+          {{- if and .nom .url }}
+        <p class="pied-podcast"><a href="{{ .url }}" rel="noopener">{{ .nom }}</a>{{ with .mention }}, {{ . }}{{ end }}</p>
+          {{- end }}
         {{- end }}
-      </ul>
-      {{- end }}
-
-      {{- /* 4. Pilule de contact. */ -}}
-      {{- with site.Params.email }}
-      <div class="pied-action">
-        {{ partial "pilule.html" (dict "href" (printf "mailto:%s" .) "libelle" ($pied.action | default "Écrire au studio")) }}
       </div>
-      {{- end }}
+
+      {{- /* 7. Reseaux sociaux, en texte et en icone. */ -}}
+      <div class="pied-reseaux">{{ partial "social.html" . }}</div>
 
     </div>
 
-    {{- /* Millesime de fin genere depuis la date de build. */ -}}
-    <p class="pied-mention">
-      &copy;{{ with site.Params.fondation }} {{ . }}-{{ end }}{{ now.Format "2006" }} {{ site.Title }}
-    </p>
+    {{- /* 8. Copyright : annee de depart en dur, annee de fin generee depuis
+           la date de build, trait d'union simple. */ -}}
+    <p class="pied-mention">&copy; 2016-{{ now.Format "2006" }} {{ site.Title }}</p>
 
   </div>
 </footer>

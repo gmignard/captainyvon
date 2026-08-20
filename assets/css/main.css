@@ -935,7 +935,7 @@ html:has(.loupe:target) { overflow: hidden; }
    PIED DE PAGE
    ------------------------------------------------------------------------- */
 /* Bande sombre pleine largeur : le fond sort des marges du contenu, seul
-   le contenu interieur reprend la marge laterale du site. Aucun arrondi. */
+   le contenu interieur reprend le conteneur du site. Aucun arrondi. */
 .pied {
   background: var(--noir);
   color: var(--blanc-casse);
@@ -943,20 +943,20 @@ html:has(.loupe:target) { overflow: hidden; }
   font-size: 0.75rem;
 }
 
+/* Deux zones au-dela de 900px : identite a gauche, reseaux cales sur le bord
+   droit du conteneur. En dessous elles s'empilent dans l'ordre du document,
+   identite puis reseaux. */
 .pied-grille {
   display: grid;
-  grid-template-columns: auto 1fr auto auto;
-  align-items: baseline;
+  grid-template-columns: 1fr auto;
+  align-items: start;
   gap: 2rem 3rem;
 }
 
-/* Sous 900px les quatre zones s'empilent dans l'ordre du document :
-   logo, identite, reseaux, pilule. */
 @media (max-width: 900px) {
   .pied-grille {
     grid-template-columns: 1fr;
-    align-items: start;
-    gap: 2rem;
+    gap: 1.5rem;
   }
 }
 
@@ -972,31 +972,36 @@ html:has(.loupe:target) { overflow: hidden; }
   color: var(--blanc-casse);
 }
 
-.pied-identite {
-  margin: 0;
+/* Activite, lieu, collectif, e-mail : une ligne chacun. */
+.pied-lignes {
+  margin: 1.1rem 0 0;
   list-style: none;
   padding: 0;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  line-height: 1.35;
+  line-height: 1.6;
 }
+.pied-lignes a { color: var(--blanc-casse); }
+.pied-lignes a:hover { color: var(--gris); }
 
-.pied-reseaux {
-  margin: 0;
-  list-style: none;
-  padding: 0;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  line-height: 1.35;
+/* Le podcast est secondaire : plus petit, en gris, sans capitales, detache
+   du bloc d'identite par une respiration. Le lien reste souligne, c'est le
+   seul indice qui le distingue du texte sur fond sombre. */
+.pied-podcast {
+  margin: 0.9rem 0 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  color: var(--gris);
 }
-.pied-reseaux a { color: var(--blanc-casse); text-decoration: none; }
-.pied-reseaux a:hover { color: var(--gris); }
+.pied-podcast a { color: inherit; }
+.pied-podcast a:hover { color: var(--blanc-casse); }
 
-.pied-action { justify-self: end; }
+/* Reseaux : le composant .social, cale a droite en desktop. Le survol et le
+   contour de focus viennent du composant et de la regle de fin de bloc. */
+.pied-reseaux { justify-self: end; }
 @media (max-width: 900px) {
-  .pied-action { justify-self: start; }
+  .pied-reseaux { justify-self: start; }
 }
 
 .pied-mention {
