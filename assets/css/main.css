@@ -1116,12 +1116,13 @@ html:has(.loupe:target) { overflow: hidden; }
   font-size: 0.75rem;
 }
 
-/* Trois colonnes de largeur egale, alignees sur leur ligne haute : le
-   contenu occupe toute la largeur du cadre, sans vide central. La gouttiere
-   est celle du theme, jamais une valeur en dur. */
+/* Trois colonnes alignees sur leur ligne haute : le contenu occupe toute la
+   largeur du cadre, sans vide central. La premiere est deux fois plus large
+   que les autres, elle porte la phrase de presentation en plus des lignes
+   d'identite. La gouttiere est celle du theme, jamais une valeur en dur. */
 .pied-grille {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 2fr 1fr 1fr;
   align-items: start;
   gap: var(--gouttiere);
 }
@@ -1162,6 +1163,21 @@ html:has(.loupe:target) { overflow: hidden; }
 .pied-collectif a { color: var(--blanc-casse); }
 .pied-lignes a:hover,
 .pied-collectif a:hover { color: var(--gris); }
+
+/* Phrase de presentation du studio. Casse normale, corps legerement inferieur
+   aux lignes en capitales qui l'encadrent : c'est une phrase, pas un libelle.
+   Sa mesure de lecture est bornee par --mesure pour qu'elle ne s'etire pas
+   sur toute la colonne, deux fois plus large que les deux autres. */
+.pied-presentation {
+  margin: 0.9rem 0 0;
+  max-width: var(--mesure);
+  font-size: 0.7rem;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+}
+
+/* Le lieu reprend les capitales, detache de la phrase qui le precede. */
+.pied-lignes--lieu { margin-top: 0.9rem; }
 
 /* Le podcast est secondaire : plus petit, en gris, sans capitales, detache
    de la ligne du collectif par une respiration. Le lien reste souligne,

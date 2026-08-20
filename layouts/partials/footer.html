@@ -7,7 +7,7 @@
 
   Trois colonnes de largeur egale au-dela du point de rupture, puis la
   mention de copyright sur toute la largeur :
-    1. nom du studio, activite, lieu
+    1. nom du studio, activite, phrase de presentation, lieu
     2. collectif, podcast
     3. bouton d'ecriture puis reseaux sociaux, cales a droite
   Sous 900px les trois colonnes s'empilent dans l'ordre 1, 2, 3, toutes
@@ -30,9 +30,11 @@
 
     <div class="pied-grille">
 
-      {{- /* Colonne 1 : nom du studio, puis activite et lieu.
+      {{- /* Colonne 1 : nom du studio, activite, phrase de presentation, lieu.
              Le nom est le logo clair, ou un repli texte si le fichier n'est
-             pas depose dans le depot. */ -}}
+             pas depose dans le depot. La phrase de presentation s'intercale
+             entre l'activite et le lieu : elle est en casse normale, les
+             lignes qui l'encadrent restent en capitales. */ -}}
       <div class="pied-colonne">
         <div class="pied-logo">
           {{- $logo := "" -}}
@@ -47,6 +49,13 @@
 
         <ul class="pied-lignes">
           {{- with $pied.activite }}<li>{{ . }}</li>{{ end }}
+        </ul>
+
+        {{- with $pied.presentation }}
+        <p class="pied-presentation">{{ . }}</p>
+        {{- end }}
+
+        <ul class="pied-lignes pied-lignes--lieu">
           {{- with site.Params.lieu }}<li>{{ . }}</li>{{ end }}
         </ul>
       </div>

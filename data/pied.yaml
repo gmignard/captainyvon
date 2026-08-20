@@ -10,8 +10,13 @@
 # un logo texte : rien n'est telecharge ni invente.
 logo_clair: "img/logo-captainyvon-blanc.svg"
 
-# Premiere ligne du bloc d'identite. La suivante vient de params.lieu.
-activite: "Studio de réalisation et de photographie"
+# Premiere ligne du bloc d'identite, en capitales comme les suivantes.
+# La ligne de lieu vient de params.lieu.
+activite: "Réalisation de films et reportages photos"
+
+# Phrase de presentation, posee sous la ligne d'activite. Casse normale,
+# corps legerement inferieur : c'est une phrase, pas un libelle.
+presentation: "Deux réalisateurs, amis avant tout, passionnés par les histoires authentiques et le plein air. Guidés par une approche documentaire et un style intemporel."
 
 # Collectif de representation. Le libelle encadre le nom, qui porte le lien.
 collectif:
