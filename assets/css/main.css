@@ -2,8 +2,8 @@
    Captain Yvon Studio — feuille de style unique
    Charte studio : fond ivoire, texte noir, Montserrat auto-hebergee.
    Mise en page calquee sur la production : header a logo centre,
-   grille de vignettes cinemascope sur deux colonnes, aucun texte entre
-   les images.
+   grille de vignettes cinemascope sur deux colonnes, chacune legendee par
+   son titre et une ligne de metadonnees.
    Aucune dependance externe, aucun CDN, aucun JavaScript requis.
    ========================================================================= */
 
@@ -407,7 +407,8 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
    Deux colonnes en CSS Grid, jamais trois. Largeur fluide : la grille
    occupe toute la largeur disponible moins les marges, sans max-width.
    Chaque vignette porte la couverture puis, en dessous, le titre du projet
-   en capitales suivi de l'annee entre parentheses quand elle est renseignee.
+   en capitales et une ligne de metadonnees en gris : le nom, un separateur,
+   l'annee.
    Aucune hauteur en dur : le cadrage vient de aspect-ratio + object-fit.
    ------------------------------------------------------------------------- */
 .grille-projets {
@@ -457,10 +458,11 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
    Le bloc « mouvement reduit » en fin de feuille neutralise la transition. */
 .vignette-lien:hover .vignette-image { opacity: 0.85; }
 
-/* Legende : titre en capitales, cale a gauche sous la couverture.
-   Les capitales viennent du rendu, pas du contenu : le titre reste lisible
-   dans le front matter et correctement restitue par les lecteurs d'ecran. */
-.vignette-legende {
+/* Titre : capitales, cale a gauche sous la couverture. Les capitales viennent
+   du rendu, pas du contenu : le titre reste lisible dans l'entete du fichier
+   et correctement restitue par les lecteurs d'ecran.
+   Sa marge haute est celle qui separe le bloc de texte de l'image. */
+.vignette-titre {
   margin: 0.85rem 0 0;
   font-size: 0.8rem;
   font-weight: 500;
@@ -469,6 +471,21 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   text-transform: uppercase;
   text-align: left;
   color: var(--texte);
+}
+
+/* Ligne de metadonnees : nom et annee, en casse normale et en corps plus
+   petit que le titre. Sa marge haute est cinq fois plus serree que celle du
+   titre : les deux lignes se lisent comme un bloc, detache de l'image.
+   Le gris est --texte-second, seul de la palette a tenir 4.5:1 sur l'ivoire :
+   --texte-doux, plus clair, y plafonne a 2.2:1. */
+.vignette-meta {
+  margin: 0.15rem 0 0;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  text-align: left;
+  color: var(--texte-second);
 }
 
 /* -------------------------------------------------------------------------
@@ -522,10 +539,12 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   font-variant-numeric: tabular-nums;
 }
 
-/* Separateur entre l'annee et le type de projet. Purement decoratif : il est
-   retire de l'arbre d'accessibilite dans le gabarit, et n'existe que lorsque
-   les deux valeurs sont presentes. */
-.projet-separateur {
+/* Separateur de la ligne de metadonnees, sur la fiche projet comme sur les
+   vignettes d'accueil : une seule regle pour que les deux restent identiques.
+   Purement decoratif, il est retire de l'arbre d'accessibilite dans les
+   gabarits, et n'existe que lorsque les deux valeurs sont presentes. */
+.projet-separateur,
+.vignette-separateur {
   margin-inline: 0.5em;
   color: var(--texte-doux);
 }
