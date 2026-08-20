@@ -14,7 +14,7 @@ competences:
 livrables:
   - "Un documentaire de 20 minutes"
 avec: []
-couverture: "couverture.webp"
+couverture: "cover.webp"
 video:
   plateforme: "youtube"
   id: "lv4eEdBmAx4"
