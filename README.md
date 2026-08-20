@@ -133,3 +133,9 @@ hugo server -D
 ```
 
 Ne pas les supprimer : ce sont les fiches de recette du gabarit.
+
+Les deploy previews de Netlify construisent les brouillons, ces deux fiches y
+sont donc consultables à leur adresse pendant une relecture, alors que la
+production ne les construit jamais. Leur entête déclare `_build.list: never` :
+même en preview, elles n'apparaissent ni dans le sitemap, ni dans un flux, ni
+dans la liste des projets de l'accueil.

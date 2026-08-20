@@ -16,8 +16,19 @@
 
 # Les previews de branche et de PR sont construites sur leur propre URL,
 # sinon les URLs absolues (canonical, Open Graph) pointeraient vers la prod.
+#
+# La preview de PR construit en plus les brouillons, avec --buildDrafts : c'est
+# ce qui rend les fiches de recette de content/work/zz-recette-* consultables
+# pendant une relecture. Ces fiches déclarent `_build.list: never` dans leur
+# entête : elles sont servies à leur adresse mais n'entrent dans aucune
+# collection, donc ni sitemap, ni flux, ni liste des projets de l'accueil.
+#
+# La production, elle, n'a PAS de bloc [context.production] : elle utilise la
+# commande de [build] ci-dessus, sans --buildDrafts. Un contexte ne déborde
+# jamais sur un autre chez Netlify, et l'option ajoutée ici ne concerne donc
+# que les deploy previews. Ne pas ajouter --buildDrafts ailleurs.
 [context.deploy-preview]
-  command = "hugo --gc --minify --baseURL $DEPLOY_PRIME_URL"
+  command = "hugo --gc --minify --buildDrafts --baseURL $DEPLOY_PRIME_URL"
 
 [context.branch-deploy]
   command = "hugo --gc --minify --baseURL $DEPLOY_PRIME_URL"
