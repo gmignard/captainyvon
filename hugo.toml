@@ -38,7 +38,7 @@ disableKinds = ["taxonomy", "term", "rss"]
   date = ["date", ":fileModTime", ":default"]
 
 [params]
-  description = "Captain Yvon Studio, duo de réalisateurs et photographes entre le Finistère Nord et Lille."
+  description = "Captain Yvon Studio, duo de réalisateurs et photographes entre Brest et Lille."
   logo = "img/logo-captainyvon-noir.svg"
   logoAlt = "Captain Yvon Studio"
   # Dimensions intrinseques du fichier logo, pour eviter tout decalage de mise en page.
@@ -46,7 +46,7 @@ disableKinds = ["taxonomy", "term", "rss"]
   logoHauteur = 36
   ogImageDefaut = "img/og-defaut.jpg"
   email = "studio@captainyvon.fr"
-  lieu = "Finistère Nord et Lille"
+  lieu = "Brest et Lille"
   fondation = 2016
   onePercent = true
 

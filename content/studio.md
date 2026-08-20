@@ -1,6 +1,6 @@
 ---
 title: "Studio"
-description: "Captain Yvon Studio, duo de réalisateurs et photographes entre le Finistère Nord et Lille."
+description: "Captain Yvon Studio, duo de réalisateurs et photographes entre Brest et Lille."
 # coordonnees : reporte depuis content/contact.md lors de la fusion.
 # Affiche l'adresse et le lieu depuis [params] de hugo.toml.
 coordonnees: true
