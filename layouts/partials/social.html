@@ -2,8 +2,13 @@
   Reseaux sociaux, alimentes par [[params.social]] dans hugo.toml.
   Les SVG sont injectes en ligne depuis assets/icones/<icone>.svg :
   aucune requete HTTP, aucune police d'icones.
-  Les fichiers ne portent ni width ni height ni fill : la taille vient
-  de .icone svg dans la CSS, la couleur de currentColor.
+  Les fichiers ne portent ni width ni height : la taille vient de .icone svg
+  dans la CSS, la couleur de currentColor.
+
+  Chaque lien porte son intitule en texte, masque visuellement mais bien
+  present dans le document : le nom accessible ne repose donc ni sur un
+  aria-label, ni sur l'icone seule. L'icone, purement decorative des lors,
+  est retiree de l'arbre d'accessibilite.
 */ -}}
 {{- with site.Params.social }}
 <div class="social">
@@ -13,10 +18,11 @@
       {{- $svg := "" -}}
       {{- with $reseau.icone }}{{ $svg = resources.Get (printf "icones/%s.svg" .) }}{{ end }}
     <li>
-      <a href="{{ $reseau.url }}" aria-label="{{ $reseau.nom }}" rel="me noopener" target="_blank">
+      <a href="{{ $reseau.url }}" rel="me noopener" target="_blank">
         {{- with $svg -}}
           {{- /* aria-hidden est injecte ici, il n'a pas a figurer dans le fichier source. */ -}}
           <span class="icone">{{ replaceRE `<svg` `<svg aria-hidden="true" focusable="false"` .Content 1 | safeHTML }}</span>
+          <span class="visuellement-cache">{{ $reseau.nom }}</span>
         {{- else -}}
           <span class="icone-texte">{{ $reseau.nom }}</span>
         {{- end -}}
