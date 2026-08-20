@@ -179,7 +179,7 @@ h2 { font-size: clamp(1.25rem, 2.2vw, 1.6rem); font-weight: 300; }
 h3 { font-size: 1.05rem; font-weight: 300; }
 
 /* Sous-titre : graisse 400, kaki. */
-.sous-titre, .projet-section {
+.sous-titre {
   font-weight: 400;
   color: var(--kaki);
 }
@@ -375,9 +375,12 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
    ------------------------------------------------------------------------- */
 .projet { max-width: var(--largeur-max); }
 
-/* a. Ligne de titre : titre + annee a gauche, type a droite, filet dessous.
-   space-between laisse le titre seul et cale a gauche quand `type` est
-   absent : aucune reserve d'espace, aucun separateur orphelin. */
+/* a. Ligne de titre : titre a gauche, annee a droite, alignes sur la meme
+   ligne de base et separes par un espace flexible. space-between laisse le
+   titre seul et cale a gauche quand l'annee est absente : aucune reserve
+   d'espace, aucun separateur orphelin.
+   flex-wrap garde la ligne tenable sur un titre long : l'annee passe alors
+   a la ligne suivante plutot que d'ecraser le titre. */
 .projet-titre {
   display: flex;
   flex-wrap: wrap;
@@ -385,21 +388,39 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   align-items: baseline;
   gap: 0.35rem 2rem;
   margin-block: clamp(2rem, 4vw, 3rem) 0;
-  padding-bottom: 0.9rem;
-  border-bottom: 1px solid var(--noir);
 }
-.projet-titre h1 { margin: 0; }
 
-.projet-section {
+/* Le titre du projet est nettement plus discret que les autres h1 du site :
+   ce n'est pas une accroche, c'est une etiquette au-dessus des images. Les
+   capitales viennent du rendu, pas du contenu, et l'interlettrage compense
+   leur compacite. min-width: 0 autorise la cesure d'un titre tres long au
+   lieu d'un debordement horizontal. */
+.projet-titre h1 {
   margin: 0;
-  text-transform: lowercase;
-  font-size: 0.9rem;
+  min-width: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
   letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
-/* Sous 700px le type passe sous le titre. */
-@media (max-width: 700px) {
-  .projet-titre { flex-direction: column; align-items: flex-start; }
+/* L'annee reprend le calibre du titre, en plus leger et en gris : elle se
+   lit comme une annotation, pas comme un second titre. */
+.projet-annee {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  color: var(--texte-doux);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Filet de l'entete, repris a l'identique avant la galerie. Discret : le
+   gris de la charte, jamais le noir du texte. */
+.projet-filet {
+  margin: 0.9rem 0 0;
+  border-top: 1px solid var(--trait);
 }
 
 /* b + c. Note d'intention a gauche, metadonnees a droite.

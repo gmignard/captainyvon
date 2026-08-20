@@ -3,7 +3,7 @@
   Page projet.
 
   Ordre fixe, de haut en bas :
-    a. ligne de titre : titre + annee a gauche, section a droite, filet dessous
+    a. ligne de titre : titre a gauche, annee a droite, filet dessous
     b. introduction : le corps du Markdown, colonne etroite
     c. metadonnees : client, services, livrables, avec
     d. medias : lecteur video ou couverture seule, puis galerie
@@ -21,12 +21,6 @@
 {{- /* Annee, ou chaine vide si la date reste a remplir. Voir annee.html. */ -}}
 {{- $annee := partial "annee.html" . -}}
 
-{{- /* Section de la page, en bas de casse et au singulier. C'est le
-       repertoire de section qui fait autorite, pas un champ d'entete. */ -}}
-{{- $section := lower .Section -}}
-{{- $singuliers := dict "films" "film" "photographies" "photographie" "photos" "photo" -}}
-{{- with index $singuliers $section }}{{ $section = . }}{{ end -}}
-
 {{- /* Metadonnees, dans l'ordre du schema. Les listes sont jointes par une
        virgule. Un champ absent ou vide ne cree aucune entree. */ -}}
 {{- $meta := slice -}}
@@ -42,13 +36,22 @@
 
 <article class="projet enveloppe">
 
-  {{- /* a. Ligne de titre. */ -}}
+  {{- /* a. Ligne de titre : titre et annee sur la meme ligne de base, un
+         espace flexible entre les deux. L'annee vit hors du <h1> : elle
+         n'appartient pas au titre du document. Sans annee, le titre reste
+         seul et cale a gauche, sans reserve d'espace a droite.
+         Les capitales viennent de la feuille de style, jamais du contenu :
+         le titre reste lisible dans l'entete du fichier et correctement
+         restitue par les lecteurs d'ecran. */ -}}
   <header class="projet-titre">
-    <h1>{{ $titre }}{{ with $annee }} ({{ . }}){{ end }}</h1>
-    {{- with $section }}
-    <p class="projet-section">{{ . }}</p>
+    <h1>{{ $titre }}</h1>
+    {{- with $annee }}
+    <p class="projet-annee">{{ . }}</p>
     {{- end }}
   </header>
+
+  {{- /* Filet de l'entete. Le meme element ferme la page avant la galerie. */ -}}
+  <hr class="projet-filet">
 
   {{- /* b. Introduction et c. metadonnees. Le conteneur n'est rendu que si
          l'un des deux a du contenu, pour ne pas laisser de marge vide. */ -}}

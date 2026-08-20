@@ -1,7 +1,13 @@
 {{- /*
-  Annee d'affichage d'un projet, ou chaine vide si la date n'est pas encore
-  renseignee. Centralise ici pour que la vignette d'accueil et la page projet
-  appliquent exactement la meme regle.
+  Annee d'affichage d'un projet, ou chaine vide si aucune valeur exploitable.
+  Centralise ici pour que la vignette d'accueil et la page projet appliquent
+  exactement la meme regle.
+
+  Deux sources, dans cet ordre :
+    1. le champ `annee` de l'entete, qui fait autorite quand il est renseigne.
+       Il sert aux projets dont l'annee de livraison ne coincide pas avec la
+       date de publication utilisee pour l'ordre de la grille ;
+    2. a defaut, l'annee de .Date.
 
   Deux cas donnent une chaine vide :
     - aucune date exploitable dans l'entete, donc .Date a zero ;
@@ -15,8 +21,12 @@
   Contexte attendu : la page projet.
 */ -}}
 {{- $annee := "" -}}
-{{- if not .Date.IsZero -}}
-  {{- $a := .Date.Format "2006" -}}
-  {{- if ne $a "0001" }}{{ $annee = $a }}{{ end -}}
+{{- with .Params.annee -}}
+  {{- $annee = printf "%v" . -}}
+{{- else -}}
+  {{- if not .Date.IsZero -}}
+    {{- $a := .Date.Format "2006" -}}
+    {{- if ne $a "0001" }}{{ $annee = $a }}{{ end -}}
+  {{- end -}}
 {{- end -}}
 {{- return $annee -}}
