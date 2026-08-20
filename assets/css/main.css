@@ -523,35 +523,40 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   margin-block: clamp(2rem, 4vw, 3rem) 0;
 }
 
-/* Le titre du projet porte la page : il domine desormais nettement la ligne
-   de metadonnees posee en face, au lieu de partager son calibre. Le plafond,
-   1.7rem, vaut environ 1,35 fois l'ancien 1.25rem ; le plancher, 1.4rem,
-   garde un titre tenable sur un telephone. Le palier haut est atteint des
-   800px, en deca la taille suit la fenetre.
-   Casse, graisse, interlettrage et alignement sont inchanges : seule la
-   taille bouge. min-width: 0 autorise la cesure d'un titre tres long au lieu
-   d'un debordement horizontal. */
+/* Le titre du projet porte la page : il domine nettement la ligne de
+   metadonnees posee en face, au lieu de partager son calibre. Le palier haut
+   est atteint des 800px, en deca la taille suit la fenetre.
+   Le titre est desormais plus dense que grand : la graisse passe de 500 a
+   700, la taille recule d'environ 10 pour cent — plafond de 1.7rem a
+   1.53rem, plancher de 1.4rem a 1.26rem — et l'interlettrage passe de
+   0.04em a -0.01em, ce qui resserre les capitales au lieu de les etaler.
+   Casse et alignement sont inchanges. min-width: 0 autorise la cesure d'un
+   titre tres long au lieu d'un debordement horizontal.
+   Cette regle ne vise que le h1 des pages projet : les titres de la grille
+   d'accueil sont regis par .vignette-titre et ne bougent pas. */
 .projet-titre h1 {
   margin: 0;
   min-width: 0;
-  font-size: clamp(1.4rem, 1.1rem + 1.2vw, 1.7rem);
-  font-weight: 500;
-  letter-spacing: 0.04em;
+  font-size: clamp(1.26rem, 0.99rem + 1.08vw, 1.53rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
   text-transform: uppercase;
 }
 
 /* Ligne de metadonnees du titre : annee, puis type de projet. Elle se lit
    comme une annotation, pas comme un second titre. Les capitales viennent
    d'ici.
-   Son calibre est fige a 1.25rem, la valeur qu'elle a toujours eue, et ne
-   depend ni du h1 en face ni d'aucun heritage : agrandir le titre ne la
-   deplace pas d'un pixel. Ne pas la convertir en em ni en clamp.
+   Son calibre est fige a 1.1rem, soit 12 pour cent de moins que le 1.25rem
+   precedent : la ligne se fait plus discrete face a un titre desormais plus
+   dense. Il ne depend ni du h1 en face ni d'aucun heritage : changer le
+   titre ne la deplace pas d'un pixel. Ne pas la convertir en em ni en clamp.
+   Couleur et interlettrage sont inchanges.
    margin-left: auto la maintient contre le bord droit y compris lorsqu'un
    titre long la fait passer a la ligne : sans lui, space-between la
    ramenerait a gauche des qu'elle se retrouve seule sur sa ligne. */
 .projet-annee {
   margin: 0 0 0 auto;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 400;
   letter-spacing: 0.04em;
   line-height: 1.2;
