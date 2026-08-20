@@ -45,7 +45,7 @@ _build:
   render: always
 
 weight: 999
-draft: true
+draft: false
 ---
 
 Fichier de recette du template de fiche projet. Il n'est jamais construit en
