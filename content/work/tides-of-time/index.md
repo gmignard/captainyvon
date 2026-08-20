@@ -6,7 +6,7 @@ nature: "personnel"
 client: ""
 extrait: "Un homme restaure une vieille planche de surf, et ce geste devient une méditation sur notre rapport au temps."
 services: ["Réalisation", "Écriture", "Montage", "Étalonnage"]
-couverture: "couverture.webp"
+couverture: "cover.webp"
 video:
   plateforme: "youtube"
   id: "lv4eEdBmAx4"
