@@ -35,7 +35,7 @@
 {{- with .Params.video }}{{ if .id }}{{ $aVideo = true }}{{ end }}{{ end -}}
 {{- $galerie := partial "galerie.html" . -}}
 
-<article class="projet enveloppe">
+<article class="projet">
 
   {{- /* a. Ligne de titre : titre et annee sur la meme ligne de base, un
          espace flexible entre les deux. L'annee vit hors du <h1> : elle

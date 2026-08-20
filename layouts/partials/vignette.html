@@ -44,7 +44,7 @@
   {{- $grande := cond (gt $l1600 $l800) (.Resize (printf "%dx webp q82" $l1600)) $petite -}}
 
   {{- /* Deux colonnes au-dela de 700px : chaque vignette occupe
-         (100vw - 2 * --site-marge - --grille-gap) / 2, soit ~45vw.
+         (100vw - 2 * --conteneur-gouttiere - --grille-gap) / 2, soit ~45vw.
          En dessous, une colonne : 100vw - 2 * 5vw. */ -}}
   {{- $sizes := "(max-width: 700px) 90vw, 45vw" -}}
   {{- $immediate := lt $rang 2 -}}

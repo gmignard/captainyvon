@@ -97,12 +97,23 @@
 
 /* -------------------------------------------------------------------------
    MISE EN PAGE — variables d'ajustement fin
-   Ces valeurs suffisent a caler la page sur la production : marge laterale,
+   Ces valeurs suffisent a caler la page sur la production : conteneur,
    gouttiere de grille, ratio des vignettes, hauteur du logo, respiration
    au-dessus et au-dessous du logo. L'arrondi vient de --rayon (palette).
    ------------------------------------------------------------------------- */
 :root {
-  --site-marge: 3.9vw;      /* marge laterale, identique a gauche et a droite */
+  /* Conteneur unique du site. Ces deux variables, et elles seules, decident
+     ou commence et ou finit le contenu : l'entete, le <main> de toutes les
+     pages et le pied de page partagent la meme classe .enveloppe et donc les
+     memes bords. Aucune largeur maximale locale ne doit revenir par-dessus.
+
+     La reference est la grille d'accueil, qui n'a jamais eu de plafond : sa
+     largeur est celle du viewport moins les deux gouttieres. --conteneur-max
+     reste donc `none` pour que cette grille ne bouge pas, et poser un
+     plafond le jour ou il sera decide tient dans cette seule ligne. */
+  --conteneur-max: none;
+  --conteneur-gouttiere: 3.9vw;
+
   --grille-gap: 2vw;        /* gouttiere horizontale et verticale */
   --ratio-vignette: 2.39/1; /* cinemascope */
   --logo-hauteur: 50px;
@@ -115,16 +126,17 @@
   --entete-espace-haut: clamp(6.5rem, 7.5vw, 7rem);
   --entete-espace-bas: clamp(5rem, 6vw, 5.5rem);
 
-  /* Rythme vertical et largeurs de lecture, hors grille d'accueil. */
+  /* Rythme vertical et mesure de lecture. --mesure est la largeur maximale
+     d'un bloc de texte courant, environ 65 caracteres : elle plafonne le
+     texte a l'interieur du conteneur, jamais le conteneur lui-meme. */
   --pas: 1rem;
   --gouttiere: 1.5rem;
-  --largeur-max: 1600px;
-  --largeur-texte: 62ch;
+  --mesure: 65ch;
 }
 
-/* Sous 700px : une seule colonne, marge laterale reduite. */
+/* Sous 700px : une seule colonne, gouttiere reduite. */
 @media (max-width: 700px) {
-  :root { --site-marge: 5vw; }
+  :root { --conteneur-gouttiere: 5vw; }
 }
 
 /* -------------------------------------------------------------------------
@@ -209,20 +221,19 @@ blockquote, .citation {
   border: 1px solid var(--texte);
   z-index: 100;
 }
-.saut:focus { left: var(--site-marge); top: 0.5rem; }
+.saut:focus { left: var(--conteneur-gouttiere); top: 0.5rem; }
 
-/* Conteneur commun : marge laterale unique, partagee par l'entete,
-   la grille et les pages de texte. */
+/* Conteneur unique du site. Porte par l'entete, par le <main> de toutes les
+   pages et par le pied de page : c'est lui, et lui seul, qui fixe le bord
+   gauche du logo, du titre et du pied, a l'identique d'une page a l'autre.
+   Il n'a pas de variante : une deuxieme largeur ferait revenir le decalage
+   entre l'accueil et les pages interieures. */
 .enveloppe {
-  max-width: var(--largeur-max);
+  width: 100%;
+  max-width: var(--conteneur-max);
   margin-inline: auto;
-  padding-inline: var(--site-marge);
+  padding-inline: var(--conteneur-gouttiere);
 }
-
-/* Variante pleine largeur : pas de max-width, la largeur suit le viewport
-   moins les marges, comme en production. Utilisee par l'entete et par la
-   grille d'accueil pour qu'elles restent alignees a toute largeur. */
-.enveloppe--pleine { max-width: none; }
 
 /* -------------------------------------------------------------------------
    EN-TETE
@@ -297,7 +308,7 @@ blockquote, .citation {
    ------------------------------------------------------------------------- */
 main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); }
 
-.page-texte { max-width: var(--largeur-texte); padding-block: clamp(1rem, 3vw, 2rem) 0; }
+.page-texte { max-width: var(--mesure); padding-block: clamp(1rem, 3vw, 2rem) 0; }
 .page-texte h1 { margin-bottom: calc(var(--pas) * 1.5); }
 .page-texte ul { padding-left: 1.2em; }
 
@@ -372,9 +383,9 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
 
 /* -------------------------------------------------------------------------
    PAGE PROJET
+   Aucune largeur maximale ici : la page projet vit dans le conteneur du
+   site, comme l'accueil et la page studio.
    ------------------------------------------------------------------------- */
-.projet { max-width: var(--largeur-max); }
-
 /* a. Ligne de titre : titre a gauche, annee a droite, alignes sur la meme
    ligne de base et separes par un espace flexible. space-between laisse le
    titre seul et cale a gauche quand l'annee est absente : aucune reserve
@@ -445,7 +456,7 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
 
 /* La colonne de gauche garde une largeur de lecture confortable meme quand
    les deux tiers de la page depassent la mesure ideale. */
-.projet-presentation { max-width: var(--largeur-texte); }
+.projet-presentation { max-width: var(--mesure); }
 
 /* Extrait : le texte d'accroche de l'entete. En italique et en gris, il se
    distingue de la note d'intention sans changer de calibre. */
@@ -512,7 +523,7 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
    Indicateur + / - en CSS pur, aucun JavaScript.
    ------------------------------------------------------------------------- */
 .fiche {
-  max-width: var(--largeur-texte);
+  max-width: var(--mesure);
   margin-block: calc(var(--pas) * 2);
   border-top: 1px solid var(--trait);
 }
@@ -945,7 +956,7 @@ html:has(.loupe:target) { overflow: hidden; }
    404
    ------------------------------------------------------------------------- */
 .erreur {
-  max-width: var(--largeur-texte);
+  max-width: var(--mesure);
   padding-block: clamp(3rem, 10vw, 7rem);
 }
 

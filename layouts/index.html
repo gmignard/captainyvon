@@ -12,23 +12,19 @@
 {{- range $projets -}}
   {{- if partial "couverture.html" . }}{{ $avecCouverture = $avecCouverture | append . }}{{ end -}}
 {{- end -}}
-<div class="enveloppe enveloppe--pleine">
+<h1 class="visuellement-cache">{{ .Title | default site.Title }}</h1>
 
-  <h1 class="visuellement-cache">{{ .Title | default site.Title }}</h1>
+{{- with .Content }}
+<div class="page-texte">{{ . }}</div>
+{{- end }}
 
-  {{- with .Content }}
-  <div class="page-texte">{{ . }}</div>
+{{- with $avecCouverture }}
+<ul class="grille-projets">
+  {{- range $rang, $projet := . }}
+  {{ partial "vignette.html" (dict "page" $projet "rang" $rang) }}
   {{- end }}
-
-  {{- with $avecCouverture }}
-  <ul class="grille-projets">
-    {{- range $rang, $projet := . }}
-    {{ partial "vignette.html" (dict "page" $projet "rang" $rang) }}
-    {{- end }}
-  </ul>
-  {{- else }}
-  <p>Aucun projet publié pour le moment.</p>
-  {{- end }}
-
-</div>
+</ul>
+{{- else }}
+<p>Aucun projet publié pour le moment.</p>
+{{- end }}
 {{ end }}

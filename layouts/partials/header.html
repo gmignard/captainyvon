@@ -6,9 +6,9 @@
   pied de page, ou ils portent un libelle texte, alors qu'ici les lecteurs
   d'ecran les annoncaient par leur URL brute.
 
-  Pleine largeur comme en production : l'entete partage la marge laterale
-  de la grille d'accueil (--site-marge) et n'a pas de max-width, pour que le
-  logo reste centre sur le viewport et aligne avec la grille a toute largeur.
+  L'entete partage le conteneur unique du site (.enveloppe) avec le <main>
+  de toutes les pages et avec le pied : c'est ce qui garantit que le logo et
+  le contenu tombent sur le meme bord gauche a toute largeur.
   Ni bordure ni separateur en bas : c'est l'espacement qui separe l'entete
   du contenu. L'entete n'est pas collante.
 
@@ -18,7 +18,7 @@
   chargement.
 */ -}}
 <header class="entete">
-  <div class="enveloppe enveloppe--pleine entete-grille">
+  <div class="enveloppe entete-grille">
 
     <div class="entete-nav">{{ partial "nav.html" . }}</div>
 

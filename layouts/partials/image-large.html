@@ -14,8 +14,9 @@
   {{- $l1600 := cond (gt .Width 1600) 1600 .Width -}}
   {{- $petite := .Resize (printf "%dx webp q82" $l800) -}}
   {{- $grande := cond (gt $l1600 $l800) (.Resize (printf "%dx webp q82" $l1600)) $petite -}}
-  {{- /* Le contenu occupe toute la largeur disponible, plafonnee a
-         --largeur-max moins la marge laterale. */ -}}
+  {{- /* Le contenu occupe toute la largeur du conteneur, soit le viewport
+         moins les deux gouttieres. La source n'excedant jamais 1600px de
+         large, l'image sert sa plus grande sortie au-dela de cette largeur. */ -}}
   {{- $sizes := "(min-width: 1740px) 1600px, 92vw" -}}
 <img src="{{ $grande.RelPermalink }}"
      {{ if ne $grande.RelPermalink $petite.RelPermalink }}srcset="{{ $petite.RelPermalink }} {{ $petite.Width }}w, {{ $grande.RelPermalink }} {{ $grande.Width }}w"
