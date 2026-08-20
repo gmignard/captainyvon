@@ -25,6 +25,7 @@
   --vert-foret: #3D5941;
   --bleu-ocean: #4E6771;
   --gris: #ACAAA4;
+  --gris-fonce: #726F68;    /* gris de texte sur fond clair, contraste 4.72:1 */
 
   /* Arrondis. --rayon est mesure sur la reference et s'applique a toutes
      les images ; --rayon-pilule produit un demi-cercle a toute hauteur. */
@@ -36,6 +37,10 @@
   --fond: var(--blanc-casse);
   --texte: var(--noir);
   --texte-doux: var(--gris);
+  /* Texte secondaire pose sur le fond ivoire. --texte-doux, plus clair, ne
+     passe pas le seuil de 4.5:1 sur ce fond : il reste reserve aux fonds
+     sombres et aux elements non textuels. */
+  --texte-second: var(--gris-fonce);
   --trait: var(--gris);
   --focus: var(--kaki);
 }
@@ -500,8 +505,9 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   text-transform: uppercase;
 }
 
-/* L'annee reprend le calibre du titre, en plus leger et en gris : elle se
-   lit comme une annotation, pas comme un second titre.
+/* Ligne de metadonnees du titre : annee, puis type de projet. Elle reprend le
+   calibre du titre, en plus leger et en gris : elle se lit comme une
+   annotation, pas comme un second titre. Les capitales viennent d'ici.
    margin-left: auto la maintient contre le bord droit y compris lorsqu'un
    titre long la fait passer a la ligne : sans lui, space-between la
    ramenerait a gauche des qu'elle se retrouve seule sur sa ligne. */
@@ -511,8 +517,17 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   font-weight: 400;
   letter-spacing: 0.04em;
   line-height: 1.2;
-  color: var(--texte-doux);
+  text-transform: uppercase;
+  color: var(--texte-second);
   font-variant-numeric: tabular-nums;
+}
+
+/* Separateur entre l'annee et le type de projet. Purement decoratif : il est
+   retire de l'arbre d'accessibilite dans le gabarit, et n'existe que lorsque
+   les deux valeurs sont presentes. */
+.projet-separateur {
+  margin-inline: 0.5em;
+  color: var(--texte-doux);
 }
 
 /* Filet de l'entete, repris a l'identique avant la galerie. Discret : le

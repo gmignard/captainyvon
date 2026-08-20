@@ -6,6 +6,12 @@ title: "{{ replace .File.ContentBaseName "-" " " | title }}"
 # grille, du plus récent au plus ancien.
 date: {{ .Date }}
 
+# nature : type de projet. Deux valeurs autorisées, et deux seulement :
+#   commande  -> affiche COMMISSIONNÉ à côté de l'année
+#   personnel -> affiche PROJET PERSONNEL
+# Toute autre valeur, ou un champ vide, n'affiche que l'année.
+nature: "commande"
+
 # client : nom du client ou de la structure commanditaire.
 client: ""
 

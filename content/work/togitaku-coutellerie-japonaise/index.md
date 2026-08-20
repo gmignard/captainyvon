@@ -1,7 +1,7 @@
 ---
 title: "Togi-Taku Coutellerie japonaise"
 date: 2026-05-15
-nature: "photo"
+nature: "personnel"
 # client, annee, extrait, services, livrables volontairement vides :
 # ce projet vérifie le rendu le plus dépouillé possible.
 client: ""
