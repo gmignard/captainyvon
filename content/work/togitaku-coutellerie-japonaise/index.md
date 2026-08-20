@@ -13,7 +13,7 @@ extrait: ""
 services: []
 livrables: []
 avec: []
-couverture: "couverture.jpg"
+couverture: "couverture.webp"
 mise_en_avant: false
 draft: false
 ---
