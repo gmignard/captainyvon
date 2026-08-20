@@ -1,5 +1,10 @@
+# La page contact a fusionné dans la page studio : /contact renvoie
+# désormais vers la section correspondante, en permanent.
+/contact   /studio/#contact   301
+/contact/* /studio/#contact   301
+
 # Anciennes URLs Squarespace sans équivalent sur le nouveau site.
-# Les URLs /work/<slug>, /studio et /contact sont identiques, aucune redirection.
+# Les URLs /work/<slug> et /studio sont identiques, aucune redirection.
 /cart      /   301
 /cart/*    /   301
 

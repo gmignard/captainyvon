@@ -1,0 +1,20 @@
+# Donnees propres au pied de page.
+#
+# Ce fichier ne contient que ce que hugo.toml ne porte pas deja : l'adresse
+# e-mail, le lieu, l'annee de fondation et les reseaux sociaux viennent de
+# [params] et ne sont pas repetes ici.
+
+# Logo en version claire, pose sur la bande noire. Chemin resolu depuis
+# assets/. Tant que le fichier n'est pas dans le depot, le pied replie sur
+# un logo texte : rien n'est telecharge ni invente.
+logo_clair: "img/logo-captainyvon-blanc.svg"
+
+# Premiere ligne du bloc d'identite. Les deux suivantes sont construites
+# depuis params.lieu et params.onePercent.
+activite: "Studio de réalisation et de photographie"
+
+# Libelle affiche quand params.onePercent vaut true.
+un_pourcent: "Membre de 1% for the Planet"
+
+# Libelle de la pilule de contact. Sa cible est un mailto vers params.email.
+action: "Écrire au studio"

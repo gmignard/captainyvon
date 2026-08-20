@@ -3,6 +3,12 @@
   Boucle sur site.Menus.main : ajouter une entree dans hugo.toml suffit,
   ce fichier n'a jamais besoin d'etre modifie.
 
+  L'entree Contact est ecartee ici : la page contact a fusionne dans la page
+  studio (ancre #contact) et le menu ne garde que work et studio. Le filtrage
+  se fait dans ce partial parce que hugo.toml n'est pas modifiable dans le
+  cadre de cette tache ; supprimer le bloc [[menus.main]] correspondant dans
+  la configuration rendrait ce filtre inutile.
+
   Une entree est active si :
     - son URL egale le RelPermalink de la page courante, ou
     - son parametre `accueil` vaut true et la page courante est l'accueil, ou
@@ -14,6 +20,7 @@
   <ul>
     {{- range . }}
       {{- $url := .URL | relURL -}}
+      {{- if hasPrefix $url ("/contact" | relURL) }}{{ continue }}{{ end -}}
       {{- $actif := false -}}
       {{- if eq $url $page.RelPermalink }}{{ $actif = true }}{{ end -}}
       {{- if and .Params.accueil $page.IsHome }}{{ $actif = true }}{{ end -}}

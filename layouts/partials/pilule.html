@@ -1,0 +1,16 @@
+{{- /*
+  Pilule : lien d'action reutilisable, defini une seule fois.
+  Utilise par la navigation de fin des pages projet et par le pied de page.
+
+  Contexte attendu : un dict
+    href    — cible du lien, obligatoire
+    libelle — texte affiche, obligatoire. Mis en capitales par la CSS.
+    externe — true pour ouvrir dans un nouvel onglet avec rel="noopener"
+
+  La fleche est du contenu texte, jamais une image ni un fichier d'icone.
+  Elle est masquee aux lecteurs d'ecran : le libelle suffit a nommer le lien.
+*/ -}}
+<a class="pilule" href="{{ .href }}"{{ if .externe }} rel="noopener" target="_blank"{{ end }}>
+  <span class="pilule-fleche" aria-hidden="true">&rarr;</span>
+  <span>{{ .libelle }}</span>
+</a>

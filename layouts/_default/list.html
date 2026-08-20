@@ -3,9 +3,10 @@
        plutot que de rendre un <h1> vide. */ -}}
 {{- $titre := .Title -}}
 {{- if not $titre }}{{ with .File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
-{{- /* Meme regle qu'a l'accueil : pas de vignette sans couverture. */ -}}
+{{- /* Memes regles qu'a l'accueil : tri explicite par date decroissante,
+       et pas de vignette sans couverture. */ -}}
 {{- $avecCouverture := slice -}}
-{{- range .RegularPages.ByWeight -}}
+{{- range sort .RegularPages "Date" "desc" -}}
   {{- if partial "couverture.html" . }}{{ $avecCouverture = $avecCouverture | append . }}{{ end -}}
 {{- end -}}
 <div class="enveloppe enveloppe--pleine">

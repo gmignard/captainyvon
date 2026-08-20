@@ -2,13 +2,15 @@
   Vignette de projet.
 
   La vignette porte la couverture puis une legende : le titre du projet,
-  mis en capitales par la CSS, suivi de l'annee entre parentheses quand elle
-  est renseignee. Ni extrait ni nature.
+  mis en capitales par la CSS, suivi de l'annee entre parentheses.
+
+  L'annee est derivee de la date de la page, jamais d'un champ dedie : un
+  seul mecanisme, donc aucun risque de desaccord entre les deux. Une page
+  sans date affiche le titre seul, sans parentheses vides.
 
   La legende etant du texte visible a l'interieur du lien, elle en fournit
   le nom accessible : l'image porte un alt vide pour ne pas faire annoncer
-  le titre deux fois. Le titre reste en casse normale dans le front matter,
-  seul le rendu le passe en capitales.
+  le titre deux fois.
 
   Contexte attendu : un dict
     page  — la page projet
@@ -18,16 +20,17 @@
 
   Un projet sans couverture n'est pas rendu : l'appelant l'a deja ecarte,
   cette garde evite toute case vide si le partial est appele ailleurs.
+
+  `mise_en_avant` est conserve dans le schema mais n'a aucun effet ici :
+  l'ordre de la grille vient uniquement du tri par date de l'appelant.
 */ -}}
 {{- $page := .page -}}
 {{- $rang := .rang | default 0 -}}
 
 {{- $titre := $page.Title -}}
 {{- if not $titre }}{{ with $page.File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
-
-{{- /* Annee : facultative. Absente, la legende n'affiche que le titre,
-       sans parentheses vides. Le champ est prevu dans archetypes/projet.md. */ -}}
-{{- $annee := $page.Params.annee -}}
+{{- $annee := "" -}}
+{{- if not $page.Date.IsZero }}{{ $annee = $page.Date.Format "2006" }}{{ end -}}
 
 {{- $couverture := partial "couverture.html" $page -}}
 {{- with $couverture }}
@@ -47,7 +50,7 @@
   {{- $sizes := "(max-width: 700px) 90vw, 45vw" -}}
   {{- $immediate := lt $rang 2 -}}
 
-<li class="vignette{{ if $page.Params.mise_en_avant }} vignette--avant{{ end }}">
+<li class="vignette">
   <a class="vignette-lien" href="{{ $page.RelPermalink }}">
     <img class="vignette-image"
          src="{{ $petite.RelPermalink }}"
