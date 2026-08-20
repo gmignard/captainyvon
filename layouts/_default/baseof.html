@@ -8,10 +8,11 @@
 
   {{ partial "header.html" . }}
 
-  {{- /* Le conteneur unique du site est porte ici, une fois pour toutes :
-         aucun gabarit n'a besoin de redeclarer .enveloppe, et le bord gauche
-         du contenu tombe donc exactement sous celui du logo et du pied. */ -}}
-  <main id="contenu" class="enveloppe">
+  {{- /* Le <main> ne porte pas de largeur : chaque gabarit declare la sienne,
+         .enveloppe pour une page de texte ou une page projet,
+         .enveloppe--pleine pour la grille d'accueil. L'alignement avec
+         l'entete et le pied vient de la gouttiere, commune a tous. */ -}}
+  <main id="contenu">
     {{ block "main" . }}{{ end }}
   </main>
 

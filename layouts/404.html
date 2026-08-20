@@ -1,7 +1,9 @@
 {{ define "main" }}
-<div class="erreur">
-  <h1>Page introuvable</h1>
-  <p>Cette adresse ne correspond à aucune page du site.</p>
-  <p><a href="{{ "/" | relURL }}">Retour à l'accueil</a></p>
+<div class="enveloppe">
+  <div class="erreur">
+    <h1>Page introuvable</h1>
+    <p>Cette adresse ne correspond à aucune page du site.</p>
+    <p><a href="{{ "/" | relURL }}">Retour à l'accueil</a></p>
+  </div>
 </div>
 {{ end }}

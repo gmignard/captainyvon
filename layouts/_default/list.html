@@ -9,18 +9,22 @@
 {{- range sort .RegularPages "Date" "desc" -}}
   {{- if partial "couverture.html" . }}{{ $avecCouverture = $avecCouverture | append . }}{{ end -}}
 {{- end -}}
-<div class="page-texte">
-  {{- with $titre }}
-  <h1>{{ . }}</h1>
-  {{- end }}
-  {{- with .Content }}{{ . }}{{ end }}
-</div>
+<div class="enveloppe enveloppe--pleine">
 
-{{- with $avecCouverture }}
-<ul class="grille-projets">
-  {{- range $rang, $projet := . }}
-  {{ partial "vignette.html" (dict "page" $projet "rang" $rang) }}
+  <div class="page-texte">
+    {{- with $titre }}
+    <h1>{{ . }}</h1>
+    {{- end }}
+    {{- with .Content }}{{ . }}{{ end }}
+  </div>
+
+  {{- with $avecCouverture }}
+  <ul class="grille-projets">
+    {{- range $rang, $projet := . }}
+    {{ partial "vignette.html" (dict "page" $projet "rang" $rang) }}
+    {{- end }}
+  </ul>
   {{- end }}
-</ul>
-{{- end }}
+
+</div>
 {{ end }}
