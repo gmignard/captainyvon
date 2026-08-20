@@ -541,15 +541,20 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
    tiers. La grille tient aussi bien avec un seul des deux blocs : chacun est
    rendu uniquement si son contenu existe, et l'unique colonne restante
    occupe alors toute la largeur. */
+/* align-items: baseline cale la premiere ligne des metadonnees sur celle de
+   l'extrait. Les deux blocs n'ont ni le meme corps ni le meme interligne :
+   aligner les boites par le haut laissait leurs textes decales de 9px. */
 .projet-haut {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  align-items: baseline;
   gap: 1.75rem 4rem;
   margin-block: clamp(1.75rem, 3.5vw, 2.75rem);
 }
 
 /* Sous 700px les deux colonnes s'empilent, la presentation d'abord :
-   c'est l'ordre du document, aucune reorganisation n'est necessaire. */
+   c'est l'ordre du document, aucune reorganisation n'est necessaire. Les
+   metadonnees reviennent alors au bord gauche, comme le reste de la page. */
 @media (max-width: 700px) {
   .projet-haut { grid-template-columns: 1fr; }
 }
@@ -596,25 +601,50 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
 .projet-intro p { margin: 0 0 var(--pas); }
 .projet-intro p:last-child { margin-bottom: 0; }
 
-/* c. Metadonnees : liste de definition en deux colonnes. Le corps monte
-   legerement, mais c'est l'aeration qui fait le travail : l'espace entre deux
-   paires intitule-valeur est plus de trois fois celui d'avant, et chaque
-   ligne respire. L'intitule reste plus petit que sa valeur, il annonce sans
-   concurrencer.
-   Son gris est --texte-second, seul a tenir 4.5:1 sur le fond ivoire. */
+/* c. Metadonnees : liste de definition en deux colonnes.
+
+   La colonne des intitules est en max-content : elle vaut exactement la
+   largeur du plus long d'entre eux, et s'adapte donc a un intitule futur plus
+   long que SERVICES sans qu'aucune valeur ne soit a reprendre ici. La
+   deuxieme colonne prend le reste. La gouttiere qui separe l'intitule de sa
+   valeur descend a 1.25 fois le pas du theme, et l'ecart vertical entre deux
+   paires a la moitie de ce pas : les lignes se lisent comme un groupe.
+
+   width: fit-content empeche la liste de s'etirer sur toute la colonne de
+   droite, et la fait plier plutot que deborder quand la place manque. Un
+   width: max-content ferait gonfler la colonne au-dela du viewport une fois
+   les deux blocs empiles, la piste 1fr prenant alors pour minimum la largeur
+   imposee a la liste. justify-self: end la maintient calee sur le bord
+   droit ; sous 700px, ou tout est empile, elle revient a gauche.
+
+   align-items: baseline pose l'intitule et sa valeur sur la meme ligne de
+   base malgre leurs corps differents.
+
+   Le gris des intitules est --texte-second, seul a tenir 4.5:1 sur l'ivoire. */
 .projet-meta {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 1.35rem 1.75rem;
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-items: baseline;
+  justify-self: end;
+  width: fit-content;
+  max-width: 100%;
+  gap: calc(var(--pas) * 0.5) calc(var(--pas) * 1.25);
   margin: 0;
   font-size: 0.95rem;
   line-height: 1.65;
 }
+
+/* Une fois les deux colonnes empilees, la liste revient au bord gauche comme
+   le reste de la page. Cette surcharge doit suivre la regle ci-dessus : a
+   specificite egale, c'est la derniere declaree qui l'emporte. */
+@media (max-width: 700px) {
+  .projet-meta { justify-self: start; }
+}
+
 .projet-meta dt {
   color: var(--texte-second);
   font-size: 0.8rem;
   font-weight: 500;
-  line-height: 1.9;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
