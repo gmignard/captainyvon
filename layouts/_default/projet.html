@@ -5,11 +5,13 @@
   Ordre fixe, de haut en bas :
     a. ligne de titre : titre a gauche, annee et type de projet a droite,
        filet dessous
-    b. presentation : extrait et note d'intention, deux tiers
-    c. metadonnees : client, services, avec, un tiers
+    b. extrait : le texte court de l'entete YAML, borne par la mesure
+       de lecture
+    c. metadonnees : client, services, avec, dimensionnees par leur contenu
     d. medias : lecteur video ou couverture seule
-    e. galerie : filet, credit photo, puis grille de vignettes du bundle
-    f. distinctions : selections et prix, si l'entete en declare
+    e. bande de lecture : la note d'intention a gauche, c'est-a-dire le corps
+       du fichier Markdown, les distinctions a droite
+    f. galerie : filet, credit photo, puis grille de vignettes du bundle
     g. fin de page : pilule de retour vers la liste des projets
 
   Chaque bloc teste la presence de son contenu avant de s'afficher : un champ
@@ -76,6 +78,14 @@
 {{- with .Params.video }}{{ if .id }}{{ $aVideo = true }}{{ end }}{{ end -}}
 {{- $galerie := partial "galerie.html" . -}}
 
+{{- /* Distinctions et corps du fichier, captures ici parce que la bande de
+       lecture teste les deux avant de s'ouvrir. Le partial ne rend rien si
+       l'entete ne declare aucune distinction nommee ; le corps est vide de
+       tout blanc pour qu'un fichier qui s'arrete a son entete YAML compte
+       pour rien. */ -}}
+{{- $distinctions := trim (partial "distinctions.html" .) " \n\r\t" -}}
+{{- $corps := trim .Content " \n\r\t" -}}
+
 <article class="projet enveloppe">
 
   {{- /* a. Ligne de titre : titre et ligne de metadonnees sur la meme ligne
@@ -101,28 +111,26 @@
   {{- /* Filet de l'entete. Le meme element ferme la page avant la galerie. */ -}}
   <hr class="projet-filet">
 
-  {{- /* b. Presentation et c. metadonnees, en deux colonnes : deux tiers a
-         gauche pour l'extrait, le credit photo et la note d'intention, un
-         tiers a droite pour l'encart. Sous 700px les deux colonnes
-         s'empilent, la presentation d'abord.
+  {{- /* b. Extrait et c. metadonnees, en deux colonnes : l'extrait a gauche,
+         borne par la mesure de lecture, l'encart a droite, dimensionne par
+         son contenu. Sous 860px, le point de rupture de l'entete, les deux
+         colonnes s'empilent, l'extrait d'abord — c'est l'ordre du document,
+         aucune reorganisation n'est necessaire.
+
+         L'entete ne porte plus que l'extrait, court par contrat dans le
+         schema du projet. La note d'intention, elle, est le corps du fichier
+         Markdown et vit sous la couverture : voir le bloc d ci-dessous.
 
          Chaque niveau teste son contenu : le conteneur n'existe que si l'un
-         des deux blocs a quelque chose a dire, la colonne de gauche n'existe
-         que si l'un de ses deux elements est renseigne. Une entete sans
-         extrait et sans metadonnees ne laisse donc ni bloc vide ni
-         espacement fantome. */ -}}
+         des deux blocs a quelque chose a dire. Une entete sans extrait et
+         sans metadonnees ne laisse donc ni bloc vide ni espacement
+         fantome. */ -}}
   {{- $extrait := .Params.extrait -}}
-  {{- $aPresentation := or $extrait .Content -}}
-  {{- if or $aPresentation $meta }}
+  {{- if or $extrait $meta }}
   <div class="projet-haut">
-    {{- if $aPresentation }}
+    {{- with $extrait }}
     <div class="projet-presentation">
-      {{- with $extrait }}
       <p class="projet-extrait">{{ . }}</p>
-      {{- end }}
-      {{- with .Content }}
-      <div class="projet-intro">{{ . }}</div>
-      {{- end }}
     </div>
     {{- end }}
     {{- with $meta }}
@@ -150,7 +158,33 @@
   </div>
   {{- end }}
 
-  {{- /* e. Galerie, precedee du meme filet que l'entete. Le filet appartient
+  {{- /* e. Bande de lecture, sous la couverture : la note d'intention a
+         gauche, les distinctions a droite. C'est la structure de l'entete,
+         texte a gauche et informations a droite, reprise une seconde fois :
+         les deux bandes se repondent, et le lecteur retrouve les selections
+         et les prix la ou il decide s'il continue, juste apres la video.
+
+         Les quatre cas sont couverts par la seule presence des enfants dans
+         la grille, sans classe de circonstance :
+           - texte et distinctions : deux colonnes ;
+           - texte seul : il occupe la bande, la piste auto vaut zero ;
+           - distinctions seules : elles sont le premier enfant, donc dans la
+             premiere piste, calees sur la marge gauche du contenu et jamais
+             a droite d'une colonne vide ;
+           - ni l'un ni l'autre : la bande n'est pas rendue du tout, ni
+             conteneur vide ni marge residuelle. */ -}}
+  {{- if or $corps $distinctions }}
+  <div class="projet-bande">
+    {{- with $corps }}
+    <div class="projet-corps">{{ . | safeHTML }}</div>
+    {{- end }}
+    {{- with $distinctions }}
+    {{ . | safeHTML }}
+    {{- end }}
+  </div>
+  {{- end }}
+
+  {{- /* f. Galerie, precedee du meme filet que l'entete. Le filet appartient
          a la galerie : sans image a montrer, ni l'un ni l'autre n'est rendu.
          La condition porte sur la sortie du partial, jamais sur la presence
          du champ `galerie`, qui n'est qu'une des deux sources possibles. */ -}}
@@ -167,9 +201,6 @@
   {{- end }}
   {{ $galerie }}
   {{- end }}
-
-  {{- /* f. Distinctions. Le partial ne rend rien si le champ est absent. */ -}}
-  {{ partial "distinctions.html" . }}
 
   {{- /* g. Fin de page. */ -}}
   <div class="projet-retour">

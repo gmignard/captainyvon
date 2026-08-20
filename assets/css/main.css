@@ -153,6 +153,18 @@
   --pas: 1rem;
   --gouttiere: 1.5rem;
   --mesure: 65ch;
+  /* Mesure de l'entete projet : l'extrait et la note d'intention sont des
+     blocs isoles, sans texte courant autour, et supportent une ligne un peu
+     plus longue que le corps d'une page. Elle plafonne la colonne de gauche
+     a la place de l'ancienne piste fractionnaire. */
+  --mesure-large: 70ch;
+  /* Mesure de la colonne d'appoint : la liste des distinctions, a droite de
+     la note d'intention. La piste qui la porte est en auto, donc gouvernee
+     par son contenu : sans plafond, un nom de festival un peu long prendrait
+     sa largeur de max-content et laisserait le texte a rien, la piste de
+     gauche ayant zero pour minimum. Le plafond force le nom a passer a la
+     ligne plutot que la colonne a s'etendre. */
+  --mesure-appoint: 38ch;
 }
 
 /* Sous 700px : une seule colonne, gouttiere reduite. */
@@ -508,23 +520,29 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   margin-block: clamp(2rem, 4vw, 3rem) 0;
 }
 
-/* Le titre du projet est nettement plus discret que les autres h1 du site :
-   ce n'est pas une accroche, c'est une etiquette au-dessus des images. Les
-   capitales viennent du rendu, pas du contenu, et l'interlettrage compense
-   leur compacite. min-width: 0 autorise la cesure d'un titre tres long au
-   lieu d'un debordement horizontal. */
+/* Le titre du projet porte la page : il domine desormais nettement la ligne
+   de metadonnees posee en face, au lieu de partager son calibre. Le plafond,
+   1.7rem, vaut environ 1,35 fois l'ancien 1.25rem ; le plancher, 1.4rem,
+   garde un titre tenable sur un telephone. Le palier haut est atteint des
+   800px, en deca la taille suit la fenetre.
+   Casse, graisse, interlettrage et alignement sont inchanges : seule la
+   taille bouge. min-width: 0 autorise la cesure d'un titre tres long au lieu
+   d'un debordement horizontal. */
 .projet-titre h1 {
   margin: 0;
   min-width: 0;
-  font-size: 1.25rem;
+  font-size: clamp(1.4rem, 1.1rem + 1.2vw, 1.7rem);
   font-weight: 500;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-/* Ligne de metadonnees du titre : annee, puis type de projet. Elle reprend le
-   calibre du titre, en plus leger et en gris : elle se lit comme une
-   annotation, pas comme un second titre. Les capitales viennent d'ici.
+/* Ligne de metadonnees du titre : annee, puis type de projet. Elle se lit
+   comme une annotation, pas comme un second titre. Les capitales viennent
+   d'ici.
+   Son calibre est fige a 1.25rem, la valeur qu'elle a toujours eue, et ne
+   depend ni du h1 en face ni d'aucun heritage : agrandir le titre ne la
+   deplace pas d'un pixel. Ne pas la convertir en em ni en clamp.
    margin-left: auto la maintient contre le bord droit y compris lorsqu'un
    titre long la fait passer a la ligne : sans lui, space-between la
    ramenerait a gauche des qu'elle se retrouve seule sur sa ligne. */
@@ -556,31 +574,56 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   border-top: 1px solid var(--trait);
 }
 
-/* b + c. Presentation a gauche sur deux tiers, metadonnees a droite sur un
-   tiers. La grille tient aussi bien avec un seul des deux blocs : chacun est
-   rendu uniquement si son contenu existe, et l'unique colonne restante
-   occupe alors toute la largeur. */
-/* align-items: baseline cale la premiere ligne des metadonnees sur celle de
-   l'extrait. Les deux blocs n'ont ni le meme corps ni le meme interligne :
-   aligner les boites par le haut laissait leurs textes decales de 9px. */
+/* b + c. Extrait a gauche, metadonnees a droite.
+
+   Les deux pistes ne sont plus fractionnaires. La colonne de droite est en
+   auto : elle vaut exactement ce que ses intitules et ses valeurs demandent,
+   jamais un tiers de la page. La colonne de gauche prend le reste, et son
+   texte est ensuite plafonne a la mesure de lecture par .projet-presentation.
+   Un extrait long ne se retrouve donc plus dans une colonne filiforme face a
+   une meta d'une seule ligne : il occupe la largeur de lecture, et l'espace
+   excedentaire reste entre les deux blocs.
+
+   Le minimum de la piste de gauche est un plancher de lecture, pas zero. Avec
+   un minimum a zero, c'est toujours le texte qui cede : une liste de services
+   un peu longue prend sa largeur de max-content et laisse l'extrait a une
+   vingtaine de caracteres — mesure sur cette page, 200px de texte a 768px de
+   fenetre. Le plancher inverse la priorite : sous ce seuil, c'est la meta qui
+   plie et passe a la ligne. min(100%, 45ch) le neutralise quand le conteneur
+   lui-meme est plus etroit que 45ch, pour qu'il ne cause jamais de
+   debordement.
+
+   La grille tient aussi bien avec un seul des deux blocs : chacun est rendu
+   uniquement si son contenu existe, et l'unique colonne restante occupe alors
+   toute la largeur.
+
+   align-items: baseline cale la premiere ligne des metadonnees sur celle de
+   l'extrait — un alignement par le haut des boites, ou pire un centrage,
+   laissait leurs textes decales de 9px, les deux blocs n'ayant ni le meme
+   corps ni le meme interligne. */
 .projet-haut {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  grid-template-columns: minmax(min(100%, 45ch), 1fr) auto;
   align-items: baseline;
   gap: 1.75rem 4rem;
   margin-block: clamp(1.75rem, 3.5vw, 2.75rem);
 }
 
-/* Sous 700px les deux colonnes s'empilent, la presentation d'abord :
-   c'est l'ordre du document, aucune reorganisation n'est necessaire. Les
-   metadonnees reviennent alors au bord gauche, comme le reste de la page. */
-@media (max-width: 700px) {
-  .projet-haut { grid-template-columns: 1fr; }
+/* Point de rupture propre a l'entete, distinct du 700px du reste du site :
+   les deux colonnes n'ont de sens que si elles tiennent toutes les deux. En
+   dessous, l'extrait passe en pleine largeur et la meta s'empile dessous,
+   dans l'ordre du document — aucune reorganisation n'est necessaire. Le seuil
+   est celui en dessous duquel la mesure de lecture et le plus large des blocs
+   meta ne coexistent plus sans que l'un des deux devienne illisible. */
+@media (max-width: 860px) {
+  .projet-haut { grid-template-columns: minmax(0, 1fr); }
 }
 
-/* La colonne de gauche garde une largeur de lecture confortable meme quand
-   les deux tiers de la page depassent la mesure ideale. */
-.projet-presentation { max-width: var(--mesure); }
+/* C'est ici, et non dans la grille, que la colonne de gauche prend sa
+   largeur : la piste s'etire, le texte s'arrete a la mesure de lecture. Une
+   fois les deux colonnes empilees, ce plafond reste le bon — le bloc occupe
+   toute la largeur disponible tant qu'elle est sous la mesure. */
+.projet-presentation { max-width: var(--mesure-large); }
 
 /* Extrait : le texte d'accroche de l'entete. En italique et en gris, il se
    distingue de la note d'intention. Son calibre monte au-dessus du texte
@@ -609,16 +652,56 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
 /* La galerie colle alors au credit plutot que de reprendre sa marge haute. */
 .projet-credit + .galerie { margin-top: 0.6rem; }
 
-.projet-intro {
-  margin-top: var(--pas);
+/* e. Bande de lecture : la note d'intention a gauche, les distinctions a
+   droite. Meme partition que l'entete — texte a gauche, informations a
+   droite — et memes espacements, repris des memes variables : les deux
+   bandes se repondent d'un bout a l'autre de la page.
+
+   La piste de droite est en auto : elle vaut ce que la liste demande, jamais
+   une fraction de la page. La piste de gauche prend le reste, et son texte
+   est ensuite plafonne a la mesure de lecture par .projet-corps.
+
+   align-items: start pose les deux blocs sur le haut de la bande. L'entete,
+   elle, aligne sur la ligne de base : elle n'a qu'une ligne de chaque cote a
+   faire coincider, alors qu'ici deux blocs de plusieurs lignes doivent
+   partir du meme bord.
+
+   La grille tient avec un seul de ses deux enfants : chacun n'est rendu que
+   si son contenu existe. Les distinctions seules deviennent le premier
+   enfant, donc la premiere piste : elles se calent sur la marge gauche du
+   contenu, jamais a droite d'une colonne vide. */
+.projet-bande {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 1.75rem 4rem;
+  margin-block: clamp(1.75rem, 3.5vw, 2.75rem);
+}
+
+/* Meme seuil que l'entete : les deux regles decrivent le meme empilement, et
+   le texte passe en premier dans l'ordre du document — aucune reorganisation
+   n'est necessaire. */
+@media (max-width: 860px) {
+  .projet-bande { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Corps du fichier Markdown : la note d'intention, plafonnee a la meme
+   mesure de lecture que l'extrait de l'entete. La marge verticale appartient
+   desormais a la bande : la porter ici aussi la doublerait sous la video.
+
+   Le gabarit ne rend ce bloc que si le corps du fichier n'est pas vide : un
+   projet dont le fichier s'arrete a son entete YAML ne produit ni conteneur
+   vide, ni marge residuelle. */
+.projet-corps {
+  max-width: var(--mesure-large);
+  min-width: 0;
+  margin: 0;
   font-weight: 400;
   line-height: 1.6;
 }
-/* Premier enfant du bloc : la marge haute vient du conteneur, pas du texte,
-   sinon un projet sans extrait garderait un espace en trop. */
-.projet-presentation > .projet-intro:first-child { margin-top: 0; }
-.projet-intro p { margin: 0 0 var(--pas); }
-.projet-intro p:last-child { margin-bottom: 0; }
+.projet-corps p { margin: 0 0 var(--pas); }
+.projet-corps > :first-child { margin-top: 0; }
+.projet-corps > :last-child { margin-bottom: 0; }
 
 /* c. Metadonnees : liste de definition en deux colonnes.
 
@@ -634,7 +717,8 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
    width: max-content ferait gonfler la colonne au-dela du viewport une fois
    les deux blocs empiles, la piste 1fr prenant alors pour minimum la largeur
    imposee a la liste. justify-self: end la maintient calee sur le bord
-   droit ; sous 700px, ou tout est empile, elle revient a gauche.
+   droit ; sous le point de rupture de l'entete, ou tout est empile, elle
+   revient a gauche.
 
    align-items: baseline pose l'intitule et sa valeur sur la meme ligne de
    base malgre leurs corps differents.
@@ -654,9 +738,11 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
 }
 
 /* Une fois les deux colonnes empilees, la liste revient au bord gauche comme
-   le reste de la page. Cette surcharge doit suivre la regle ci-dessus : a
-   specificite egale, c'est la derniere declaree qui l'emporte. */
-@media (max-width: 700px) {
+   le reste de la page. Le seuil suit celui de .projet-haut, jamais le 700px
+   du reste du site : les deux regles decrivent le meme empilement. Cette
+   surcharge doit suivre la regle ci-dessus : a specificite egale, c'est la
+   derniere declaree qui l'emporte. */
+@media (max-width: 860px) {
   .projet-meta { justify-self: start; }
 }
 
@@ -700,16 +786,45 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   margin-inline: auto;
 }
 
-/* f. Distinctions : intitule discret, puis une distinction par ligne. Au-dela
-   de quatre, les suivantes vivent dans un <details> natif. */
+/* Distinctions : colonne de droite de la bande de lecture. Intitule discret,
+   puis une distinction par ligne ; au-dela de quatre, les suivantes vivent
+   dans un <details> natif.
+
+   Le bloc ne porte plus de marge : c'est la bande qui tient le rythme
+   vertical, des deux cotes a la fois. Son plafond n'est plus la mesure de
+   lecture d'un bloc pleine largeur mais celle d'une colonne d'appoint, pour
+   que la piste auto qui la porte ne prenne jamais la place du texte.
+
+   Le plafond est une longueur nue, sans min(100%, ...) : un pourcentage est
+   ignore pendant le calcul des pistes, ou la largeur du conteneur n'est pas
+   encore connue. La piste auto se dimensionnerait alors sur le max-content
+   d'un nom de festival non replie — mesure sur cette page, une piste de
+   689px pour un bloc de 402px, et le texte tombant a 191px de large a 1024px
+   de fenetre — avant que le pourcentage ne recadre le bloc, trop tard, dans
+   une piste deja trop large. Une longueur nue, elle, borne bien la piste.
+   Aucun risque de debordement en retour : au-dessus du seuil la bande est
+   toujours plus large que ce plafond, en dessous les deux blocs sont
+   empiles et la surcharge ci-apres rend la largeur au contenu. */
 .distinctions {
-  margin-block: clamp(2rem, 4vw, 3rem) 0;
-  max-width: var(--mesure);
+  margin: 0;
+  min-width: 0;
+  max-width: var(--mesure-appoint);
 }
 
+/* Une fois les deux colonnes empilees, la liste reprend toute la largeur du
+   contenu. Cette surcharge doit suivre la regle ci-dessus : a specificite
+   egale, c'est la derniere declaree qui l'emporte. */
+@media (max-width: 860px) {
+  .distinctions { max-width: 100%; }
+}
+
+/* Intitule et entrees reprennent exactement la facture du bloc meta de
+   l'entete : le corps, la graisse, l'interlettrage et le gris des intitules
+   de .projet-meta dt, l'interligne et le noir de ses valeurs. Les deux
+   bandes se lisent alors comme un seul systeme. */
 .distinctions-titre {
   margin: 0 0 0.9rem;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -721,7 +836,8 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   margin: 0;
   padding: 0;
   font-size: 0.95rem;
-  line-height: 1.6;
+  line-height: 1.65;
+  color: var(--noir);
 }
 .distinctions-liste li { padding: 0.2rem 0; }
 
