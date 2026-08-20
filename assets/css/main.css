@@ -405,9 +405,12 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
 }
 
 /* L'annee reprend le calibre du titre, en plus leger et en gris : elle se
-   lit comme une annotation, pas comme un second titre. */
+   lit comme une annotation, pas comme un second titre.
+   margin-left: auto la maintient contre le bord droit y compris lorsqu'un
+   titre long la fait passer a la ligne : sans lui, space-between la
+   ramenerait a gauche des qu'elle se retrouve seule sur sa ligne. */
 .projet-annee {
-  margin: 0;
+  margin: 0 0 0 auto;
   font-size: 1.25rem;
   font-weight: 400;
   letter-spacing: 0.04em;
