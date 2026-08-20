@@ -105,21 +105,20 @@
   /* Deux niveaux de largeur, une seule gouttiere.
 
      --conteneur-gouttiere est la marge laterale, identique partout : c'est
-     elle, et elle seule, qui aligne le bord gauche de l'entete sur celui du
-     pied de page, quelle que soit la largeur du contenu de la page.
+     elle qui aligne le bord gauche de l'entete sur celui du pied et sur
+     celui du contenu, quelle que soit la page.
 
-     --cadre-max est la largeur du cadre global, porte par .cadre et reserve
-     a l'entete et au pied. Il vaut la largeur de la grille d'accueil, qui
-     n'a pas de plafond : le cadre suit donc le viewport moins les deux
-     gouttieres. Poser une valeur ici le jour ou un plafond sera decide
-     deplacera l'entete et le pied ensemble, sans toucher aux pages.
+     --contenu-max est la largeur des pages interieures — page projet, page
+     studio, page de texte — et, depuis cette version, celle du cadre de
+     l'entete et du pied : les trois partagent le meme plafond, donc les
+     memes bords gauche et droit au pixel pres. Une seule valeur, pas de
+     seconde variable a tenir en phase.
 
-     --contenu-max est la largeur du contenu de page, portee par .enveloppe
-     et propre a chaque type de page : les pages de texte et les pages
-     projet s'y arretent, la grille d'accueil s'en affranchit avec
-     .enveloppe--pleine. Le contenu reste centre dans le cadre. */
+     Seule la grille d'accueil s'en affranchit, avec .enveloppe--pleine :
+     elle reste plus large et deborde volontairement de l'entete et du pied.
+     Ce retrait n'apparait qu'au-dela de 1600px de viewport, la ou le
+     plafond commence a mordre ; en dessous, les deux largeurs coincident. */
   --conteneur-gouttiere: 3.9vw;
-  --cadre-max: none;
   --contenu-max: 1600px;
 
   --grille-gap: 2vw;        /* gouttiere horizontale et verticale */
@@ -240,20 +239,13 @@ blockquote, .citation {
 }
 .saut:focus { left: var(--conteneur-gouttiere); top: 0.5rem; }
 
-/* Cadre global. Porte uniquement par l'entete et par le pied de page : il ne
-   depend pas de la page affichee, c'est ce qui fixe le bord gauche de la
-   navigation et celui du pied au meme endroit sur tout le site, y compris
-   quand le contenu de la page est plus etroit. */
-.cadre {
-  width: 100%;
-  max-width: var(--cadre-max);
-  margin-inline: auto;
-  padding-inline: var(--conteneur-gouttiere);
-}
-
-/* Conteneur de contenu. Meme gouttiere que le cadre, donc meme alignement,
-   mais une largeur maximale qui lui est propre : le contenu s'arrete avant
-   le cadre sur les pages de texte et les pages projet, et reste centre. */
+/* Cadre global (.cadre) et conteneur de contenu (.enveloppe) : memes bords,
+   meme plafond, deux noms parce que les deux roles restent distincts. Le
+   cadre est porte par l'entete et le pied, l'enveloppe par le contenu des
+   pages interieures. Les regrouper ici garantit qu'ils ne peuvent pas
+   diverger : l'entete, le contenu d'une page projet et le pied tombent sur
+   le meme bord gauche et le meme bord droit, au pixel pres. */
+.cadre,
 .enveloppe {
   width: 100%;
   max-width: var(--contenu-max);
@@ -261,8 +253,10 @@ blockquote, .citation {
   padding-inline: var(--conteneur-gouttiere);
 }
 
-/* Variante pleine largeur : pas de plafond, la largeur suit le cadre.
-   Utilisee par la grille d'accueil et par la liste des projets. */
+/* Variante pleine largeur : pas de plafond, la largeur suit le viewport moins
+   les gouttieres. Utilisee par la grille d'accueil et par la liste des
+   projets, qui debordent donc volontairement de l'entete et du pied au-dela
+   de 1600px de viewport. */
 .enveloppe--pleine { max-width: none; }
 
 /* -------------------------------------------------------------------------
