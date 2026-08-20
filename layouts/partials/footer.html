@@ -5,9 +5,16 @@
   baseof.html et sert donc a l'identique l'accueil, la liste, la page studio
   et les pages projet.
 
-  Ordre du document, qui est aussi celui du rendu et de la tabulation :
-  nom du studio, activite, lieu, collectif, bouton d'ecriture, podcast,
-  reseaux, mention de copyright.
+  Trois colonnes de largeur egale au-dela du point de rupture, puis la
+  mention de copyright sur toute la largeur :
+    1. nom du studio, activite, lieu
+    2. collectif, podcast
+    3. bouton d'ecriture puis reseaux sociaux, cales a droite
+  Sous 900px les trois colonnes s'empilent dans l'ordre 1, 2, 3, toutes
+  alignees a gauche, bouton et reseaux compris.
+
+  L'ordre du balisage est celui de la lecture : la tabulation suit ce que
+  l'oeil parcourt. Un seul groupe d'icones sociales, en colonne 3.
 
   Aucune coordonnee n'est ecrite en dur ici : l'e-mail, le lieu et les
   reseaux viennent de [params] dans hugo.toml, le reste de data/pied.yaml.
@@ -23,9 +30,10 @@
 
     <div class="pied-grille">
 
-      {{- /* 1. Nom du studio : logo clair, ou repli texte si le fichier
-             n'est pas depose dans le depot. */ -}}
-      <div class="pied-identite">
+      {{- /* Colonne 1 : nom du studio, puis activite et lieu.
+             Le nom est le logo clair, ou un repli texte si le fichier n'est
+             pas depose dans le depot. */ -}}
+      <div class="pied-colonne">
         <div class="pied-logo">
           {{- $logo := "" -}}
           {{- with $pied.logo_clair }}{{ $logo = resources.Get . }}{{ end -}}
@@ -37,23 +45,35 @@
           {{- end -}}
         </div>
 
-        {{- /* 2 a 4. Activite, lieu, collectif. */ -}}
         <ul class="pied-lignes">
           {{- with $pied.activite }}<li>{{ . }}</li>{{ end }}
           {{- with site.Params.lieu }}<li>{{ . }}</li>{{ end }}
-          {{- with $pied.collectif }}
-            {{- if .nom }}
-          <li>{{ with .intro }}{{ . }} {{ end }}{{ with .url }}<a href="{{ . }}" rel="noopener">{{ $pied.collectif.nom }}</a>{{ else }}{{ .nom }}{{ end }}</li>
-            {{- end }}
-          {{- end }}
         </ul>
+      </div>
 
-        {{- /* 5. Bouton d'ecriture, a la place de la ligne d'adresse. Il
-               reprend la pilule du theme, sans passer par pilule.html : le
-               partial ne sait pas porter de complement masque, et l'adresse
-               doit rester dans le nom accessible du lien. Ce dernier se lit
-               donc « Écrire au studio, studio@captainyvon.fr », alors que
-               l'oeil ne voit que le libelle. La fleche reste du texte. */ -}}
+      {{- /* Colonne 2 : collectif, puis podcast en ligne secondaire. */ -}}
+      <div class="pied-colonne">
+        {{- with $pied.collectif }}
+          {{- if .nom }}
+        <p class="pied-collectif">{{ with .intro }}{{ . }} {{ end }}{{ with .url }}<a href="{{ . }}" rel="noopener">{{ $pied.collectif.nom }}</a>{{ else }}{{ .nom }}{{ end }}</p>
+          {{- end }}
+        {{- end }}
+        {{- with $pied.podcast }}
+          {{- if and .nom .url }}
+        <p class="pied-podcast"><a href="{{ .url }}" rel="noopener">{{ .nom }}</a>{{ with .mention }}, {{ . }}{{ end }}</p>
+          {{- end }}
+        {{- end }}
+      </div>
+
+      {{- /* Colonne 3 : bouton d'ecriture puis reseaux sociaux, cales sur le
+             bord droit du cadre au-dela du point de rupture.
+
+             Le bouton reprend la pilule du theme sans passer par pilule.html :
+             le partial ne sait pas porter de complement masque, et l'adresse
+             doit rester dans le nom accessible du lien. Ce dernier se lit donc
+             « Écrire au studio, studio@captainyvon.fr », alors que l'oeil ne
+             voit que le libelle. La fleche reste du texte. */ -}}
+      <div class="pied-colonne pied-colonne--action">
         {{- with site.Params.email }}
         <p class="pied-action">
           <a class="pilule" href="mailto:{{ . }}">
@@ -62,22 +82,13 @@
           </a>
         </p>
         {{- end }}
-
-        {{- /* 6. Podcast : une ligne discrete, en retrait du reste. */ -}}
-        {{- with $pied.podcast }}
-          {{- if and .nom .url }}
-        <p class="pied-podcast"><a href="{{ .url }}" rel="noopener">{{ .nom }}</a>{{ with .mention }}, {{ . }}{{ end }}</p>
-          {{- end }}
-        {{- end }}
+        <div class="pied-reseaux">{{ partial "social.html" . }}</div>
       </div>
-
-      {{- /* 7. Reseaux sociaux, en texte et en icone. */ -}}
-      <div class="pied-reseaux">{{ partial "social.html" . }}</div>
 
     </div>
 
-    {{- /* 8. Copyright : annee de depart en dur, annee de fin generee depuis
-           la date de build, trait d'union simple. */ -}}
+    {{- /* Copyright sur toute la largeur : annee de depart en dur, annee de
+           fin generee depuis la date de build, trait d'union simple. */ -}}
     <p class="pied-mention">&copy; 2016-{{ now.Format "2006" }} {{ site.Title }}</p>
 
   </div>

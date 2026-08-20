@@ -985,29 +985,30 @@ html:has(.loupe:target) { overflow: hidden; }
    PIED DE PAGE
    ------------------------------------------------------------------------- */
 /* Bande sombre pleine largeur : le fond sort des marges du contenu, seul
-   le contenu interieur reprend le conteneur du site. Aucun arrondi. */
+   le contenu interieur reprend le cadre du site. Aucun arrondi.
+   La respiration verticale vaut au moins l'espacement entre deux blocs de
+   contenu d'une page projet, clamp(1.75rem, 3.5vw, 2.75rem) : le pied ne
+   colle donc jamais au contenu qui le precede. */
 .pied {
   background: var(--noir);
   color: var(--blanc-casse);
-  padding-block: 48px;
+  padding-block: clamp(3rem, 5vw, 4rem);
   font-size: 0.75rem;
 }
 
-/* Deux zones au-dela de 900px : identite a gauche, reseaux cales sur le bord
-   droit du conteneur. En dessous elles s'empilent dans l'ordre du document,
-   identite puis reseaux. */
+/* Trois colonnes de largeur egale, alignees sur leur ligne haute : le
+   contenu occupe toute la largeur du cadre, sans vide central. La gouttiere
+   est celle du theme, jamais une valeur en dur. */
 .pied-grille {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: repeat(3, 1fr);
   align-items: start;
-  gap: 2rem 3rem;
+  gap: var(--gouttiere);
 }
 
+/* Sous 900px les trois colonnes s'empilent dans l'ordre du document. */
 @media (max-width: 900px) {
-  .pied-grille {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
+  .pied-grille { grid-template-columns: 1fr; }
 }
 
 .pied-logo img { height: 34px; width: auto; display: block; }
@@ -1022,36 +1023,29 @@ html:has(.loupe:target) { overflow: hidden; }
   color: var(--blanc-casse);
 }
 
-/* Activite, lieu, collectif, e-mail : une ligne chacun. */
-.pied-lignes {
+/* Lignes d'identite, colonne 1, et mention du collectif, colonne 2 : meme
+   traitement typographique, une ligne par element. */
+.pied-lignes,
+.pied-collectif {
   margin: 1.1rem 0 0;
   list-style: none;
   padding: 0;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  line-height: 1.6;
+  line-height: 1.35;
 }
-.pied-lignes a { color: var(--blanc-casse); }
-.pied-lignes a:hover { color: var(--gris); }
-
-/* Bouton d'ecriture, a la place de la ligne d'adresse. Il reprend la pilule
-   du theme telle quelle — fond de surface, arrondi --rayon-pilule, ni ombre
-   ni aplat de couleur — et n'ajoute qu'un plancher de hauteur pour rester
-   confortable au pouce. Son survol assombrit le fond, son focus clavier
-   pose le contour kaki : deux etats distincts, tous deux visibles sur la
-   bande noire. */
-.pied-action {
-  margin: 1.1rem 0 0;
-}
-.pied-action .pilule {
-  min-height: 44px;
-  align-items: center;
-}
+/* Premier element de sa colonne : sa marge haute viendrait doubler
+   l'alignement sur la ligne haute des trois colonnes. */
+.pied-collectif { margin-top: 0; }
+.pied-lignes a,
+.pied-collectif a { color: var(--blanc-casse); }
+.pied-lignes a:hover,
+.pied-collectif a:hover { color: var(--gris); }
 
 /* Le podcast est secondaire : plus petit, en gris, sans capitales, detache
-   du bloc d'identite par une respiration. Le lien reste souligne, c'est le
-   seul indice qui le distingue du texte sur fond sombre. */
+   de la ligne du collectif par une respiration. Le lien reste souligne,
+   c'est le seul indice qui le distingue du texte sur fond sombre. */
 .pied-podcast {
   margin: 0.9rem 0 0;
   font-size: 0.7rem;
@@ -1061,13 +1055,32 @@ html:has(.loupe:target) { overflow: hidden; }
 .pied-podcast a { color: inherit; }
 .pied-podcast a:hover { color: var(--blanc-casse); }
 
-/* Reseaux : le composant .social, cale a droite en desktop. Le survol et le
-   contour de focus viennent du composant et de la regle de fin de bloc. */
-.pied-reseaux { justify-self: end; }
-@media (max-width: 900px) {
-  .pied-reseaux { justify-self: start; }
+/* Colonne 3 : bouton d'ecriture puis reseaux, cales sur le bord droit du
+   cadre. En pile sous 900px, tout revient a gauche. */
+.pied-colonne--action {
+  display: grid;
+  justify-items: end;
+  gap: var(--pas);
 }
 
+@media (max-width: 900px) {
+  .pied-colonne--action { justify-items: start; }
+}
+
+/* Bouton d'ecriture. Il reprend la pilule du theme telle quelle — fond de
+   surface, arrondi --rayon-pilule, ni ombre ni aplat de couleur — et
+   n'ajoute qu'un plancher de hauteur pour rester confortable au pouce. Son
+   survol assombrit le fond, son focus clavier pose le contour kaki : deux
+   etats distincts, tous deux visibles sur la bande noire. */
+.pied-action {
+  margin: 0;
+}
+.pied-action .pilule {
+  min-height: 44px;
+  align-items: center;
+}
+
+/* Copyright : toute la largeur, cale a gauche, detache des colonnes. */
 .pied-mention {
   margin: 2.5rem 0 0;
   color: var(--gris);
