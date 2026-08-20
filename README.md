@@ -98,6 +98,32 @@ Les quatre premières distinctions sont affichées. Au-delà, les suivantes sont
 repliées dans un dépliant qui annonce leur nombre. Champ absent : ni section,
 ni titre.
 
+## Page studio
+
+La page studio est un page bundle, `content/studio/`. Son texte de
+présentation vit dans `index.md`, la colonne de contact est rendue par le
+gabarit depuis `[params]` et `data/pied.yaml` : rien à saisir dans l'entête.
+
+### Ajouter une photo de tournage
+
+Déposer le fichier dans `content/studio/` en le nommant `bts-NN.<ext>`, par
+exemple `bts-16.jpg`. C'est tout : le mur ramasse automatiquement toutes les
+images du dossier dont le nom commence par `bts-`, aucune entête n'est à
+modifier et aucune liste n'est à tenir à jour.
+
+L'ordre d'affichage suit le nom de fichier, donc la numérotation. Elle est
+sur **deux chiffres** pour la même raison que les images de projet : sans le
+zéro de tête, `bts-10` passerait avant `bts-2`.
+
+Retirer toutes les images `bts-` fait disparaître la section entière, titre
+compris.
+
+Format et poids des fichiers déposés : du JPEG, **1000 px de large au plus**
+et **300 Ko par fichier au plus**. Hugo produit ensuite les WebP servis au
+visiteur, calés sur la largeur réelle d'une colonne du mur, mais il n'agrandit
+jamais une source ni ne compense un fichier trop lourd au dépôt. Cette limite
+tient le poids de la page sous 1,5 Mo.
+
 ## Nommage des images d'un page bundle
 
 Les images de galerie d'un projet sont numérotées sur **deux chiffres**,
@@ -123,6 +149,10 @@ gabarit de fiche projet après chaque évolution :
   autre sans année, un `client` présent mais vide ;
 - `zz-recette-minimale` : ni image, ni galerie, ni vidéo, ni crédit, ni
   distinction.
+
+Les images `bts-*.jpg` de `content/studio/` sont **provisoires** : elles sont
+copiées d'un bundle de projet en attendant la sélection définitive des photos
+de tournage. Les remplacer par les vraies avant la mise en ligne.
 
 Les deux portent `draft: true` de façon **permanente** : ils ne sont jamais
 construits en production et ne doivent pas être publiés. Ils se vérifient en
