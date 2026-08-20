@@ -2,9 +2,13 @@
 # La version de Hugo est épinglée sur celle utilisée pour construire le site.
 # Vérifier avec `hugo version` avant de la changer.
 
+# Netlify expose URL comme adresse principale du projet : le sous-domaine
+# .netlify.app aujourd'hui, captainyvon.fr une fois le domaine personnalisé
+# défini comme principal. Passer --baseURL "${URL}" évite donc tout commit
+# le jour de la bascule DNS.
 [build]
   publish = "public"
-  command = "hugo --gc --minify"
+  command = 'hugo --gc --minify --baseURL "${URL}"'
 
 [build.environment]
   HUGO_VERSION = "0.148.2"
@@ -25,7 +29,8 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     X-Frame-Options = "SAMEORIGIN"
 
-# Les fichiers passés au fingerprint de Hugo Pipes sont immuables.
+# Feuille de style passée au fingerprint sha256 par Hugo Pipes, donc immuable.
+# Chemin vérifié après build local : /css/main.min.<sha256>.css
 [[headers]]
   for = "/css/*"
   [headers.values]
