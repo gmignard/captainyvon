@@ -11,7 +11,7 @@ competences:
   - "Montage"
 livrables: []
 avec: []
-couverture: "couverture.webp"
+couverture: "cover.webp"
 video:
   plateforme: "youtube"
   id: "tuNVPL3GDbU"
