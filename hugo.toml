@@ -56,6 +56,20 @@ disableKinds = ["taxonomy", "term", "rss"]
   url = "https://www.linkedin.com/company/captainyvon/"
   icone = "linkedin"
 
+# Cache des images retraitées par Hugo.
+# Choix retenu : cache hors du dépôt, dans le répertoire de cache Hugo.
+# Sur Netlify, :cacheDir pointe vers /opt/build/cache/hugo_cache, qui est
+# conservé entre deux builds : les vignettes des projets ne sont retraitées
+# que lorsque le fichier source change. C'est la stratégie recommandée par
+# la documentation Hugo pour Netlify, et elle laisse resources/ ignoré par
+# git (cf. .gitignore), donc aucune image générée n'est versionnée.
+# L'alternative — versionner resources/_gen/ — est écartée : sur un
+# portfolio d'une vingtaine de projets photo et vidéo, elle ferait grossir
+# le dépôt de binaires régénérables et provoquerait des conflits à chaque
+# changement de dimension ou de qualité.
+[caches.images]
+  dir = ':cacheDir/images'
+
 [imaging]
   quality = 82
   resampleFilter = "Lanczos"
