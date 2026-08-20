@@ -28,6 +28,15 @@ disableKinds = ["taxonomy", "term", "rss"]
   url = "/contact/"
   weight = 30
 
+# Garde-fou de date, pas une source de verite : si un projet n'a pas de
+# `date` exploitable dans son entete, Hugo retombe sur la date de
+# modification du fichier plutot que sur la date zero. Les projets encore
+# marques `date: 0000-00-00` sont donc dates par ce repli : les gabarits
+# detectent le marqueur sur .Params.date pour ne pas afficher une annee
+# inventee.
+[frontmatter]
+  date = ["date", ":fileModTime", ":default"]
+
 [params]
   description = "Captain Yvon Studio, duo de réalisateurs et photographes entre le Finistère Nord et Lille."
   logo = "img/logo-captainyvon-noir.svg"

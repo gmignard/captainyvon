@@ -3,48 +3,55 @@
   Page projet.
 
   Ordre fixe, de haut en bas :
-    a. ligne de titre : titre + annee a gauche, type a droite, filet dessous
-    b. note d'intention : le corps du Markdown, colonne etroite
-    c. metadonnees : client, lieu, duree, roles, avec
-    d. medias : video en facade puis galerie
-    e. navigation de fin : pilule de retour vers la liste des projets
+    a. ligne de titre : titre + annee a gauche, section a droite, filet dessous
+    b. introduction : le corps du Markdown, colonne etroite
+    c. metadonnees : client, services, livrables, avec
+    d. medias : lecteur video ou couverture seule, puis galerie
+    e. fin de page : pilule de retour vers la liste des projets
 
-  Tous les champs sont facultatifs sauf title et date. Chaque bloc teste la
-  presence de son contenu avant de s'afficher : un champ vide ne produit ni
-  espace, ni tiret, ni parentheses vides, ni libelle orphelin.
+  Chaque bloc teste la presence de son contenu avant de s'afficher : un champ
+  vide ne produit ni espace, ni tiret, ni parentheses vides, ni libelle
+  orphelin. Un projet peut avoir une video, une galerie, les deux ou aucune
+  des deux.
 */ -}}
 
-{{- /* Repli de titre : si `title` manque, on humanise le nom du dossier
-       plutot que de rendre un <h1> vide. */ -}}
 {{- $titre := .Title -}}
 {{- if not $titre }}{{ with .File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
 
-{{- /* Annee derivee de la date de la page, jamais d'un champ dedie. */ -}}
-{{- $annee := "" -}}
-{{- if not .Date.IsZero }}{{ $annee = .Date.Format "2006" }}{{ end -}}
+{{- /* Annee, ou chaine vide si la date reste a remplir. Voir annee.html. */ -}}
+{{- $annee := partial "annee.html" . -}}
 
-{{- /* Metadonnees : libelle + valeur, uniquement pour les champs remplis.
-       Les listes sont jointes par une virgule. */ -}}
+{{- /* Section de la page, en bas de casse et au singulier. C'est le
+       repertoire de section qui fait autorite, pas un champ d'entete. */ -}}
+{{- $section := lower .Section -}}
+{{- $singuliers := dict "films" "film" "photographies" "photographie" "photos" "photo" -}}
+{{- with index $singuliers $section }}{{ $section = . }}{{ end -}}
+
+{{- /* Metadonnees, dans l'ordre du schema. Les listes sont jointes par une
+       virgule. Un champ absent ou vide ne cree aucune entree. */ -}}
 {{- $meta := slice -}}
 {{- with .Params.client }}{{ $meta = $meta | append (dict "cle" "Client" "valeur" .) }}{{ end -}}
-{{- with .Params.lieu }}{{ $meta = $meta | append (dict "cle" "Lieu" "valeur" .) }}{{ end -}}
-{{- with .Params.duree }}{{ $meta = $meta | append (dict "cle" "Durée" "valeur" .) }}{{ end -}}
-{{- with .Params.roles }}{{ $meta = $meta | append (dict "cle" "Rôles" "valeur" (delimit . ", ")) }}{{ end -}}
+{{- with .Params.services }}{{ $meta = $meta | append (dict "cle" "Services" "valeur" (delimit . ", ")) }}{{ end -}}
+{{- with .Params.livrables }}{{ $meta = $meta | append (dict "cle" "Livrables" "valeur" (delimit . ", ")) }}{{ end -}}
 {{- with .Params.avec }}{{ $meta = $meta | append (dict "cle" "Avec" "valeur" (delimit . ", ")) }}{{ end -}}
+
+{{- $couverture := partial "couverture.html" . -}}
+{{- $aVideo := false -}}
+{{- with .Params.video }}{{ if .id }}{{ $aVideo = true }}{{ end }}{{ end -}}
+{{- $galerie := partial "galerie.html" . -}}
 
 <article class="projet enveloppe">
 
   {{- /* a. Ligne de titre. */ -}}
   <header class="projet-titre">
     <h1>{{ $titre }}{{ with $annee }} ({{ . }}){{ end }}</h1>
-    {{- with .Params.type }}
-    <p class="projet-type">{{ . }}</p>
+    {{- with $section }}
+    <p class="projet-section">{{ . }}</p>
     {{- end }}
   </header>
 
-  {{- /* b. Note d'intention et c. metadonnees. Le conteneur lui-meme n'est
-         rendu que si au moins l'un des deux a du contenu, pour ne pas
-         laisser de marge vide. */ -}}
+  {{- /* b. Introduction et c. metadonnees. Le conteneur n'est rendu que si
+         l'un des deux a du contenu, pour ne pas laisser de marge vide. */ -}}
   {{- if or .Content $meta }}
   <div class="projet-haut">
     {{- with .Content }}
@@ -61,17 +68,22 @@
   </div>
   {{- end }}
 
-  {{- /* d. Medias. */ -}}
-  {{- $video := partial "video.html" . -}}
-  {{- $galerie := partial "galerie.html" . -}}
-  {{- if or (trim $video " \n\r\t") (trim $galerie " \n\r\t") }}
+  {{- /* d. Medias : lecteur video si une video est renseignee, sinon la
+         couverture seule et sans comportement cliquable ; puis la galerie. */ -}}
+  {{- if or $aVideo $couverture (trim $galerie " \n\r\t") }}
   <div class="projet-medias">
-    {{ $video }}
+    {{- if $aVideo }}
+    {{ partial "video.html" . }}
+    {{- else }}
+      {{- with $couverture }}
+    {{ partial "image-large.html" (dict "ressource" . "alt" $titre "immediate" true) }}
+      {{- end }}
+    {{- end }}
     {{ $galerie }}
   </div>
   {{- end }}
 
-  {{- /* e. Navigation de fin. */ -}}
+  {{- /* e. Fin de page. */ -}}
   <div class="projet-retour">
     {{ partial "pilule.html" (dict "href" ("/" | relURL) "libelle" "Tous les projets") }}
   </div>

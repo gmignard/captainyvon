@@ -4,9 +4,9 @@
   La vignette porte la couverture puis une legende : le titre du projet,
   mis en capitales par la CSS, suivi de l'annee entre parentheses.
 
-  L'annee est derivee de la date de la page, jamais d'un champ dedie : un
-  seul mecanisme, donc aucun risque de desaccord entre les deux. Une page
-  sans date affiche le titre seul, sans parentheses vides.
+  L'annee est derivee de la date de la page, jamais d'un champ dedie. Un
+  projet dont la date reste a remplir affiche le titre seul, sans
+  parentheses vides : la regle est centralisee dans annee.html.
 
   La legende etant du texte visible a l'interieur du lien, elle en fournit
   le nom accessible : l'image porte un alt vide pour ne pas faire annoncer
@@ -29,8 +29,7 @@
 
 {{- $titre := $page.Title -}}
 {{- if not $titre }}{{ with $page.File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
-{{- $annee := "" -}}
-{{- if not $page.Date.IsZero }}{{ $annee = $page.Date.Format "2006" }}{{ end -}}
+{{- $annee := partial "annee.html" $page -}}
 
 {{- $couverture := partial "couverture.html" $page -}}
 {{- with $couverture }}

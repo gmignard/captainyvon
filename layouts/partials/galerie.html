@@ -3,11 +3,11 @@
 
   La selection et l'ordre viennent du champ `galerie` de l'entete : une liste
   de noms de fichiers du page bundle. Sans ce champ, aucune galerie n'est
-  rendue — le contenu du dossier ne pilote plus l'affichage.
+  rendue. C'est le seul media des projets photographiques, qui n'ont pas de
+  video.
 
-  Images pleine largeur du contenu, empilees. Traitement Hugo Image
-  Processing : WebP, largeurs 800 et 1600, sans jamais agrandir la source.
-  Chargement differe sauf la premiere image.
+  Images pleine largeur du contenu, empilees. Chargement differe sauf la
+  premiere.
 */ -}}
 {{- $page := . -}}
 {{- $images := slice -}}
@@ -20,25 +20,12 @@
 
 {{- with $images }}
 <div class="galerie">
-  {{- range $i, $r := . -}}
-    {{- $l800 := cond (gt $r.Width 800) 800 $r.Width -}}
-    {{- $l1600 := cond (gt $r.Width 1600) 1600 $r.Width -}}
-    {{- $petite := $r.Resize (printf "%dx webp q82" $l800) -}}
-    {{- $grande := cond (gt $l1600 $l800) ($r.Resize (printf "%dx webp q82" $l1600)) $petite -}}
-
-    {{- /* Les images occupent toute la largeur du contenu, elle-meme
-           plafonnee a --largeur-max moins la marge laterale. */ -}}
-    {{- $sizes := "(min-width: 1740px) 1600px, 92vw" -}}
-
-    {{- /* Alt derive du titre du projet, numerote pour rester distinct. */ -}}
-    {{- $alt := printf "%s — image %d" $titre (add $i 1) -}}
+  {{- range $i, $r := . }}
   <figure>
-    <img src="{{ $grande.RelPermalink }}"
-         {{ if ne $grande.RelPermalink $petite.RelPermalink }}srcset="{{ $petite.RelPermalink }} {{ $petite.Width }}w, {{ $grande.RelPermalink }} {{ $grande.Width }}w"
-         sizes="{{ $sizes }}"{{ end }}
-         width="{{ $grande.Width }}" height="{{ $grande.Height }}"
-         alt="{{ $alt }}"
-         {{ if eq $i 0 }}loading="eager"{{ else }}loading="lazy"{{ end }} decoding="async">
+    {{ partial "image-large.html" (dict
+         "ressource" $r
+         "alt" (printf "%s, image %d" $titre (add $i 1))
+         "immediate" (eq $i 0)) }}
   </figure>
   {{- end }}
 </div>

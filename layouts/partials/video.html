@@ -1,34 +1,49 @@
 {{- /*
-  Facade video : aucune iframe au chargement, donc aucune requete vers un
-  domaine tiers et aucun cookie avant action de l'utilisateur.
-  Le bouton de lecture EST un lien direct vers la video : sans JavaScript
-  il ouvre la plateforme, avec JavaScript il injecte l'iframe sur place.
+  Lecteur video en facade.
+
+  L'image de couverture EST le lecteur : elle est le contenu d'un
+  <button type="button"> qui, au clic, se remplace par l'iframe de la
+  plateforme en autoplay. Aucun habillage par-dessus l'image, aucun bouton
+  de lecture superpose, aucun cartouche : le seul indice visuel est un
+  leger changement d'opacite au survol, defini dans la feuille de style.
+
+  Un seul element cliquable : le bouton. Le nom accessible vient de son
+  aria-label, l'image porte donc un alt vide pour ne rien annoncer deux fois.
+
+  Aucune requete vers un domaine tiers avant le clic : ni iframe, ni script
+  distant, ni vignette hebergee par la plateforme. Le poster est la
+  couverture du page bundle, traitee par Hugo.
+
+  Sans JavaScript, le bouton est inerte : le <noscript> fournit alors un lien
+  direct vers la plateforme, portant le meme libelle. Ce lien n'existe jamais
+  en meme temps que le bouton actif.
 */ -}}
 {{- $page := . -}}
 {{- with .Params.video -}}
   {{- $id := .id -}}
   {{- if $id -}}
     {{- $plateforme := lower (.plateforme | default "youtube") -}}
-    {{- $ratio := .ratio | default "16:9" -}}
+
+    {{- /* Ratio du lecteur, repli sur 16/9 si le champ est vide ou absent. */ -}}
+    {{- $ratio := .ratio -}}
+    {{- if not $ratio }}{{ $ratio = "16:9" }}{{ end -}}
     {{- $ratioCSS := replace (replace $ratio ":" " / ") "x" " / " -}}
 
     {{- $embed := "" -}}
     {{- $direct := "" -}}
-    {{- $nomPlateforme := "" -}}
     {{- if eq $plateforme "vimeo" -}}
       {{- $embed = printf "https://player.vimeo.com/video/%s?dnt=1&autoplay=1" $id -}}
       {{- $direct = printf "https://vimeo.com/%s" $id -}}
-      {{- $nomPlateforme = "Vimeo" -}}
     {{- else -}}
       {{- $embed = printf "https://www.youtube-nocookie.com/embed/%s?autoplay=1&rel=0" $id -}}
       {{- $direct = printf "https://www.youtube.com/watch?v=%s" $id -}}
-      {{- $nomPlateforme = "YouTube" -}}
     {{- end -}}
 
-    {{- /* Poster : la couverture du projet, jamais une vignette distante. */ -}}
-    {{- $couverture := "" -}}
-    {{- with $page.Params.couverture }}{{ $couverture = $page.Resources.GetMatch . }}{{ end -}}
-    {{- if not $couverture }}{{ $couverture = $page.Resources.GetMatch "couverture.*" }}{{ end -}}
+    {{- $titre := $page.Title -}}
+    {{- if not $titre }}{{ with $page.File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
+    {{- $libelle := printf "Lire la vidéo, %s" $titre -}}
+
+    {{- $couverture := partial "couverture.html" $page -}}
     {{- $poster := "" -}}
     {{- with $couverture -}}
       {{- $l := cond (gt .Width 1600) 1600 .Width -}}
@@ -36,30 +51,27 @@
     {{- end }}
 
 <div class="video" style="{{ printf "--ratio: %s;" $ratioCSS | safeCSS }}">
-  {{- with $poster }}
-  <img src="{{ .RelPermalink }}" width="{{ .Width }}" height="{{ .Height }}" alt="" loading="eager" decoding="async">
-  {{- end }}
-  <a class="video-bouton" href="{{ $direct }}" data-embed="{{ $embed }}"
-     data-titre="{{ printf "%s — %s" $page.Title site.Title }}"
-     aria-label="Lire la vidéo : {{ $page.Title }}"></a>
+  <button type="button" class="video-declencheur"
+          data-embed="{{ $embed }}"
+          data-titre="{{ printf "%s, %s" $titre site.Title }}"
+          aria-label="{{ $libelle }}">
+    {{- with $poster }}
+    <img src="{{ .RelPermalink }}" width="{{ .Width }}" height="{{ .Height }}"
+         alt="" loading="eager" decoding="async">
+    {{- end }}
+  </button>
 </div>
 
-<p class="video-lien"><a href="{{ $direct }}" rel="noopener" target="_blank">Ouvrir la vidéo sur {{ $nomPlateforme }}</a></p>
-
 <noscript>
-  <p class="video-noscript">
-    JavaScript est désactivé : la lecture se fait sur
-    <a href="{{ $direct }}" rel="noopener">{{ $nomPlateforme }}</a>.
-  </p>
+  <p class="video-repli"><a href="{{ $direct }}" rel="noopener">{{ $libelle }}</a></p>
 </noscript>
 
 <script>
-document.querySelectorAll('.video-bouton').forEach(function (b) {
-  b.addEventListener('click', function (e) {
+document.querySelectorAll('.video-declencheur').forEach(function (b) {
+  b.addEventListener('click', function () {
     var src = b.getAttribute('data-embed');
     var hote = b.closest('.video');
     if (!src || !hote) { return; }
-    e.preventDefault();
     var f = document.createElement('iframe');
     f.src = src;
     f.title = b.getAttribute('data-titre') || 'Vidéo';

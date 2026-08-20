@@ -2,12 +2,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-{{- /* Titre : le nom du site seul sur l'accueil, sinon « Page — Site ». */ -}}
+{{- /* Titre : le nom du site seul sur l'accueil, sinon « Page, Site ».
+       Separateur en virgule : le tiret cadratin est annonce « tiret » ou
+       ignore selon les lecteurs d'ecran. */ -}}
 {{- $titrePage := .Title -}}
 {{- if not $titrePage }}{{ with .File }}{{ $titrePage = humanize .ContentBaseName }}{{ end }}{{ end -}}
 {{- $titre := site.Title -}}
 {{- if and (not .IsHome) $titrePage -}}
-  {{- $titre = printf "%s — %s" $titrePage site.Title -}}
+  {{- $titre = printf "%s, %s" $titrePage site.Title -}}
 {{- end }}
 <title>{{ $titre }}</title>
 

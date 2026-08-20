@@ -1,6 +1,10 @@
 {{- /*
-  En-tete sur une ligne en desktop : nav a gauche, logo centre, reseaux a droite.
-  En mobile la CSS empile logo puis nav, et renvoie les reseaux au pied de page.
+  En-tete sur une ligne en desktop : nav a gauche, logo centre.
+  En mobile la CSS empile logo puis nav.
+
+  Les liens sociaux ont ete retires : ils faisaient double emploi avec le
+  pied de page, ou ils portent un libelle texte, alors qu'ici les lecteurs
+  d'ecran les annoncaient par leur URL brute.
 
   Pleine largeur comme en production : l'entete partage la marge laterale
   de la grille d'accueil (--site-marge) et n'a pas de max-width, pour que le
@@ -33,8 +37,6 @@
         {{- end -}}
       </a>
     </div>
-
-    <div class="entete-social">{{ partial "social.html" . }}</div>
 
   </div>
 </header>
