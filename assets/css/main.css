@@ -641,7 +641,64 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   margin-inline: auto;
 }
 
-/* e. Navigation de fin. */
+/* f. Distinctions : intitule discret, puis une distinction par ligne. Au-dela
+   de quatre, les suivantes vivent dans un <details> natif. */
+.distinctions {
+  margin-block: clamp(2rem, 4vw, 3rem) 0;
+  max-width: var(--mesure);
+}
+
+.distinctions-titre {
+  margin: 0 0 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texte-second);
+}
+
+.distinctions-liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.distinctions-liste li { padding: 0.2rem 0; }
+
+/* Mention et annee : meme ligne que le nom, en retrait de couleur. */
+.distinctions-detail { color: var(--texte-second); }
+
+/* Le depliant reprend la facture des accordeons du theme : pas de fleche
+   native, un indicateur + / - dessine en CSS, et une cible cliquable large. */
+.distinctions-plus { margin-top: 0.9rem; }
+
+.distinctions-plus summary {
+  cursor: pointer;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5ch;
+  padding: 0.35rem 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--texte);
+}
+.distinctions-plus summary::-webkit-details-marker { display: none; }
+.distinctions-plus summary::before {
+  content: "+";
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--texte-second);
+}
+.distinctions-plus[open] summary::before { content: "\2212"; }
+.distinctions-plus summary:hover { color: var(--texte-second); }
+.distinctions-plus .distinctions-liste { margin-top: 0.4rem; }
+
+/* g. Navigation de fin. */
 .projet-retour { margin-block: clamp(2rem, 4vw, 3rem); }
 
 /* -------------------------------------------------------------------------

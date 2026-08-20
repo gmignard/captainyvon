@@ -9,7 +9,8 @@
     c. metadonnees : client, services, avec, un tiers
     d. medias : lecteur video ou couverture seule
     e. galerie : filet, credit photo, puis grille de vignettes du bundle
-    f. fin de page : pilule de retour vers la liste des projets
+    f. distinctions : selections et prix, si l'entete en declare
+    g. fin de page : pilule de retour vers la liste des projets
 
   Chaque bloc teste la presence de son contenu avant de s'afficher : un champ
   vide ne produit ni espace, ni tiret, ni parentheses vides, ni libelle
@@ -167,7 +168,10 @@
   {{ $galerie }}
   {{- end }}
 
-  {{- /* f. Fin de page. */ -}}
+  {{- /* f. Distinctions. Le partial ne rend rien si le champ est absent. */ -}}
+  {{ partial "distinctions.html" . }}
+
+  {{- /* g. Fin de page. */ -}}
   <div class="projet-retour">
     {{ partial "pilule.html" (dict "href" ("/" | relURL) "libelle" "Tous les projets") }}
   </div>

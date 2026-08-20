@@ -58,6 +58,17 @@ video:
   # ratio : 16:9 par défaut. Ex. 4:3, 2.39:1, 9:16
   ratio: ""
 
+# distinctions : sélections, prix et mentions en festival. Champ facultatif.
+# Seul `nom` est requis, `mention` et `annee` sont facultatifs et leur absence
+# ne laisse aucune virgule orpheline. Les quatre premières sont affichées,
+# les suivantes dans un dépliant.
+# distinctions:
+#   - nom: "Festival du Film Documentaire de Brest"
+#     mention: "Sélection officielle"
+#     annee: 2025
+#   - nom: "Rencontres de la Photographie"
+#     annee: 2024
+
 # mise_en_avant : réservé, sans effet sur l'ordre de la grille.
 mise_en_avant: false
 

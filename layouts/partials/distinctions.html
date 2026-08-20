@@ -1,0 +1,65 @@
+{{- /*
+  Distinctions d'un projet : selections, prix et mentions en festival.
+
+  Entete attendue, entierement facultative :
+
+    distinctions:
+      - nom: "Festival du Film Documentaire de Brest"
+        mention: "Selection officielle"
+        annee: 2025
+
+  Seul `nom` est requis pour qu'une entree existe. `mention` et `annee` sont
+  facultatifs : les trois valeurs sont assemblees dans une liste, et c'est
+  cette liste qui est jointe par une virgule. Aucune ponctuation ne peut donc
+  se retrouver orpheline, quel que soit le sous-champ manquant.
+
+  Au-dela de quatre entrees, les quatre premieres restent visibles et les
+  suivantes passent dans un <details> natif : ouverture et fermeture au clic
+  comme au clavier, sans une ligne de JavaScript.
+
+  Champ absent ou vide : ni section, ni titre, ni espace reserve.
+
+  Contexte attendu : la page projet.
+*/ -}}
+{{- $seuil := 4 -}}
+
+{{- /* Une entree sans nom n'est pas une distinction : elle est ecartee avant
+       tout comptage, pour que le seuil porte sur ce qui sera reellement
+       affiche. */ -}}
+{{- $entrees := slice -}}
+{{- range .Params.distinctions -}}
+  {{- $entree := . -}}
+  {{- with $entree.nom -}}
+    {{- $detail := slice -}}
+    {{- with $entree.mention }}{{ $detail = $detail | append (printf "%v" .) }}{{ end -}}
+    {{- with $entree.annee }}{{ $detail = $detail | append (printf "%v" .) }}{{ end -}}
+    {{- $entrees = $entrees | append (dict "nom" (printf "%v" .) "detail" $detail) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- with $entrees }}
+{{- $total := len . -}}
+<section class="distinctions" aria-labelledby="distinctions-titre">
+  <h2 class="distinctions-titre" id="distinctions-titre">Distinctions</h2>
+
+  <ul class="distinctions-liste">
+    {{- range first $seuil . }}
+    <li>{{ .nom }}{{ with .detail }}<span class="distinctions-detail">, {{ delimit . ", " }}</span>{{ end }}</li>
+    {{- end }}
+  </ul>
+
+  {{- if gt $total $seuil }}
+  {{- $reste := after $seuil . }}
+  {{- $n := len $reste }}
+  <details class="distinctions-plus">
+    <summary>{{ if eq $n 1 }}Voir l'autre distinction{{ else }}Voir les {{ $n }} autres distinctions{{ end }}</summary>
+    <ul class="distinctions-liste">
+      {{- range $reste }}
+      <li>{{ .nom }}{{ with .detail }}<span class="distinctions-detail">, {{ delimit . ", " }}</span>{{ end }}</li>
+      {{- end }}
+    </ul>
+  </details>
+  {{- end }}
+
+</section>
+{{- end -}}
