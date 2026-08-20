@@ -134,6 +134,15 @@
   --entete-espace-haut: clamp(6.5rem, 7.5vw, 7rem);
   --entete-espace-bas: clamp(5rem, 6vw, 5.5rem);
 
+  /* Medias de la page projet. --largeur-media est la largeur naturelle d'un
+     media, celle de la colonne de contenu. --media-reserve est la hauteur
+     retiree a la fenetre avant de convertir le reste en largeur : c'est la
+     respiration laissee autour du lecteur pour qu'il se voie d'un seul coup
+     d'oeil. Mesuree sur les deux formats les plus contraints, 1440x700 et
+     1280x600. */
+  --largeur-media: 100%;
+  --media-reserve: 8rem;
+
   /* Rythme vertical et mesure de lecture. --mesure est la largeur maximale
      d'un bloc de texte courant, environ 65 caracteres : elle plafonne le
      texte a l'interieur du conteneur, jamais le conteneur lui-meme. */
@@ -595,6 +604,27 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   display: grid;
   gap: var(--grille-gap);
   margin-block: clamp(1.75rem, 3.5vw, 2.75rem);
+}
+
+/* Le media ne depasse jamais la fenetre en hauteur. Un bloc a ratio fixe
+   tire sa hauteur de sa largeur : sur une fenetre large et basse, la pleine
+   largeur du contenu produisait un lecteur plus haut que l'ecran, qu'il
+   fallait faire defiler pour voir en entier. On plafonne donc la largeur par
+   la hauteur disponible, reconvertie par le ratio du media.
+
+   var(--ratio) est le ratio pose en ligne par le partial video ; sa valeur de
+   repli, 16 / 9, sert au bloc qui n'en declare pas, dont l'image de
+   couverture affichee a la place du lecteur. Les deux plafonds sont
+   identiques : la couverture et le lecteur ont exactement la meme emprise.
+
+   La premiere declaration sert de repli aux navigateurs sans svh ; la
+   seconde tient compte des barres mobiles retractables. Le media reste
+   centre par ses marges automatiques. Aucune mesure en JavaScript. */
+.projet-medias > .video,
+.projet-medias > img {
+  max-width: min(var(--largeur-media), calc((100vh - var(--media-reserve)) * var(--ratio, 16 / 9)));
+  max-width: min(var(--largeur-media), calc((100svh - var(--media-reserve)) * var(--ratio, 16 / 9)));
+  margin-inline: auto;
 }
 
 /* e. Navigation de fin. */
