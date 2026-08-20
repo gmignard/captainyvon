@@ -546,17 +546,18 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
 /* Ligne de metadonnees du titre : annee, puis type de projet. Elle se lit
    comme une annotation, pas comme un second titre. Les capitales viennent
    d'ici.
-   Son calibre est fige a 1.1rem, soit 12 pour cent de moins que le 1.25rem
-   precedent : la ligne se fait plus discrete face a un titre desormais plus
-   dense. Il ne depend ni du h1 en face ni d'aucun heritage : changer le
-   titre ne la deplace pas d'un pixel. Ne pas la convertir en em ni en clamp.
-   Couleur et interlettrage sont inchanges.
+   Son calibre est fige a 0.88rem, soit 20 pour cent de moins que le 1.1rem
+   du premier passage, et environ 30 pour cent de moins que le 1.25rem
+   d'origine : la ligne se fait franchement discrete face a un titre
+   desormais plus dense. Il ne depend ni du h1 en face ni d'aucun heritage :
+   changer le titre ne la deplace pas d'un pixel. Ne pas la convertir en em
+   ni en clamp. Couleur et interlettrage sont inchanges.
    margin-left: auto la maintient contre le bord droit y compris lorsqu'un
    titre long la fait passer a la ligne : sans lui, space-between la
    ramenerait a gauche des qu'elle se retrouve seule sur sa ligne. */
 .projet-annee {
   margin: 0 0 0 auto;
-  font-size: 1.1rem;
+  font-size: 0.88rem;
   font-weight: 400;
   letter-spacing: 0.04em;
   line-height: 1.2;
