@@ -2,7 +2,7 @@
    Captain Yvon Studio — feuille de style unique
    Charte studio : fond ivoire, texte noir, Montserrat auto-hebergee.
    Mise en page calquee sur la production : header a logo centre,
-   grille de vignettes cinemascope sur deux colonnes, chacune legendee par
+   grille de vignettes 16:9 sur deux colonnes, chacune legendee par
    son titre et une ligne de metadonnees.
    Aucune dependance externe, aucun CDN, aucun JavaScript requis.
    ========================================================================= */
@@ -127,7 +127,7 @@
   --contenu-max: 1600px;
 
   --grille-gap: 2vw;        /* gouttiere horizontale et verticale */
-  --ratio-vignette: 2.39/1; /* cinemascope */
+  --ratio-vignette: 16/9;   /* aligne sur le recadrage fait dans vignette.html */
   --logo-hauteur: 50px;
 
   /* Respiration de l'entete. Ces deux valeurs, plus la hauteur du logo — et
@@ -421,7 +421,10 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
    Chaque vignette porte la couverture puis, en dessous, le titre du projet
    en capitales et une ligne de metadonnees en gris : le nom, un separateur,
    l'annee.
-   Aucune hauteur en dur : le cadrage vient de aspect-ratio + object-fit.
+   Aucune hauteur en dur : la vignette est en 16:9, ratio deja applique au
+   recadrage par vignette.html. aspect-ratio et object-fit ne recadrent donc
+   plus rien, ils verrouillent la hauteur de la case et couvrent le cas d'une
+   source trop etroite pour atteindre 800px.
    ------------------------------------------------------------------------- */
 .grille-projets {
   list-style: none;
