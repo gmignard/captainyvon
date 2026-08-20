@@ -890,10 +890,13 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
 /* La vignette entiere est un lien vers l'image en grand. Son nom accessible
    vient de son aria-label : l'image ne porte un alt que si la ressource
    declare un titre. */
+/* Angles vifs : l'arrondi du theme habille la couverture et le lecteur video,
+   pas les photographies de la galerie. La regle est portee par la classe de
+   la galerie, jamais retiree d'un selecteur global. */
 .galerie-lien {
   display: block;
   text-decoration: none;
-  border-radius: var(--rayon);
+  border-radius: 0;
   overflow: hidden;
 }
 
