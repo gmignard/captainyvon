@@ -12,7 +12,7 @@ services:
   - "Réalisation"
   - "Cadrage"
   - "Montage"
-# livrables volontairement vide : vérifie que le bloc Livrables n'est pas rendu.
+# livrables : conservé, plus rendu sur la fiche projet.
 livrables: []
 avec: []
 couverture: "couverture.jpg"

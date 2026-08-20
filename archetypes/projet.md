@@ -27,12 +27,16 @@ extrait: ""
 credit_photo: ""
 credit_photo_url: ""
 
-# services, livrables, avec : listes affichées dans le bloc de métadonnées
-# de la page projet, chacune sur une ligne, les entrées jointes par une
-# virgule. Une liste vide n'affiche aucune ligne.
+# services, avec : listes affichées dans le bloc de métadonnées de la page
+# projet, chacune sur une ligne, les entrées jointes par une virgule. Une
+# liste vide n'affiche aucune ligne.
 services: []
-livrables: []
 avec: []
+
+# livrables : champ conservé mais NON RENDU. La fiche projet ne l'affiche
+# plus depuis août 2026. La donnée reste saisissable pour l'archive et pour
+# un usage futur, elle n'apparaît nulle part sur le site.
+# livrables: []
 
 # couverture : nom du fichier image de ce dossier. C'est la vignette de
 # l'accueil et l'image du lecteur vidéo. Le titre du projet y est incrusté.

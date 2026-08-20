@@ -6,7 +6,7 @@
     a. ligne de titre : titre a gauche, annee et type de projet a droite,
        filet dessous
     b. presentation : extrait, credit photo et note d'intention, deux tiers
-    c. metadonnees : client, services, livrables, avec, un tiers
+    c. metadonnees : client, services, avec, un tiers
     d. medias : lecteur video ou couverture seule
     e. galerie : filet, puis grille de vignettes du page bundle
     f. fin de page : pilule de retour vers la liste des projets
@@ -44,11 +44,12 @@
 {{- with $type }}{{ $ligneTitre = $ligneTitre | append . }}{{ end -}}
 
 {{- /* Metadonnees, dans l'ordre du schema. Les listes sont jointes par une
-       virgule. Un champ absent ou vide ne cree aucune entree. */ -}}
+       virgule. Un champ absent ou vide ne cree aucune entree.
+       `livrables` n'est plus rendu : le champ reste dans les entetes, la
+       donnee est conservee, mais la fiche ne l'affiche pas. */ -}}
 {{- $meta := slice -}}
 {{- with .Params.client }}{{ $meta = $meta | append (dict "cle" "Client" "valeur" .) }}{{ end -}}
 {{- with .Params.services }}{{ $meta = $meta | append (dict "cle" "Services" "valeur" (delimit . ", ")) }}{{ end -}}
-{{- with .Params.livrables }}{{ $meta = $meta | append (dict "cle" "Livrables" "valeur" (delimit . ", ")) }}{{ end -}}
 {{- with .Params.avec }}{{ $meta = $meta | append (dict "cle" "Avec" "valeur" (delimit . ", ")) }}{{ end -}}
 
 {{- $couverture := partial "couverture.html" . -}}
@@ -89,7 +90,7 @@
          Chaque niveau teste son contenu : le conteneur n'existe que si l'un
          des deux blocs a quelque chose a dire, la colonne de gauche n'existe
          que si l'un de ses trois elements est renseigne. Une entete sans
-         extrait, sans credit et sans livrables ne laisse donc ni bloc vide
+         extrait, sans credit et sans metadonnees ne laisse donc ni bloc vide
          ni espacement fantome. */ -}}
   {{- $extrait := .Params.extrait -}}
   {{- $credit := .Params.credit_photo -}}
