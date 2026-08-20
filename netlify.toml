@@ -25,6 +25,11 @@
 [[headers]]
   for = "/*"
   [headers.values]
+    # PRÉPROD — à retirer le jour de la bascule DNS (20 septembre 2026).
+    # Empêche l'indexation de captainyvon.netlify.app tant que le site n'est
+    # pas officiellement en ligne. Les headers de netlify.toml sont globaux :
+    # ne pas tenter de surcharge par contexte, elle fuiterait en production.
+    X-Robots-Tag = "noindex"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     X-Frame-Options = "SAMEORIGIN"
