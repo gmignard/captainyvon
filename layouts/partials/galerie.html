@@ -1,32 +1,117 @@
 {{- /*
   Galerie du projet.
 
-  La selection et l'ordre viennent du champ `galerie` de l'entete : une liste
-  de noms de fichiers du page bundle. Sans ce champ, aucune galerie n'est
-  rendue. C'est le seul media des projets photographiques, qui n'ont pas de
-  video.
+  Selection et ordre des images, dans cet ordre de priorite :
+    1. le champ `galerie` de l'entete, liste explicite de noms de fichiers du
+       page bundle. Il fait autorite : c'est le seul moyen de choisir un
+       sous-ensemble ou un ordre qui ne suit pas les noms de fichiers ;
+    2. a defaut, toutes les ressources image du bundle, moins la couverture.
+       Ce repli est le cas courant : deposer les images dans le dossier suffit
+       a les publier. L'ordre est alors celui des noms de fichiers, d'ou la
+       numerotation a deux chiffres decrite dans le README.
 
-  Images pleine largeur du contenu, empilees. Chargement differe sauf la
-  premiere.
+  Rendu : une grille de vignettes carrees. Le jeu d'images d'un projet melange
+  paysage et portrait, dans des rapports tres eloignes (3/2 et 2/3). A rapport
+  conserve, une ligne de grille se cale sur la plus haute image et laisse de
+  larges vides sous les paysages, faute de disposition en maconnerie sans
+  JavaScript. Le carre recadre au centre donne une trame reguliere, et rien
+  n'est perdu : la loupe montre l'image entiere, dans son rapport d'origine.
+
+  Loupe : cliquer une vignette ouvre l'image en grand par-dessus la page. Le
+  mecanisme est le selecteur :target, donc du CSS seul, sans une ligne de
+  JavaScript. La vignette pointe sur l'identifiant de sa vue plein ecran, qui
+  reste `display: none` tant qu'elle n'est pas visee. Trois consequences
+  utiles : la loupe fonctionne script desactive, la touche Retour du
+  navigateur la referme, et chaque image a sa propre adresse partageable.
+
+  Les images 1600px vivent dans un conteneur masque et portent loading=lazy :
+  le navigateur ne les telecharge qu'a l'ouverture de la loupe. Le poids de la
+  page au chargement est donc celui des seules vignettes.
+
+  Fermeture : le fond entier est un lien, comme la croix. Tous deux renvoient
+  a l'identifiant de la vignette d'origine, ce qui repositionne la page sur
+  l'image que l'on vient de quitter au lieu de la laisser en haut.
+
+  Le lien tire son nom accessible de son aria-label. L'image porte un alt vide
+  sauf si la ressource declare un titre explicite dans l'entete : le nom de
+  fichier n'est jamais un texte alternatif. Dans la loupe, la legende masquee
+  visuellement donne son nom accessible a la figure.
+
+  Rien n'est rendu si le projet n'a aucune image hors couverture : l'appelant
+  teste la sortie pour ne poser ni filet ni conteneur vide.
 */ -}}
 {{- $page := . -}}
 {{- $images := slice -}}
-{{- range .Params.galerie -}}
-  {{- with $page.Resources.GetMatch . }}{{ $images = $images | append . }}{{ end -}}
+
+{{- with .Params.galerie -}}
+  {{- range . -}}
+    {{- with $page.Resources.GetMatch . }}{{ $images = $images | append . }}{{ end -}}
+  {{- end -}}
+{{- else -}}
+  {{- $exclu := "" -}}
+  {{- with partial "couverture.html" $page }}{{ $exclu = .RelPermalink }}{{ end -}}
+  {{- range $page.Resources.ByType "image" -}}
+    {{- if ne .RelPermalink $exclu }}{{ $images = $images | append . }}{{ end -}}
+  {{- end -}}
 {{- end -}}
 
 {{- $titre := $page.Title -}}
 {{- if not $titre }}{{ with $page.File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
 
 {{- with $images }}
-<div class="galerie">
+{{- $total := len . }}
+<ul class="galerie">
   {{- range $i, $r := . }}
-  <figure>
-    {{ partial "image-large.html" (dict
-         "ressource" $r
-         "alt" (printf "%s, image %d" $titre (add $i 1))
-         "immediate" (eq $i 0)) }}
-  </figure>
+    {{- $rang := add $i 1 -}}
+
+    {{- /* Titre explicite de la ressource, ou chaine vide. Hugo fait retomber
+           .Title sur .Name, c'est-a-dire le chemin du fichier : comparer les
+           deux est le seul moyen de distinguer un titre saisi d'un nom de
+           fichier. */ -}}
+    {{- $legende := "" -}}
+    {{- if ne $r.Title $r.Name }}{{ $legende = $r.Title }}{{ end -}}
+
+    {{- /* Vignette carree a 600px, jamais agrandie : sur une source dont le
+           petit cote est inferieur a 600, le carre se cale sur ce petit cote. */ -}}
+    {{- $cote := math.Min 600 (math.Min $r.Width $r.Height) -}}
+    {{- $vignette := $r.Fill (printf "%.0fx%.0f webp q80 Center" $cote $cote) -}}
+
+    {{- /* Version large de la loupe, rapport d'origine conserve, jamais
+           agrandie. */ -}}
+    {{- $largeur := cond (gt $r.Width 1600) 1600 $r.Width -}}
+    {{- $grande := $r.Resize (printf "%dx webp q80" $largeur) -}}
+
+    {{- $nom := cond (ne $legende "") (printf "Agrandir l'image, %s" $legende) (printf "Agrandir l'image %d sur %d, %s" $rang $total $titre) }}
+  <li class="galerie-item" id="galerie-vignette-{{ $rang }}">
+    <a class="galerie-lien" href="#galerie-image-{{ $rang }}" aria-label="{{ $nom }}">
+      <img src="{{ $vignette.RelPermalink }}"
+           width="{{ $vignette.Width }}" height="{{ $vignette.Height }}"
+           alt="{{ $legende }}" loading="lazy" decoding="async">
+    </a>
+
+    <div class="loupe" id="galerie-image-{{ $rang }}">
+
+      {{- /* Fond cliquable. Masque aux lecteurs d'ecran et retire du parcours
+             clavier : la croix, elle, est annoncee et atteignable, ce lien ne
+             ferait que la doubler. */}}
+      <a class="loupe-fond" href="#galerie-vignette-{{ $rang }}" aria-hidden="true" tabindex="-1"></a>
+
+      <figure class="loupe-cadre">
+        <img class="loupe-image" src="{{ $grande.RelPermalink }}"
+             width="{{ $grande.Width }}" height="{{ $grande.Height }}"
+             alt="{{ $legende }}" loading="lazy" decoding="async">
+        <figcaption class="visuellement-cache">Image {{ $rang }} sur {{ $total }}, {{ $titre }}</figcaption>
+      </figure>
+
+      {{- if gt $rang 1 }}
+      <a class="loupe-bouton loupe-prec" href="#galerie-image-{{ sub $rang 1 }}" aria-label="Image précédente"><span aria-hidden="true">&larr;</span></a>
+      {{- end }}
+      {{- if lt $rang $total }}
+      <a class="loupe-bouton loupe-suiv" href="#galerie-image-{{ add $rang 1 }}" aria-label="Image suivante"><span aria-hidden="true">&rarr;</span></a>
+      {{- end }}
+      <a class="loupe-bouton loupe-fermer" href="#galerie-vignette-{{ $rang }}" aria-label="Fermer l'image"><span aria-hidden="true">&times;</span></a>
+    </div>
+  </li>
   {{- end }}
-</div>
+</ul>
 {{- end -}}

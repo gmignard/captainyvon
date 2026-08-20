@@ -9,10 +9,17 @@ date: {{ .Date }}
 # client : nom du client ou de la structure commanditaire.
 client: ""
 
-# extrait : une à trois phrases. Sert de meta description SEO.
-# N'apparaît ni sur l'accueil ni dans le corps de la page projet, dont
-# l'introduction est le corps de ce fichier.
+# extrait : une à trois phrases. Sert de meta description SEO et s'affiche
+# en tête de la page projet, dans la colonne de gauche, au-dessus du crédit
+# photo et de la note d'intention qu'est le corps de ce fichier.
+# N'apparaît pas sur l'accueil.
 extrait: ""
+
+# credit_photo : nom du ou de la photographe, affiché sous l'extrait.
+# credit_photo_url : adresse du site, facultative. Renseignée, elle transforme
+# le nom en lien. Laisser les deux vides n'affiche aucune ligne de crédit.
+credit_photo: ""
+credit_photo_url: ""
 
 # services, livrables, avec : listes affichées dans le bloc de métadonnées
 # de la page projet, chacune sur une ligne, les entrées jointes par une
@@ -26,8 +33,10 @@ avec: []
 couverture: "couverture.jpg"
 
 # galerie : liste explicite des fichiers image de ce dossier à afficher,
-# dans l'ordre voulu. Indispensable aux projets photographiques, qui n'ont
-# pas de vidéo. Liste vide ou absente = aucune galerie.
+# dans l'ordre voulu. Liste vide ou absente : toutes les images du dossier
+# sont reprises, couverture exclue, dans l'ordre des noms de fichiers.
+# Numéroter ces noms sur deux chiffres, `_01` et non `_1`, sans quoi `_10`
+# passe avant `_2`. Voir le README.
 galerie: []
 
 # video : laisser id vide pour un projet sans vidéo.

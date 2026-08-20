@@ -3,12 +3,36 @@
 
   L'image de couverture EST le lecteur : elle est le contenu d'un
   <button type="button"> qui, au clic, se remplace par l'iframe de la
-  plateforme en autoplay. Aucun habillage par-dessus l'image, aucun bouton
-  de lecture superpose, aucun cartouche : le seul indice visuel est un
-  leger changement d'opacite au survol, defini dans la feuille de style.
+  plateforme en autoplay. Une pastille de lecture est posee au centre pour
+  que la couverture se lise comme une video et non comme une photo : sans
+  elle, rien ne distinguait ce bloc des autres images de la page. C'est le
+  seul habillage, il n'y a ni voile, ni degrade, ni cartouche, et le survol
+  se limite a un changement d'opacite defini dans la feuille de style.
+
+  La pastille n'apparait que si le script a pu s'executer : c'est lui qui
+  pose la classe `video-prete`. Sans JavaScript, le bouton serait inerte et
+  la pastille promettrait une lecture qui n'arriverait pas, le <noscript>
+  prend alors seul le relais.
 
   Un seul element cliquable : le bouton. Le nom accessible vient de son
-  aria-label, l'image porte donc un alt vide pour ne rien annoncer deux fois.
+  aria-label, l'image et la pastille portent donc respectivement un alt vide
+  et aria-hidden pour ne rien annoncer deux fois.
+
+  Un seul clic lance la lecture, sur tous les navigateurs. Deux conditions le
+  garantissent.
+
+  D'abord l'iframe est creee dans le gestionnaire de clic, et son attribut
+  `allow` est pose avant son `src` : la politique de permissions est lue a la
+  creation du contexte de navigation, la renseigner apres la ferait perdre.
+
+  Ensuite le demarrage est muet. Firefox et Safari bloquent par defaut toute
+  lecture automatique avec son dans une iframe tierce, quoi que delegue la
+  page d'accueil : sans `mute`, ces navigateurs affichent le lecteur arrete et
+  reclament un second clic. Le demarrage muet est le seul qui parte partout du
+  premier coup. Le spectateur retablit le son avec l'icone de volume du
+  lecteur, sans que le site ait a piloter la plateforme.
+
+  playsinline evite en prime le passage force en plein ecran sur iOS.
 
   Aucune requete vers un domaine tiers avant le clic : ni iframe, ni script
   distant, ni vignette hebergee par la plateforme. Le poster est la
@@ -32,10 +56,10 @@
     {{- $embed := "" -}}
     {{- $direct := "" -}}
     {{- if eq $plateforme "vimeo" -}}
-      {{- $embed = printf "https://player.vimeo.com/video/%s?dnt=1&autoplay=1" $id -}}
+      {{- $embed = printf "https://player.vimeo.com/video/%s?dnt=1&autoplay=1&muted=1&playsinline=1" $id -}}
       {{- $direct = printf "https://vimeo.com/%s" $id -}}
     {{- else -}}
-      {{- $embed = printf "https://www.youtube-nocookie.com/embed/%s?autoplay=1&rel=0" $id -}}
+      {{- $embed = printf "https://www.youtube-nocookie.com/embed/%s?autoplay=1&mute=1&playsinline=1&rel=0" $id -}}
       {{- $direct = printf "https://www.youtube.com/watch?v=%s" $id -}}
     {{- end -}}
 
@@ -59,6 +83,7 @@
     <img src="{{ .RelPermalink }}" width="{{ .Width }}" height="{{ .Height }}"
          alt="" loading="eager" decoding="async">
     {{- end }}
+    <span class="video-lecture" aria-hidden="true"></span>
   </button>
 </div>
 
@@ -68,16 +93,23 @@
 
 <script>
 document.querySelectorAll('.video-declencheur').forEach(function (b) {
+  var hote0 = b.closest('.video');
+  if (hote0) { hote0.classList.add('video-prete'); }
   b.addEventListener('click', function () {
     var src = b.getAttribute('data-embed');
     var hote = b.closest('.video');
     if (!src || !hote) { return; }
     var f = document.createElement('iframe');
-    f.src = src;
-    f.title = b.getAttribute('data-titre') || 'Vidéo';
-    f.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen';
-    f.referrerPolicy = 'strict-origin-when-cross-origin';
+    /* allow est pose AVANT src, et src en dernier : la politique de
+       permissions est lue a la creation du contexte de navigation, et c'est
+       elle qui delegue l'autorisation d'autoplay a la plateforme. Renseigner
+       src en premier fait perdre la delegation sur certains navigateurs, donc
+       le second clic. */
+    f.setAttribute('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen');
     f.setAttribute('allowfullscreen', '');
+    f.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+    f.title = b.getAttribute('data-titre') || 'Vidéo';
+    f.src = src;
     hote.replaceChildren(f);
   });
 });

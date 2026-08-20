@@ -179,7 +179,7 @@ h2 { font-size: clamp(1.25rem, 2.2vw, 1.6rem); font-weight: 300; }
 h3 { font-size: 1.05rem; font-weight: 300; }
 
 /* Sous-titre : graisse 400, kaki. */
-.sous-titre, .projet-section {
+.sous-titre {
   font-weight: 400;
   color: var(--kaki);
 }
@@ -375,9 +375,12 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
    ------------------------------------------------------------------------- */
 .projet { max-width: var(--largeur-max); }
 
-/* a. Ligne de titre : titre + annee a gauche, type a droite, filet dessous.
-   space-between laisse le titre seul et cale a gauche quand `type` est
-   absent : aucune reserve d'espace, aucun separateur orphelin. */
+/* a. Ligne de titre : titre a gauche, annee a droite, alignes sur la meme
+   ligne de base et separes par un espace flexible. space-between laisse le
+   titre seul et cale a gauche quand l'annee est absente : aucune reserve
+   d'espace, aucun separateur orphelin.
+   flex-wrap garde la ligne tenable sur un titre long : l'annee passe alors
+   a la ligne suivante plutot que d'ecraser le titre. */
 .projet-titre {
   display: flex;
   flex-wrap: wrap;
@@ -385,42 +388,92 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   align-items: baseline;
   gap: 0.35rem 2rem;
   margin-block: clamp(2rem, 4vw, 3rem) 0;
-  padding-bottom: 0.9rem;
-  border-bottom: 1px solid var(--noir);
 }
-.projet-titre h1 { margin: 0; }
 
-.projet-section {
+/* Le titre du projet est nettement plus discret que les autres h1 du site :
+   ce n'est pas une accroche, c'est une etiquette au-dessus des images. Les
+   capitales viennent du rendu, pas du contenu, et l'interlettrage compense
+   leur compacite. min-width: 0 autorise la cesure d'un titre tres long au
+   lieu d'un debordement horizontal. */
+.projet-titre h1 {
   margin: 0;
-  text-transform: lowercase;
-  font-size: 0.9rem;
+  min-width: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
   letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
-/* Sous 700px le type passe sous le titre. */
-@media (max-width: 700px) {
-  .projet-titre { flex-direction: column; align-items: flex-start; }
+/* L'annee reprend le calibre du titre, en plus leger et en gris : elle se
+   lit comme une annotation, pas comme un second titre.
+   margin-left: auto la maintient contre le bord droit y compris lorsqu'un
+   titre long la fait passer a la ligne : sans lui, space-between la
+   ramenerait a gauche des qu'elle se retrouve seule sur sa ligne. */
+.projet-annee {
+  margin: 0 0 0 auto;
+  font-size: 1.25rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  color: var(--texte-doux);
+  font-variant-numeric: tabular-nums;
 }
 
-/* b + c. Note d'intention a gauche, metadonnees a droite.
-   La grille tient aussi bien avec un seul des deux blocs : chacun est rendu
-   uniquement si son contenu existe. */
+/* Filet de l'entete, repris a l'identique avant la galerie. Discret : le
+   gris de la charte, jamais le noir du texte. */
+.projet-filet {
+  margin: 0.9rem 0 0;
+  border-top: 1px solid var(--trait);
+}
+
+/* b + c. Presentation a gauche sur deux tiers, metadonnees a droite sur un
+   tiers. La grille tient aussi bien avec un seul des deux blocs : chacun est
+   rendu uniquement si son contenu existe, et l'unique colonne restante
+   occupe alors toute la largeur. */
 .projet-haut {
   display: grid;
-  grid-template-columns: minmax(0, var(--largeur-texte)) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
   gap: 1.75rem 4rem;
   margin-block: clamp(1.75rem, 3.5vw, 2.75rem);
 }
 
-@media (max-width: 900px) {
+/* Sous 700px les deux colonnes s'empilent, la presentation d'abord :
+   c'est l'ordre du document, aucune reorganisation n'est necessaire. */
+@media (max-width: 700px) {
   .projet-haut { grid-template-columns: 1fr; }
 }
 
+/* La colonne de gauche garde une largeur de lecture confortable meme quand
+   les deux tiers de la page depassent la mesure ideale. */
+.projet-presentation { max-width: var(--largeur-texte); }
+
+/* Extrait : le texte d'accroche de l'entete. En italique et en gris, il se
+   distingue de la note d'intention sans changer de calibre. */
+.projet-extrait {
+  margin: 0;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--texte-doux);
+}
+
+/* Credit photo : une ligne discrete, calee sous l'extrait. Le nom devient
+   un lien quand l'entete fournit une adresse. */
+.projet-credit {
+  margin: var(--pas) 0 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--texte-doux);
+}
+.projet-credit a { color: var(--texte); }
+
 .projet-intro {
-  max-width: var(--largeur-texte);
+  margin-top: var(--pas);
   font-weight: 400;
   line-height: 1.6;
 }
+/* Premier enfant du bloc : la marge haute vient du conteneur, pas du texte,
+   sinon un projet sans extrait garderait un espace en trop. */
+.projet-presentation > .projet-intro:first-child { margin-top: 0; }
 .projet-intro p { margin: 0 0 var(--pas); }
 .projet-intro p:last-child { margin-bottom: 0; }
 
@@ -505,10 +558,10 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
 
 /* -------------------------------------------------------------------------
    VIDEO, l'image de couverture EST le lecteur
-   Aucun habillage par-dessus l'image : pas de voile, pas de degrade, pas de
-   bouton de lecture centre, pas de cartouche. Le seul indice visuel est un
-   leger changement d'opacite au survol, neutralise par le bloc
-   « mouvement reduit ». L'iframe n'est inseree qu'au clic.
+   Un seul habillage par-dessus l'image : la pastille de lecture centrale, qui
+   signale qu'il y a une video derriere la couverture. Ni voile, ni degrade,
+   ni cartouche. Le survol se limite a un changement d'opacite, neutralise par
+   le bloc « mouvement reduit ». L'iframe n'est inseree qu'au clic.
    ------------------------------------------------------------------------- */
 .video {
   position: relative;
@@ -523,6 +576,7 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
    de l'image, dont il epouse exactement les dimensions. */
 .video-declencheur {
   display: block;
+  position: relative;
   width: 100%;
   height: 100%;
   padding: 0;
@@ -533,6 +587,51 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   font: inherit;
   color: inherit;
 }
+
+/* Pastille de lecture. Elle n'est affichee que lorsque le script a pose
+   `video-prete` sur le conteneur : sans JavaScript le bouton est inerte, une
+   pastille visible y promettrait une lecture qui n'arriverait jamais.
+   Tout est dimensionne en em a partir de la font-size de la pastille : une
+   seule valeur commande la taille du disque et celle du triangle. */
+.video-lecture {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  place-items: center;
+  font-size: clamp(1.35rem, 2.7vw, 1.9rem);
+  width: 3.6em;
+  aspect-ratio: 1;
+  border-radius: var(--rayon-pilule);
+  /* Disque sombre a triangle clair, et non l'inverse : les couvertures du
+     studio portent souvent un logo client blanc incruste au centre, dans
+     lequel une pastille claire disparaissait. Le noir s'en detache quelle que
+     soit l'image. Legerement translucide pour laisser deviner la couverture,
+     opaque au survol. Le filet clair garde le disque lisible sur une
+     couverture sombre. Toutes les teintes viennent de la palette. */
+  background: color-mix(in srgb, var(--noir) 82%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--blanc-casse) 35%, transparent);
+  transition: background-color 200ms ease;
+}
+
+.video-prete .video-lecture { display: grid; }
+
+/* Triangle de lecture dessine en CSS, jamais un fichier d'icone, comme la
+   fleche de la pilule est du texte. La marge gauche compense le centre
+   optique du triangle, decale par rapport a celui de sa boite. */
+.video-lecture::before {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  margin-left: 0.2em;
+  border-style: solid;
+  border-width: 0.52em 0 0.52em 0.88em;
+  border-color: transparent transparent transparent var(--blanc-casse);
+}
+
+.video-declencheur:hover .video-lecture { background: var(--noir); }
 
 .video-declencheur img {
   width: 100%;
@@ -564,19 +663,170 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
 /* -------------------------------------------------------------------------
    GALERIE
    ------------------------------------------------------------------------- */
-/* Images pleine largeur du contenu, empilees. L'ordre et la selection
-   viennent du champ `galerie` de l'entete, pas du contenu du dossier. */
+/* Grille de vignettes carrees : trois colonnes en desktop, deux sous 700px.
+   La gouttiere est celle de la grille d'accueil, pour que les deux pages
+   respirent pareil. Le carre vient du recadrage Hugo, pas d'une hauteur en
+   dur : l'image arrive deja aux bonnes dimensions et ne provoque aucun
+   decalage de mise en page au chargement. */
 .galerie {
+  list-style: none;
+  margin: clamp(1.75rem, 3.5vw, 2.75rem) 0 0;
+  padding: 0;
   display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--grille-gap);
 }
 
-.galerie figure { margin: 0; }
-.galerie img {
+@media (max-width: 700px) {
+  .galerie { grid-template-columns: repeat(2, 1fr); }
+}
+
+.galerie-item { margin: 0; }
+
+/* La vignette entiere est un lien vers l'image en grand. Son nom accessible
+   vient de son aria-label : l'image ne porte un alt que si la ressource
+   declare un titre. */
+.galerie-lien {
+  display: block;
+  text-decoration: none;
+  border-radius: var(--rayon);
+  overflow: hidden;
+}
+
+.galerie-lien:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+}
+
+/* Selecteur volontairement porte sur le lien de la vignette et non sur
+   `.galerie img` : la vue plein ecran vit elle aussi dans la liste, et une
+   largeur de 100% imposee ici l'emporterait sur les regles de la loupe, dont
+   l'image serait etiree a la boite entiere. */
+.galerie-lien img {
   width: 100%;
   height: auto;
+  background: var(--surface);
+  transition: opacity 200ms ease;
+}
+
+/* Survol discret, aligne sur celui des vignettes d'accueil : opacite seule.
+   Le bloc « mouvement reduit » en fin de feuille neutralise la transition. */
+.galerie-lien:hover img { opacity: 0.85; }
+
+/* -------------------------------------------------------------------------
+   LOUPE — image de galerie en plein ecran, CSS seul
+   Le mecanisme est le selecteur :target. Chaque vue est masquee tant que son
+   identifiant n'est pas celui de l'adresse : cliquer une vignette l'affiche,
+   la croix et le fond renvoient a l'identifiant de la vignette, ce qui la
+   referme et repositionne la page dessus. Aucun JavaScript, aucune
+   dependance : la loupe fonctionne script desactive.
+   ------------------------------------------------------------------------- */
+.loupe {
+  --loupe-marge: clamp(0.75rem, 3vw, 2.5rem);
+
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  padding: var(--loupe-marge);
+  /* Le fond reprend le noir de la charte, rendu translucide a partir de la
+     palette : aucune teinte en dur. */
+  background: color-mix(in srgb, var(--noir) 94%, transparent);
+}
+
+.loupe:target { display: block; }
+
+/* Fige le defilement de la page derriere une loupe ouverte. Les navigateurs
+   sans :has ignorent la regle : le fond defile alors sous la loupe, ce qui
+   reste parfaitement utilisable. */
+html:has(.loupe:target) { overflow: hidden; }
+
+/* Le fond entier ferme la loupe. Il est sous le cadre dans l'ordre de
+   superposition, un clic sur l'image ne le declenche donc pas. */
+.loupe-fond {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+/* Le cadre centre l'image et ne capte aucun clic : tout ce qui n'est pas
+   l'image elle-meme tombe sur le fond, et ferme.
+   Au-dela de 700px, une gouttiere laterale reserve la place des fleches pour
+   qu'elles se posent a cote de l'image et non dessus. */
+.loupe-cadre {
+  position: relative;
+  margin: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+@media (min-width: 701px) {
+  .loupe-cadre { padding-inline: 3.5rem; }
+}
+
+/* L'image occupe la place disponible sans jamais deborder ni changer de
+   rapport. Les attributs width et height restent poses sur la balise pour le
+   rapport intrinseque, la taille affichee vient d'ici.
+   Le plafond de hauteur est exprime en unites de fenetre, pas en pourcentage :
+   un pourcentage se resoudrait contre la hauteur du cadre, qui suit celle de
+   l'image et ne contraint donc rien. Un portrait de 1500px de haut debordait
+   ainsi la fenetre. La premiere declaration sert de repli aux navigateurs sans
+   dvh, la seconde tient compte de la barre d'adresse mobile. */
+.loupe-image {
+  pointer-events: auto;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(100vh - 2 * var(--loupe-marge));
+  max-height: calc(100dvh - 2 * var(--loupe-marge));
+  object-fit: contain;
   border-radius: var(--rayon);
   background: var(--surface);
+}
+
+/* Commandes : meme pastille que la pilule, en plus compact. */
+.loupe-bouton {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--rayon-pilule);
+  background: var(--surface);
+  color: var(--noir);
+  font-size: 1.1rem;
+  line-height: 1;
+  text-decoration: none;
+  transition: background-color 200ms ease;
+}
+.loupe-bouton:hover { background: color-mix(in srgb, var(--surface) 90%, var(--noir)); }
+.loupe-bouton:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
+.loupe-fermer { top: var(--loupe-marge); right: var(--loupe-marge); }
+.loupe-prec { left: var(--loupe-marge); top: 50%; transform: translateY(-50%); }
+.loupe-suiv { right: var(--loupe-marge); top: 50%; transform: translateY(-50%); }
+
+/* Sous 700px les fleches passent en bas, cote a cote : sur les bords elles
+   couvriraient l'image, qui occupe alors presque toute la largeur. */
+@media (max-width: 700px) {
+  /* La bande des fleches est retiree de la zone de centrage et du plafond de
+     hauteur, sinon une image haute passerait dessous. */
+  .loupe-cadre { padding-bottom: 3.75rem; }
+  .loupe-image {
+    max-height: calc(100vh - 2 * var(--loupe-marge) - 3.75rem);
+    max-height: calc(100dvh - 2 * var(--loupe-marge) - 3.75rem);
+  }
+  .loupe-prec, .loupe-suiv {
+    top: auto;
+    bottom: var(--loupe-marge);
+    transform: none;
+  }
+  .loupe-prec { left: calc(50% - 3.25rem); }
+  .loupe-suiv { right: calc(50% - 3.25rem); }
 }
 
 /* -------------------------------------------------------------------------
