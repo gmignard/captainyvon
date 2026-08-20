@@ -1,10 +1,19 @@
 {{- /*
   En-tete sur une ligne en desktop : nav a gauche, logo centre, reseaux a droite.
   En mobile la CSS empile logo puis nav, et renvoie les reseaux au pied de page.
-  Logo, largeur et hauteur viennent de [params], jamais d'une valeur en dur.
+
+  Pleine largeur comme en production : l'entete partage la marge laterale
+  de la grille d'accueil (--site-marge) et n'a pas de max-width, pour que le
+  logo reste centre sur le viewport et aligne avec la grille a toute largeur.
+  Ni bordure ni separateur en bas : c'est l'espacement qui separe l'entete
+  du contenu. L'entete n'est pas collante.
+
+  Logo : le fichier vient de params.logo, sa largeur d'affichage de la
+  variable CSS --logo-largeur. Les attributs width/height ne servent qu'a
+  reserver la place avant chargement.
 */ -}}
 <header class="entete">
-  <div class="enveloppe entete-grille">
+  <div class="enveloppe enveloppe--pleine entete-grille">
 
     <div class="entete-nav">{{ partial "nav.html" . }}</div>
 

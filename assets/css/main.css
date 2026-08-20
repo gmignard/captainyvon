@@ -1,32 +1,84 @@
 /* =========================================================================
    Captain Yvon Studio — feuille de style unique
-   Noir sur fond blanc. Sobre, documentaire, sans animation.
+   Charte studio : fond ivoire, texte noir, Montserrat auto-hebergee.
+   Mise en page calquee sur la production : header a logo centre,
+   grille de vignettes cinemascope sur deux colonnes, aucun texte entre
+   les images.
+   Aucune dependance externe, aucun CDN, aucun JavaScript requis.
    ========================================================================= */
 
 /* -------------------------------------------------------------------------
    PALETTE
-   Ces quatre lignes, et elles seules, definissent la palette.
-   Pour inverser le site (blanc sur noir) il suffit de les permuter :
-     --fond: #000000; --texte: #ffffff; --texte-doux: #a8a8a8; --trait: #333333;
-   Les icones sociales heritent de currentColor, elles suivent sans retouche.
-   Le logo est un fichier image : voir params.logo dans hugo.toml.
+   Ces six lignes, et elles seules, contiennent une valeur hexadecimale.
+   Tout le reste de la feuille passe par ces variables ou par currentColor,
+   pour qu'un changement de charte tienne dans ce bloc.
+   Le blanc casse remplace le blanc pur partout, y compris sur les survols,
+   les bordures et le fond des icones : il n'y a aucun blanc pur dans le site.
    ------------------------------------------------------------------------- */
 :root {
-  --fond: #ffffff;
-  --texte: #111111;
-  --texte-doux: #5a5a5a;
-  --trait: #d9d9d9;
+  --noir: #0D0D0D;
+  --blanc-casse: #F7F3E3;
+  --kaki: #9BA184;
+  --vert-foret: #3D5941;
+  --bleu-ocean: #4E6771;
+  --gris: #ACAAA4;
 
-  /* Typographie systeme, aucune police distante. */
-  --pile: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
-          Helvetica, Arial, "Noto Sans", sans-serif;
+  /* Roles. Le contraste est inverse par rapport a la maquette precedente :
+     fond ivoire, texte sombre. */
+  --fond: var(--blanc-casse);
+  --texte: var(--noir);
+  --texte-doux: var(--gris);
+  --trait: var(--gris);
+  --focus: var(--kaki);
+}
 
-  /* Rythme */
+/* -------------------------------------------------------------------------
+   TYPOGRAPHIE
+   Montserrat en fonte variable woff2, auto-hebergee dans static/fonts/.
+   Aucun appel a Google Fonts ni a aucun domaine tiers.
+   La pile de repli system-ui assure un rendu correct tant que le fichier
+   n'est pas depose : font-display: swap evite tout texte invisible.
+   Courier New italique est reserve aux citations, il n'est pas appele
+   sur l'accueil.
+   ------------------------------------------------------------------------- */
+@font-face {
+  font-family: "Montserrat";
+  src: url("/fonts/montserrat-variable-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+                 U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F,
+                 U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF,
+                 U+FFFD;
+}
+
+:root {
+  --pile: "Montserrat", system-ui, -apple-system, sans-serif;
+  --pile-citation: "Courier New", Courier, monospace;
+}
+
+/* -------------------------------------------------------------------------
+   MISE EN PAGE — variables d'ajustement fin
+   Ces quatre valeurs suffisent a caler la page sur la production :
+   marge laterale, gouttiere de grille, ratio des vignettes, largeur du logo.
+   ------------------------------------------------------------------------- */
+:root {
+  --site-marge: 3.9vw;      /* marge laterale, identique a gauche et a droite */
+  --grille-gap: 2vw;        /* gouttiere horizontale et verticale */
+  --ratio-vignette: 2.39/1; /* cinemascope */
+  --logo-largeur: 180px;
+
+  /* Rythme vertical et largeurs de lecture, hors grille d'accueil. */
   --pas: 1rem;
   --gouttiere: 1.5rem;
-  --marge-page: clamp(1.25rem, 4vw, 3.5rem);
   --largeur-max: 1600px;
   --largeur-texte: 62ch;
+}
+
+/* Sous 700px : une seule colonne, marge laterale reduite. */
+@media (max-width: 700px) {
+  :root { --site-marge: 5vw; }
 }
 
 /* -------------------------------------------------------------------------
@@ -50,6 +102,7 @@ body {
   font-size: 1rem;
   line-height: 1.6;
   font-weight: 400;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -60,13 +113,13 @@ a { color: inherit; text-decoration: underline; text-underline-offset: 0.2em; }
 a:hover { text-decoration-thickness: 2px; }
 
 :focus-visible {
-  outline: 2px solid var(--texte);
+  outline: 2px solid var(--focus);
   outline-offset: 3px;
 }
 
 h1, h2, h3 {
   font-weight: 600;
-  line-height: 1.15;
+  line-height: 1.2;
   letter-spacing: -0.01em;
   margin: 0 0 var(--pas);
 }
@@ -74,9 +127,19 @@ h1 { font-size: clamp(1.6rem, 3.2vw, 2.4rem); }
 h2 { font-size: clamp(1.25rem, 2.2vw, 1.6rem); }
 h3 { font-size: 1.05rem; }
 
-p { margin: 0 0 var(--pas); }
+p { margin: 0 0 var(--pas); line-height: 1.5; }
 
 hr { border: 0; border-top: 1px solid var(--trait); margin: calc(var(--pas) * 3) 0; }
+
+/* Citations : seule occurrence de Courier New sur le site. */
+blockquote, .citation {
+  font-family: var(--pile-citation);
+  font-style: italic;
+  line-height: 1.5;
+  margin: calc(var(--pas) * 1.5) 0;
+  padding-left: var(--pas);
+  border-left: 1px solid var(--trait);
+}
 
 /* Lien d'evitement */
 .saut {
@@ -89,22 +152,30 @@ hr { border: 0; border-top: 1px solid var(--trait); margin: calc(var(--pas) * 3)
   border: 1px solid var(--texte);
   z-index: 100;
 }
-.saut:focus { left: var(--marge-page); top: 0.5rem; }
+.saut:focus { left: var(--site-marge); top: 0.5rem; }
 
+/* Conteneur commun : marge laterale unique, partagee par l'entete,
+   la grille et les pages de texte. */
 .enveloppe {
   max-width: var(--largeur-max);
   margin-inline: auto;
-  padding-inline: var(--marge-page);
+  padding-inline: var(--site-marge);
 }
+
+/* Variante pleine largeur : pas de max-width, la largeur suit le viewport
+   moins les marges, comme en production. Utilisee par l'entete et par la
+   grille d'accueil pour qu'elles restent alignees a toute largeur. */
+.enveloppe--pleine { max-width: none; }
 
 /* -------------------------------------------------------------------------
    EN-TETE
    Desktop : nav a gauche, logo centre, reseaux a droite.
    Mobile  : logo puis nav empiles, reseaux renvoyes au pied de page.
+   Ni bordure ni separateur : l'espacement fait le travail, comme en
+   production. L'entete n'est pas collante.
    ------------------------------------------------------------------------- */
 .entete {
-  border-bottom: 1px solid var(--trait);
-  padding-block: 1.25rem;
+  padding-block: clamp(1.5rem, 3vw, 2.5rem) clamp(1.25rem, 2.5vw, 2rem);
 }
 
 .entete-grille {
@@ -117,7 +188,7 @@ hr { border: 0; border-top: 1px solid var(--trait); margin: calc(var(--pas) * 3)
 
 .entete-logo { grid-area: logo; }
 .entete-logo a { text-decoration: none; display: block; }
-.entete-logo img { width: 220px; height: auto; }
+.entete-logo img { width: var(--logo-largeur); height: auto; }
 
 .entete-nav { grid-area: nav; }
 .entete-social { display: none; }
@@ -135,6 +206,8 @@ hr { border: 0; border-top: 1px solid var(--trait); margin: calc(var(--pas) * 3)
 
 /* -------------------------------------------------------------------------
    NAVIGATION
+   Bas de casse, comme en production : les libelles restent capitalises
+   dans hugo.toml, c'est le rendu qui les met en minuscules.
    ------------------------------------------------------------------------- */
 .nav ul {
   list-style: none;
@@ -147,19 +220,17 @@ hr { border: 0; border-top: 1px solid var(--trait); margin: calc(var(--pas) * 3)
 .nav a {
   text-decoration: none;
   font-size: 0.9rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
   padding-bottom: 2px;
   border-bottom: 1px solid transparent;
 }
 .nav a:hover { border-bottom-color: var(--trait); }
-
-.nav a.actif {
-  border-bottom-color: var(--texte);
-}
+.nav a.actif { border-bottom-color: var(--texte); }
 
 /* -------------------------------------------------------------------------
    RESEAUX SOCIAUX
+   Les SVG heritent de currentColor : ni fond, ni bordure, ni pastille.
    Le dimensionnement se fait ici, jamais dans les fichiers SVG.
    ------------------------------------------------------------------------- */
 .social ul {
@@ -173,7 +244,9 @@ hr { border: 0; border-top: 1px solid var(--trait); margin: calc(var(--pas) * 3)
 .social a {
   display: block;
   text-decoration: none;
-  color: var(--texte);
+  color: var(--noir);
+  background: none;
+  border: 0;
 }
 .social a:hover { color: var(--texte-doux); }
 
@@ -186,68 +259,67 @@ hr { border: 0; border-top: 1px solid var(--trait); margin: calc(var(--pas) * 3)
 /* -------------------------------------------------------------------------
    MISE EN PAGE GENERALE
    ------------------------------------------------------------------------- */
-main { display: block; flex: 1 0 auto; padding-block: clamp(2rem, 5vw, 4rem); }
+main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); }
 
-.page-texte { max-width: var(--largeur-texte); }
+.page-texte { max-width: var(--largeur-texte); padding-block: clamp(1rem, 3vw, 2rem) 0; }
 .page-texte h1 { margin-bottom: calc(var(--pas) * 1.5); }
 .page-texte ul { padding-left: 1.2em; }
 
 /* -------------------------------------------------------------------------
    ACCUEIL — grille des projets
+   Deux colonnes en CSS Grid, jamais trois. Largeur fluide : la grille
+   occupe toute la largeur disponible moins les marges, sans max-width.
+   Chaque vignette ne contient que la couverture, le titre du projet est
+   incruste dans l'image. Aucune hauteur en dur : le cadrage vient de
+   aspect-ratio + object-fit.
    ------------------------------------------------------------------------- */
 .grille-projets {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: 1fr;
-  gap: clamp(2rem, 4vw, 3.5rem) var(--gouttiere);
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--grille-gap);
 }
 
-@media (min-width: 40em) {
-  .grille-projets { grid-template-columns: repeat(2, 1fr); }
-}
-@media (min-width: 68em) {
-  .grille-projets { grid-template-columns: repeat(3, 1fr); }
+/* Une seule colonne sous 700px, meme ratio de vignette. */
+@media (max-width: 700px) {
+  .grille-projets { grid-template-columns: 1fr; }
 }
 
 /* Un projet mis en avant remonte en tete de grille, sans trou de mise en page. */
 .vignette--avant { order: -1; }
 
-.vignette a {
-  text-decoration: none;
+/* La vignette entiere est un lien unique : aucun lien imbrique.
+   Son nom accessible vient de l'attribut alt de l'image, qui reprend
+   le titre du projet sans rien afficher. */
+.vignette-lien {
   display: block;
+  text-decoration: none;
   color: inherit;
 }
-.vignette a:hover .vignette-titre { text-decoration: underline; text-underline-offset: 0.2em; }
 
-.vignette-image { background: var(--trait); margin-bottom: 0.85rem; }
-.vignette-image img { width: 100%; }
-
-.vignette-titre {
-  font-size: 1.05rem;
-  font-weight: 600;
-  margin: 0 0 0.35rem;
-  line-height: 1.25;
+.vignette-lien:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
 }
 
-.vignette-extrait {
-  margin: 0 0 0.5rem;
-  color: var(--texte-doux);
-  font-size: 0.925rem;
-  line-height: 1.5;
+.vignette-image {
+  width: 100%;
+  aspect-ratio: var(--ratio-vignette);
+  object-fit: cover;
+  background: var(--trait);
+  transition: opacity 200ms ease;
 }
 
-.etiquette-nature {
-  display: inline-block;
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--texte-doux);
-}
+/* Survol discret : opacite seule. Pas de zoom, pas de voile, pas de texte.
+   Le bloc « mouvement reduit » en fin de feuille neutralise la transition. */
+.vignette-lien:hover .vignette-image { opacity: 0.85; }
 
 /* -------------------------------------------------------------------------
    PAGE PROJET
+   Les styles de titre et de metadonnees vivent ici : ils ne sont plus
+   appeles par l'accueil, seule la page projet les utilise.
    ------------------------------------------------------------------------- */
 .projet { max-width: var(--largeur-max); }
 
@@ -263,9 +335,7 @@ main { display: block; flex: 1 0 auto; padding-block: clamp(2rem, 5vw, 4rem); }
 }
 .projet-meta span + span::before { content: " — "; }
 
-/* La description reprend l'italique du site actuel. */
 .projet-extrait {
-  font-style: italic;
   font-size: clamp(1.05rem, 1.6vw, 1.2rem);
   line-height: 1.55;
   margin: 0 0 calc(var(--pas) * 1.5);
@@ -466,7 +536,7 @@ main { display: block; flex: 1 0 auto; padding-block: clamp(2rem, 5vw, 4rem); }
 
 .pied a { color: var(--texte); }
 .pied p { margin: 0; }
-.pied-social .social a { color: var(--texte); }
+.pied-social .social a { color: var(--noir); }
 
 /* -------------------------------------------------------------------------
    404
@@ -478,6 +548,7 @@ main { display: block; flex: 1 0 auto; padding-block: clamp(2rem, 5vw, 4rem); }
 
 /* -------------------------------------------------------------------------
    MOUVEMENT REDUIT
+   Neutralise le fondu de survol des vignettes et le defilement doux.
    ------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -493,7 +564,7 @@ main { display: block; flex: 1 0 auto; padding-block: clamp(2rem, 5vw, 4rem); }
    ------------------------------------------------------------------------- */
 @media print {
   .entete-social, .pied-social, .video-bouton, .projet-nav { display: none; }
-  body { color: #000; background: #fff; }
+  body { color: var(--noir); background: var(--blanc-casse); }
 }
 
 /* -------------------------------------------------------------------------

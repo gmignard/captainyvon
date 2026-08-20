@@ -1,0 +1,12 @@
+{{- /*
+  Resout la couverture d'un projet et la renvoie comme ressource.
+  Ordre de recherche : le parametre `couverture` du front matter, sinon
+  un fichier nomme `couverture.*` dans le bundle. Renvoie une chaine vide
+  si le projet n'a pas de couverture : l'appelant decide alors de ne rien
+  afficher plutot que de poser un placeholder.
+  Contexte attendu : la page projet.
+*/ -}}
+{{- $couverture := "" -}}
+{{- with .Params.couverture }}{{ $couverture = $.Resources.GetMatch . }}{{ end -}}
+{{- if not $couverture }}{{ $couverture = .Resources.GetMatch "couverture.*" }}{{ end -}}
+{{- return $couverture -}}

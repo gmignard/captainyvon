@@ -3,7 +3,12 @@
        plutot que de rendre un <h1> vide. */ -}}
 {{- $titre := .Title -}}
 {{- if not $titre }}{{ with .File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
-<div class="enveloppe">
+{{- /* Meme regle qu'a l'accueil : pas de vignette sans couverture. */ -}}
+{{- $avecCouverture := slice -}}
+{{- range .RegularPages.ByWeight -}}
+  {{- if partial "couverture.html" . }}{{ $avecCouverture = $avecCouverture | append . }}{{ end -}}
+{{- end -}}
+<div class="enveloppe enveloppe--pleine">
 
   <div class="page-texte">
     {{- with $titre }}
@@ -12,10 +17,10 @@
     {{- with .Content }}{{ . }}{{ end }}
   </div>
 
-  {{- with .RegularPages.ByWeight }}
+  {{- with $avecCouverture }}
   <ul class="grille-projets">
-    {{- range . }}
-    {{ partial "vignette.html" . }}
+    {{- range $rang, $projet := . }}
+    {{ partial "vignette.html" (dict "page" $projet "rang" $rang) }}
     {{- end }}
   </ul>
   {{- end }}

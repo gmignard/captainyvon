@@ -1,51 +1,53 @@
-{{- /* Vignette de projet pour la grille d'accueil : couverture, titre, extrait, nature. */ -}}
-{{- $page := . -}}
-{{- /* Repli de titre : si `title` manque, on humanise le nom du dossier
-       plutot que de rendre un <h1> vide. */ -}}
-{{- $titre := .Title -}}
-{{- if not $titre }}{{ with .File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
+{{- /*
+  Vignette de projet.
 
-{{- /* Nature : film | photo | mixte. Deduite si absente. */ -}}
-{{- $nature := lower (.Params.nature | default "") -}}
-{{- if not $nature -}}
-  {{- $aVideo := false -}}
-  {{- with .Params.video }}{{ if .id }}{{ $aVideo = true }}{{ end }}{{ end -}}
-  {{- $nature = cond $aVideo "film" "photo" -}}
-{{- end -}}
-{{- $libelles := dict "film" "Film" "photo" "Photographie" "mixte" "Film et photographie" -}}
-{{- $libelle := index $libelles $nature -}}
+  Comme en production, la vignette ne contient que la couverture : ni titre,
+  ni extrait, ni nature. Le titre du projet est incruste dans l'image.
+  L'attribut alt reprend le titre : il donne son nom accessible au lien
+  sans rien afficher, ce que ni alt="" ni un texte decoratif ne permettent.
 
-{{- /* Couverture, traitee en vignette a 800 px de large, ratio natif conserve. */ -}}
-{{- $couverture := "" -}}
-{{- with .Params.couverture }}{{ $couverture = $page.Resources.GetMatch . }}{{ end -}}
-{{- if not $couverture }}{{ $couverture = $page.Resources.GetMatch "couverture.*" }}{{ end -}}
-{{- $vignette := "" -}}
-{{- $petite := "" -}}
-{{- with $couverture -}}
-  {{- $l := cond (gt .Width 800) 800 .Width -}}
-  {{- $vignette = .Resize (printf "%dx webp q82" $l) -}}
-  {{- if gt $l 400 }}{{ $petite = .Resize "400x webp q82" }}{{ end -}}
-{{- end }}
+  Contexte attendu : un dict
+    page  — la page projet
+    rang  — position de la vignette dans la grille, base 0. Les deux
+            premieres restent en chargement immediat, les suivantes sont
+            differees.
 
-<li class="vignette{{ if .Params.mise_en_avant }} vignette--avant{{ end }}">
-  <a href="{{ .RelPermalink }}">
-    {{- with $vignette }}
-    <div class="vignette-image">
-      <img src="{{ .RelPermalink }}"
-           {{ with $petite }}srcset="{{ .RelPermalink }} {{ .Width }}w, {{ $vignette.RelPermalink }} {{ $vignette.Width }}w"{{ end }}
-           sizes="(min-width: 68em) 33vw, (min-width: 40em) 50vw, 100vw"
-           width="{{ .Width }}" height="{{ .Height }}"
-           alt="" loading="lazy" decoding="async">
-    </div>
-    {{- end }}
-    {{- with $titre }}
-    <h2 class="vignette-titre">{{ . }}</h2>
-    {{- end }}
-    {{- with .Params.extrait }}
-    <p class="vignette-extrait">{{ . | plainify | truncate 150 }}</p>
-    {{- end }}
-    {{- with $libelle }}
-    <span class="etiquette-nature">{{ . }}</span>
-    {{- end }}
+  Un projet sans couverture n'est pas rendu : l'appelant l'a deja ecarte,
+  cette garde evite toute case vide si le partial est appele ailleurs.
+*/ -}}
+{{- $page := .page -}}
+{{- $rang := .rang | default 0 -}}
+
+{{- $titre := $page.Title -}}
+{{- if not $titre }}{{ with $page.File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
+
+{{- $couverture := partial "couverture.html" $page -}}
+{{- with $couverture }}
+
+  {{- /* Sorties WebP a 800 et 1600 px de large, sans jamais agrandir la
+         source. Le cadrage cinemascope est fait en CSS (aspect-ratio +
+         object-fit), pas au recadrage, pour ne pas rogner le titre
+         incruste dans la couverture. */ -}}
+  {{- $l800 := cond (gt .Width 800) 800 .Width -}}
+  {{- $l1600 := cond (gt .Width 1600) 1600 .Width -}}
+  {{- $petite := .Resize (printf "%dx webp q82" $l800) -}}
+  {{- $grande := cond (gt $l1600 $l800) (.Resize (printf "%dx webp q82" $l1600)) $petite -}}
+
+  {{- /* Deux colonnes au-dela de 700px : chaque vignette occupe
+         (100vw - 2 * --site-marge - --grille-gap) / 2, soit ~45vw.
+         En dessous, une colonne : 100vw - 2 * 5vw. */ -}}
+  {{- $sizes := "(max-width: 700px) 90vw, 45vw" -}}
+  {{- $immediate := lt $rang 2 -}}
+
+<li class="vignette{{ if $page.Params.mise_en_avant }} vignette--avant{{ end }}">
+  <a class="vignette-lien" href="{{ $page.RelPermalink }}">
+    <img class="vignette-image"
+         src="{{ $petite.RelPermalink }}"
+         {{ if ne $grande.RelPermalink $petite.RelPermalink }}srcset="{{ $petite.RelPermalink }} {{ $petite.Width }}w, {{ $grande.RelPermalink }} {{ $grande.Width }}w"
+         sizes="{{ $sizes }}"{{ end }}
+         width="{{ $petite.Width }}" height="{{ $petite.Height }}"
+         alt="{{ $titre }}"
+         {{ if $immediate }}loading="eager" fetchpriority="high"{{ else }}loading="lazy" decoding="async"{{ end }}>
   </a>
 </li>
+{{- end }}
