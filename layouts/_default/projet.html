@@ -5,9 +5,11 @@
   Ordre fixe, de haut en bas :
     a. ligne de titre : titre a gauche, annee et type de projet a droite,
        filet dessous
-    b. presentation : extrait et note d'intention, deux tiers
-    c. metadonnees : client, services, avec, un tiers
-    d. medias : lecteur video ou couverture seule
+    b. extrait : le texte court de l'entete YAML, borne par la mesure
+       de lecture
+    c. metadonnees : client, services, avec, dimensionnees par leur contenu
+    d. medias : lecteur video ou couverture seule, puis la note d'intention,
+       c'est-a-dire le corps du fichier Markdown
     e. galerie : filet, credit photo, puis grille de vignettes du bundle
     f. distinctions : selections et prix, si l'entete en declare
     g. fin de page : pilule de retour vers la liste des projets
@@ -101,28 +103,26 @@
   {{- /* Filet de l'entete. Le meme element ferme la page avant la galerie. */ -}}
   <hr class="projet-filet">
 
-  {{- /* b. Presentation et c. metadonnees, en deux colonnes : deux tiers a
-         gauche pour l'extrait, le credit photo et la note d'intention, un
-         tiers a droite pour l'encart. Sous 700px les deux colonnes
-         s'empilent, la presentation d'abord.
+  {{- /* b. Extrait et c. metadonnees, en deux colonnes : l'extrait a gauche,
+         borne par la mesure de lecture, l'encart a droite, dimensionne par
+         son contenu. Sous 860px, le point de rupture de l'entete, les deux
+         colonnes s'empilent, l'extrait d'abord — c'est l'ordre du document,
+         aucune reorganisation n'est necessaire.
+
+         L'entete ne porte plus que l'extrait, court par contrat dans le
+         schema du projet. La note d'intention, elle, est le corps du fichier
+         Markdown et vit sous la couverture : voir le bloc d ci-dessous.
 
          Chaque niveau teste son contenu : le conteneur n'existe que si l'un
-         des deux blocs a quelque chose a dire, la colonne de gauche n'existe
-         que si l'un de ses deux elements est renseigne. Une entete sans
-         extrait et sans metadonnees ne laisse donc ni bloc vide ni
-         espacement fantome. */ -}}
+         des deux blocs a quelque chose a dire. Une entete sans extrait et
+         sans metadonnees ne laisse donc ni bloc vide ni espacement
+         fantome. */ -}}
   {{- $extrait := .Params.extrait -}}
-  {{- $aPresentation := or $extrait .Content -}}
-  {{- if or $aPresentation $meta }}
+  {{- if or $extrait $meta }}
   <div class="projet-haut">
-    {{- if $aPresentation }}
+    {{- with $extrait }}
     <div class="projet-presentation">
-      {{- with $extrait }}
       <p class="projet-extrait">{{ . }}</p>
-      {{- end }}
-      {{- with .Content }}
-      <div class="projet-intro">{{ . }}</div>
-      {{- end }}
     </div>
     {{- end }}
     {{- with $meta }}
@@ -148,6 +148,14 @@
       {{- end }}
     {{- end }}
   </div>
+  {{- end }}
+
+  {{- /* Note d'intention : le corps du fichier Markdown, rendu sous la
+         couverture et cale sur la marge gauche du contenu. Le test porte sur
+         le corps une fois vide de tout blanc : un fichier qui s'arrete a son
+         entete YAML ne produit ni conteneur vide, ni espacement residuel. */ -}}
+  {{- with trim .Content " \n\r\t" }}
+  <div class="projet-corps">{{ . | safeHTML }}</div>
   {{- end }}
 
   {{- /* e. Galerie, precedee du meme filet que l'entete. Le filet appartient
