@@ -4,8 +4,8 @@
 
   Ordre fixe, de haut en bas :
     a. ligne de titre : titre a gauche, annee a droite, filet dessous
-    b. introduction : le corps du Markdown, colonne etroite
-    c. metadonnees : client, services, livrables, avec
+    b. presentation : extrait, credit photo et note d'intention, deux tiers
+    c. metadonnees : client, services, livrables, avec, un tiers
     d. medias : lecteur video ou couverture seule, puis galerie
     e. fin de page : pilule de retour vers la liste des projets
 
@@ -53,12 +53,37 @@
   {{- /* Filet de l'entete. Le meme element ferme la page avant la galerie. */ -}}
   <hr class="projet-filet">
 
-  {{- /* b. Introduction et c. metadonnees. Le conteneur n'est rendu que si
-         l'un des deux a du contenu, pour ne pas laisser de marge vide. */ -}}
-  {{- if or .Content $meta }}
+  {{- /* b. Presentation et c. metadonnees, en deux colonnes : deux tiers a
+         gauche pour l'extrait, le credit photo et la note d'intention, un
+         tiers a droite pour l'encart. Sous 700px les deux colonnes
+         s'empilent, la presentation d'abord.
+
+         Chaque niveau teste son contenu : le conteneur n'existe que si l'un
+         des deux blocs a quelque chose a dire, la colonne de gauche n'existe
+         que si l'un de ses trois elements est renseigne. Une entete sans
+         extrait, sans credit et sans livrables ne laisse donc ni bloc vide
+         ni espacement fantome. */ -}}
+  {{- $extrait := .Params.extrait -}}
+  {{- $credit := .Params.credit_photo -}}
+  {{- $aPresentation := or $extrait $credit .Content -}}
+  {{- if or $aPresentation $meta }}
   <div class="projet-haut">
-    {{- with .Content }}
-    <div class="projet-intro">{{ . }}</div>
+    {{- if $aPresentation }}
+    <div class="projet-presentation">
+      {{- with $extrait }}
+      <p class="projet-extrait">{{ . }}</p>
+      {{- end }}
+      {{- with $credit }}
+      {{- $nom := . -}}
+      <p class="projet-credit">Crédit photo :
+        {{- with $.Params.credit_photo_url }} <a href="{{ . }}" rel="noopener">{{ $nom }}</a>
+        {{- else }} {{ $nom }}
+        {{- end }}</p>
+      {{- end }}
+      {{- with .Content }}
+      <div class="projet-intro">{{ . }}</div>
+      {{- end }}
+    </div>
     {{- end }}
     {{- with $meta }}
     <dl class="projet-meta">
