@@ -89,11 +89,16 @@ document.querySelectorAll('.video-declencheur').forEach(function (b) {
     var hote = b.closest('.video');
     if (!src || !hote) { return; }
     var f = document.createElement('iframe');
-    f.src = src;
-    f.title = b.getAttribute('data-titre') || 'Vidéo';
-    f.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen';
-    f.referrerPolicy = 'strict-origin-when-cross-origin';
+    /* allow est pose AVANT src, et src en dernier : la politique de
+       permissions est lue a la creation du contexte de navigation, et c'est
+       elle qui delegue l'autorisation d'autoplay a la plateforme. Renseigner
+       src en premier fait perdre la delegation sur certains navigateurs, donc
+       le second clic. */
+    f.setAttribute('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen');
     f.setAttribute('allowfullscreen', '');
+    f.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+    f.title = b.getAttribute('data-titre') || 'Vidéo';
+    f.src = src;
     hote.replaceChildren(f);
   });
 });

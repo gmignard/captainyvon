@@ -600,8 +600,8 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   left: 50%;
   transform: translate(-50%, -50%);
   place-items: center;
-  font-size: clamp(0.9rem, 1.8vw, 1.25rem);
-  width: 3.4em;
+  font-size: clamp(1.35rem, 2.7vw, 1.9rem);
+  width: 3.6em;
   aspect-ratio: 1;
   border-radius: var(--rayon-pilule);
   /* Disque sombre a triangle clair, et non l'inverse : les couvertures du
