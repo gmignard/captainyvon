@@ -1,0 +1,55 @@
+{{ define "main" }}
+{{- /*
+  Page studio.
+
+  Haut de page en deux colonnes : le texte de presentation a gauche, le
+  contact a droite.
+
+  Au-dela de 700px les deux colonnes sont cote a cote et la colonne de droite
+  est collante : elle accompagne le defilement du texte et s'arrete au bas de
+  la grille, donc au ras du mur. En dessous, tout s'empile et la colonne de
+  droite redevient statique.
+
+  L'ordre du balisage est celui de la lecture : texte puis contact.
+
+  Aucune coordonnee n'est ecrite en dur ici. L'adresse vient de params.email,
+  le collectif de data/pied.yaml, ou il est deja decrit pour le pied de page :
+  c'est le meme fait, il n'a pas a etre saisi deux fois.
+*/ -}}
+{{- $titre := .Title -}}
+{{- if not $titre }}{{ with .File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
+{{- $collectif := site.Data.pied.collectif -}}
+<div class="enveloppe">
+  <article class="studio">
+
+    <div class="studio-haut">
+
+      <div class="studio-texte">
+        {{- with $titre }}
+        <h1>{{ . }}</h1>
+        {{- end }}
+        {{ .Content }}
+      </div>
+
+      <aside class="studio-contact" aria-label="Contact">
+        {{- with site.Params.email }}
+        <p class="studio-action">
+          {{ partial "pilule.html" (dict "href" (printf "mailto:%s" .) "libelle" "Écrire au studio") }}
+        </p>
+        <p class="studio-adresse"><a href="mailto:{{ . }}">{{ . }}</a></p>
+        {{- end }}
+        {{- with $collectif }}
+          {{- if .nom }}
+        <p class="studio-collectif">
+          {{- with .intro }}{{ . }} {{ end -}}
+          {{- with .url }}<a href="{{ . }}" rel="noopener">{{ $collectif.nom }}</a>{{ else }}{{ .nom }}{{ end -}}
+        </p>
+          {{- end }}
+        {{- end }}
+      </aside>
+
+    </div>
+
+  </article>
+</div>
+{{ end }}

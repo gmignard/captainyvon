@@ -742,6 +742,57 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
 .projet-retour { margin-block: clamp(2rem, 4vw, 3rem); }
 
 /* -------------------------------------------------------------------------
+   PAGE STUDIO
+   Haut de page en deux colonnes : le texte a gauche, le contact a droite.
+   ------------------------------------------------------------------------- */
+.studio-haut {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 1.75rem 4rem;
+  padding-block: clamp(1rem, 3vw, 2rem) 0;
+}
+
+/* La colonne de texte garde une mesure de lecture confortable : sans elle,
+   deux tiers du conteneur produiraient des lignes trop longues. */
+.studio-texte { max-width: var(--mesure); }
+.studio-texte h1 { margin-bottom: calc(var(--pas) * 1.5); }
+
+/* Colonne de droite collante. align-items: start sur la grille est ce qui la
+   rend possible : etiree sur toute la hauteur de la ligne, elle n'aurait rien
+   a faire glisser. Son bloc conteneur est la grille, elle s'arrete donc
+   d'elle-meme au bas des deux colonnes, sans jamais recouvrir le mur. */
+@media (min-width: 701px) {
+  .studio-contact {
+    position: sticky;
+    top: clamp(1.5rem, 4vw, 3rem);
+  }
+}
+
+/* Sous 700px le contact passe sous le texte, cale a gauche, et perd son
+   comportement collant. */
+@media (max-width: 700px) {
+  .studio-haut {
+    grid-template-columns: 1fr;
+    gap: clamp(2rem, 5vw, 3rem);
+  }
+}
+
+.studio-action { margin: 0; }
+
+.studio-adresse {
+  margin: 0.9rem 0 0;
+  font-size: 0.9rem;
+}
+
+.studio-collectif {
+  margin: 0.9rem 0 0;
+  font-size: 0.9rem;
+  color: var(--texte-second);
+}
+.studio-collectif a { color: var(--texte); }
+
+/* -------------------------------------------------------------------------
    FICHE — accordeons natifs <details> / <summary>
    Indicateur + / - en CSS pur, aucun JavaScript.
    ------------------------------------------------------------------------- */
