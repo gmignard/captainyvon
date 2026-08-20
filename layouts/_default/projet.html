@@ -6,8 +6,9 @@
     a. ligne de titre : titre a gauche, annee a droite, filet dessous
     b. presentation : extrait, credit photo et note d'intention, deux tiers
     c. metadonnees : client, services, livrables, avec, un tiers
-    d. medias : lecteur video ou couverture seule, puis galerie
-    e. fin de page : pilule de retour vers la liste des projets
+    d. medias : lecteur video ou couverture seule
+    e. galerie : filet, puis grille de vignettes du page bundle
+    f. fin de page : pilule de retour vers la liste des projets
 
   Chaque bloc teste la presence de son contenu avant de s'afficher : un champ
   vide ne produit ni espace, ni tiret, ni parentheses vides, ni libelle
@@ -97,8 +98,8 @@
   {{- end }}
 
   {{- /* d. Medias : lecteur video si une video est renseignee, sinon la
-         couverture seule et sans comportement cliquable ; puis la galerie. */ -}}
-  {{- if or $aVideo $couverture (trim $galerie " \n\r\t") }}
+         couverture seule et sans comportement cliquable. */ -}}
+  {{- if or $aVideo $couverture }}
   <div class="projet-medias">
     {{- if $aVideo }}
     {{ partial "video.html" . }}
@@ -107,11 +108,19 @@
     {{ partial "image-large.html" (dict "ressource" . "alt" $titre "immediate" true) }}
       {{- end }}
     {{- end }}
-    {{ $galerie }}
   </div>
   {{- end }}
 
-  {{- /* e. Fin de page. */ -}}
+  {{- /* e. Galerie, precedee du meme filet que l'entete. Le filet appartient
+         a la galerie : sans image a montrer, ni l'un ni l'autre n'est rendu.
+         La condition porte sur la sortie du partial, jamais sur la presence
+         du champ `galerie`, qui n'est qu'une des deux sources possibles. */ -}}
+  {{- if trim $galerie " \n\r\t" }}
+  <hr class="projet-filet">
+  {{ $galerie }}
+  {{- end }}
+
+  {{- /* f. Fin de page. */ -}}
   <div class="projet-retour">
     {{ partial "pilule.html" (dict "href" ("/" | relURL) "libelle" "Tous les projets") }}
   </div>

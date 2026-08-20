@@ -614,20 +614,51 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
 /* -------------------------------------------------------------------------
    GALERIE
    ------------------------------------------------------------------------- */
-/* Images pleine largeur du contenu, empilees. L'ordre et la selection
-   viennent du champ `galerie` de l'entete, pas du contenu du dossier. */
+/* Grille de vignettes carrees : trois colonnes en desktop, deux sous 700px.
+   La gouttiere est celle de la grille d'accueil, pour que les deux pages
+   respirent pareil. Le carre vient du recadrage Hugo, pas d'une hauteur en
+   dur : l'image arrive deja aux bonnes dimensions et ne provoque aucun
+   decalage de mise en page au chargement. */
 .galerie {
+  list-style: none;
+  margin: clamp(1.75rem, 3.5vw, 2.75rem) 0 0;
+  padding: 0;
   display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--grille-gap);
 }
 
-.galerie figure { margin: 0; }
+@media (max-width: 700px) {
+  .galerie { grid-template-columns: repeat(2, 1fr); }
+}
+
+.galerie-item { margin: 0; }
+
+/* La vignette entiere est un lien vers l'image en grand. Son nom accessible
+   vient de son aria-label : l'image ne porte un alt que si la ressource
+   declare un titre. */
+.galerie-lien {
+  display: block;
+  text-decoration: none;
+  border-radius: var(--rayon);
+  overflow: hidden;
+}
+
+.galerie-lien:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+}
+
 .galerie img {
   width: 100%;
   height: auto;
-  border-radius: var(--rayon);
   background: var(--surface);
+  transition: opacity 200ms ease;
 }
+
+/* Survol discret, aligne sur celui des vignettes d'accueil : opacite seule.
+   Le bloc « mouvement reduit » en fin de feuille neutralise la transition. */
+.galerie-lien:hover img { opacity: 0.85; }
 
 /* -------------------------------------------------------------------------
    PILULE
