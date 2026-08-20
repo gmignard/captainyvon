@@ -1,10 +1,6 @@
 ---
 title: "Togi-Taku Coutellerie japonaise"
-
-# date : À REMPLIR, date de livraison du projet.
-# 0001-01-01 est le marqueur « non renseignée » : aucune année ne
-# s'affiche tant qu'il est là. Hugo refuse de construire sur 0000-00-00.
-date: 0001-01-01
+date: 2026-05-15
 nature: "photo"
 # client, annee, extrait, services, livrables volontairement vides :
 # ce projet vérifie le rendu le plus dépouillé possible.
