@@ -2,8 +2,8 @@
    Captain Yvon Studio — feuille de style unique
    Charte studio : fond ivoire, texte noir, Montserrat auto-hebergee.
    Mise en page calquee sur la production : header a logo centre,
-   grille de vignettes cinemascope sur deux colonnes, aucun texte entre
-   les images.
+   grille de vignettes cinemascope sur deux colonnes, chacune legendee par
+   son titre et une ligne de metadonnees.
    Aucune dependance externe, aucun CDN, aucun JavaScript requis.
    ========================================================================= */
 
@@ -25,6 +25,7 @@
   --vert-foret: #3D5941;
   --bleu-ocean: #4E6771;
   --gris: #ACAAA4;
+  --gris-fonce: #726F68;    /* gris de texte sur fond clair, contraste 4.72:1 */
 
   /* Arrondis. --rayon est mesure sur la reference et s'applique a toutes
      les images ; --rayon-pilule produit un demi-cercle a toute hauteur. */
@@ -36,6 +37,10 @@
   --fond: var(--blanc-casse);
   --texte: var(--noir);
   --texte-doux: var(--gris);
+  /* Texte secondaire pose sur le fond ivoire. --texte-doux, plus clair, ne
+     passe pas le seuil de 4.5:1 sur ce fond : il reste reserve aux fonds
+     sombres et aux elements non textuels. */
+  --texte-second: var(--gris-fonce);
   --trait: var(--gris);
   --focus: var(--kaki);
 }
@@ -97,12 +102,30 @@
 
 /* -------------------------------------------------------------------------
    MISE EN PAGE — variables d'ajustement fin
-   Ces valeurs suffisent a caler la page sur la production : marge laterale,
+   Ces valeurs suffisent a caler la page sur la production : conteneur,
    gouttiere de grille, ratio des vignettes, hauteur du logo, respiration
    au-dessus et au-dessous du logo. L'arrondi vient de --rayon (palette).
    ------------------------------------------------------------------------- */
 :root {
-  --site-marge: 3.9vw;      /* marge laterale, identique a gauche et a droite */
+  /* Deux niveaux de largeur, une seule gouttiere.
+
+     --conteneur-gouttiere est la marge laterale, identique partout : c'est
+     elle qui aligne le bord gauche de l'entete sur celui du pied et sur
+     celui du contenu, quelle que soit la page.
+
+     --contenu-max est la largeur des pages interieures — page projet, page
+     studio, page de texte — et, depuis cette version, celle du cadre de
+     l'entete et du pied : les trois partagent le meme plafond, donc les
+     memes bords gauche et droit au pixel pres. Une seule valeur, pas de
+     seconde variable a tenir en phase.
+
+     Seule la grille d'accueil s'en affranchit, avec .enveloppe--pleine :
+     elle reste plus large et deborde volontairement de l'entete et du pied.
+     Ce retrait n'apparait qu'au-dela de 1600px de viewport, la ou le
+     plafond commence a mordre ; en dessous, les deux largeurs coincident. */
+  --conteneur-gouttiere: 3.9vw;
+  --contenu-max: 1600px;
+
   --grille-gap: 2vw;        /* gouttiere horizontale et verticale */
   --ratio-vignette: 2.39/1; /* cinemascope */
   --logo-hauteur: 50px;
@@ -115,16 +138,26 @@
   --entete-espace-haut: clamp(6.5rem, 7.5vw, 7rem);
   --entete-espace-bas: clamp(5rem, 6vw, 5.5rem);
 
-  /* Rythme vertical et largeurs de lecture, hors grille d'accueil. */
+  /* Medias de la page projet. --largeur-media est la largeur naturelle d'un
+     media, celle de la colonne de contenu. --media-reserve est la hauteur
+     retiree a la fenetre avant de convertir le reste en largeur : c'est la
+     respiration laissee autour du lecteur pour qu'il se voie d'un seul coup
+     d'oeil. Mesuree sur les deux formats les plus contraints, 1440x700 et
+     1280x600. */
+  --largeur-media: 100%;
+  --media-reserve: 8rem;
+
+  /* Rythme vertical et mesure de lecture. --mesure est la largeur maximale
+     d'un bloc de texte courant, environ 65 caracteres : elle plafonne le
+     texte a l'interieur du conteneur, jamais le conteneur lui-meme. */
   --pas: 1rem;
   --gouttiere: 1.5rem;
-  --largeur-max: 1600px;
-  --largeur-texte: 62ch;
+  --mesure: 65ch;
 }
 
-/* Sous 700px : une seule colonne, marge laterale reduite. */
+/* Sous 700px : une seule colonne, gouttiere reduite. */
 @media (max-width: 700px) {
-  :root { --site-marge: 5vw; }
+  :root { --conteneur-gouttiere: 5vw; }
 }
 
 /* -------------------------------------------------------------------------
@@ -209,26 +242,33 @@ blockquote, .citation {
   border: 1px solid var(--texte);
   z-index: 100;
 }
-.saut:focus { left: var(--site-marge); top: 0.5rem; }
+.saut:focus { left: var(--conteneur-gouttiere); top: 0.5rem; }
 
-/* Conteneur commun : marge laterale unique, partagee par l'entete,
-   la grille et les pages de texte. */
+/* Cadre global (.cadre) et conteneur de contenu (.enveloppe) : memes bords,
+   meme plafond, deux noms parce que les deux roles restent distincts. Le
+   cadre est porte par l'entete et le pied, l'enveloppe par le contenu des
+   pages interieures. Les regrouper ici garantit qu'ils ne peuvent pas
+   diverger : l'entete, le contenu d'une page projet et le pied tombent sur
+   le meme bord gauche et le meme bord droit, au pixel pres. */
+.cadre,
 .enveloppe {
-  max-width: var(--largeur-max);
+  width: 100%;
+  max-width: var(--contenu-max);
   margin-inline: auto;
-  padding-inline: var(--site-marge);
+  padding-inline: var(--conteneur-gouttiere);
 }
 
-/* Variante pleine largeur : pas de max-width, la largeur suit le viewport
-   moins les marges, comme en production. Utilisee par l'entete et par la
-   grille d'accueil pour qu'elles restent alignees a toute largeur. */
+/* Variante pleine largeur : pas de plafond, la largeur suit le viewport moins
+   les gouttieres. Utilisee par la grille d'accueil et par la liste des
+   projets, qui debordent donc volontairement de l'entete et du pied au-dela
+   de 1600px de viewport. */
 .enveloppe--pleine { max-width: none; }
 
 /* -------------------------------------------------------------------------
    EN-TETE
-   Desktop : nav a gauche, logo centre.
-   Mobile  : logo puis nav empiles.
-   Les liens sociaux vivent uniquement dans le pied de page.
+   Desktop : nav a gauche, logo centre, reseaux sur le bord droit.
+   Mobile  : logo puis nav empiles et centres ; les reseaux sont masques,
+   ils restent accessibles dans le pied de page.
    Ni bordure ni separateur : l'espacement fait le travail, comme en
    production. L'entete n'est pas collante.
    ------------------------------------------------------------------------- */
@@ -236,6 +276,9 @@ blockquote, .citation {
   padding-block: var(--entete-espace-haut) var(--entete-espace-bas);
 }
 
+/* Les trois zones sont posees sur des aires nommees : l'ordre du document
+   (nav, logo, reseaux) est celui du rendu sur une ligne, la tabulation suit
+   donc l'oeil. En dessous de 46em, la grille empile le logo puis la nav. */
 .entete-grille {
   display: grid;
   grid-template-areas: "logo" "nav";
@@ -259,13 +302,71 @@ blockquote, .citation {
 
 .entete-nav { grid-area: nav; }
 
+/* Les reseaux sociaux de l'entete ne sont rendus qu'a partir de 46em : sous
+   cette largeur, la place manque et le pied de page les porte deja. */
+.entete-social {
+  grid-area: social;
+  display: none;
+}
+
 @media (min-width: 46em) {
+  /* Trois colonnes : la centrale est dimensionnee par le logo, les deux
+     laterales sont strictement egales grace a minmax(0, 1fr). C'est cette
+     egalite qui centre reellement le logo dans le cadre : sans le minmax,
+     une navigation plus large que les reseaux pousserait la colonne centrale
+     vers la droite. La longueur de la nav n'a donc aucun effet sur le
+     centrage, elle ne fait que rogner l'espace libre de sa propre colonne. */
   .entete-grille {
-    grid-template-areas: "nav logo vide";
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-areas: "nav logo social";
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     gap: var(--gouttiere);
   }
   .entete-nav { justify-self: start; }
+  /* Cale sur le bord droit du cadre, en vis-a-vis du premier lien de nav. */
+  .entete-social {
+    display: block;
+    justify-self: end;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   RESEAUX SOCIAUX
+   Meme composant dans l'entete et dans le pied. L'icone est decorative,
+   l'intitule du reseau est du texte masque visuellement : le nom accessible
+   du lien ne depend ni d'un aria-label ni de l'icone.
+   ------------------------------------------------------------------------- */
+.social ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.social a {
+  display: inline-flex;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 2px;
+}
+.social a:hover { color: var(--texte-doux); }
+
+.icone {
+  display: block;
+  line-height: 0;
+}
+.icone svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+/* Repli quand le fichier d'icone manque : l'intitule s'affiche en clair. */
+.icone-texte {
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
 }
 
 /* -------------------------------------------------------------------------
@@ -297,7 +398,7 @@ blockquote, .citation {
    ------------------------------------------------------------------------- */
 main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); }
 
-.page-texte { max-width: var(--largeur-texte); padding-block: clamp(1rem, 3vw, 2rem) 0; }
+.page-texte { max-width: var(--mesure); padding-block: clamp(1rem, 3vw, 2rem) 0; }
 .page-texte h1 { margin-bottom: calc(var(--pas) * 1.5); }
 .page-texte ul { padding-left: 1.2em; }
 
@@ -306,7 +407,8 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
    Deux colonnes en CSS Grid, jamais trois. Largeur fluide : la grille
    occupe toute la largeur disponible moins les marges, sans max-width.
    Chaque vignette porte la couverture puis, en dessous, le titre du projet
-   en capitales suivi de l'annee entre parentheses quand elle est renseignee.
+   en capitales et une ligne de metadonnees en gris : le nom, un separateur,
+   l'annee.
    Aucune hauteur en dur : le cadrage vient de aspect-ratio + object-fit.
    ------------------------------------------------------------------------- */
 .grille-projets {
@@ -356,10 +458,11 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
    Le bloc « mouvement reduit » en fin de feuille neutralise la transition. */
 .vignette-lien:hover .vignette-image { opacity: 0.85; }
 
-/* Legende : titre en capitales, cale a gauche sous la couverture.
-   Les capitales viennent du rendu, pas du contenu : le titre reste lisible
-   dans le front matter et correctement restitue par les lecteurs d'ecran. */
-.vignette-legende {
+/* Titre : capitales, cale a gauche sous la couverture. Les capitales viennent
+   du rendu, pas du contenu : le titre reste lisible dans l'entete du fichier
+   et correctement restitue par les lecteurs d'ecran.
+   Sa marge haute est celle qui separe le bloc de texte de l'image. */
+.vignette-titre {
   margin: 0.85rem 0 0;
   font-size: 0.8rem;
   font-weight: 500;
@@ -370,11 +473,26 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   color: var(--texte);
 }
 
+/* Ligne de metadonnees : nom et annee, en casse normale et en corps plus
+   petit que le titre. Sa marge haute est cinq fois plus serree que celle du
+   titre : les deux lignes se lisent comme un bloc, detache de l'image.
+   Le gris est --texte-second, seul de la palette a tenir 4.5:1 sur l'ivoire :
+   --texte-doux, plus clair, y plafonne a 2.2:1. */
+.vignette-meta {
+  margin: 0.15rem 0 0;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  text-align: left;
+  color: var(--texte-second);
+}
+
 /* -------------------------------------------------------------------------
    PAGE PROJET
+   Aucune largeur maximale ici : la page projet vit dans le conteneur du
+   site, comme l'accueil et la page studio.
    ------------------------------------------------------------------------- */
-.projet { max-width: var(--largeur-max); }
-
 /* a. Ligne de titre : titre a gauche, annee a droite, alignes sur la meme
    ligne de base et separes par un espace flexible. space-between laisse le
    titre seul et cale a gauche quand l'annee est absente : aucune reserve
@@ -404,8 +522,9 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   text-transform: uppercase;
 }
 
-/* L'annee reprend le calibre du titre, en plus leger et en gris : elle se
-   lit comme une annotation, pas comme un second titre.
+/* Ligne de metadonnees du titre : annee, puis type de projet. Elle reprend le
+   calibre du titre, en plus leger et en gris : elle se lit comme une
+   annotation, pas comme un second titre. Les capitales viennent d'ici.
    margin-left: auto la maintient contre le bord droit y compris lorsqu'un
    titre long la fait passer a la ligne : sans lui, space-between la
    ramenerait a gauche des qu'elle se retrouve seule sur sa ligne. */
@@ -415,8 +534,19 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   font-weight: 400;
   letter-spacing: 0.04em;
   line-height: 1.2;
-  color: var(--texte-doux);
+  text-transform: uppercase;
+  color: var(--texte-second);
   font-variant-numeric: tabular-nums;
+}
+
+/* Separateur de la ligne de metadonnees, sur la fiche projet comme sur les
+   vignettes d'accueil : une seule regle pour que les deux restent identiques.
+   Purement decoratif, il est retire de l'arbre d'accessibilite dans les
+   gabarits, et n'existe que lorsque les deux valeurs sont presentes. */
+.projet-separateur,
+.vignette-separateur {
+  margin-inline: 0.5em;
+  color: var(--texte-doux);
 }
 
 /* Filet de l'entete, repris a l'identique avant la galerie. Discret : le
@@ -430,41 +560,54 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
    tiers. La grille tient aussi bien avec un seul des deux blocs : chacun est
    rendu uniquement si son contenu existe, et l'unique colonne restante
    occupe alors toute la largeur. */
+/* align-items: baseline cale la premiere ligne des metadonnees sur celle de
+   l'extrait. Les deux blocs n'ont ni le meme corps ni le meme interligne :
+   aligner les boites par le haut laissait leurs textes decales de 9px. */
 .projet-haut {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  align-items: baseline;
   gap: 1.75rem 4rem;
   margin-block: clamp(1.75rem, 3.5vw, 2.75rem);
 }
 
 /* Sous 700px les deux colonnes s'empilent, la presentation d'abord :
-   c'est l'ordre du document, aucune reorganisation n'est necessaire. */
+   c'est l'ordre du document, aucune reorganisation n'est necessaire. Les
+   metadonnees reviennent alors au bord gauche, comme le reste de la page. */
 @media (max-width: 700px) {
   .projet-haut { grid-template-columns: 1fr; }
 }
 
 /* La colonne de gauche garde une largeur de lecture confortable meme quand
    les deux tiers de la page depassent la mesure ideale. */
-.projet-presentation { max-width: var(--largeur-texte); }
+.projet-presentation { max-width: var(--mesure); }
 
 /* Extrait : le texte d'accroche de l'entete. En italique et en gris, il se
-   distingue de la note d'intention sans changer de calibre. */
+   distingue de la note d'intention. Son calibre monte au-dessus du texte
+   courant : c'est la premiere phrase que l'oeil rencontre sous le titre.
+   Le gris est celui qui tient le contraste sur fond ivoire. */
 .projet-extrait {
   margin: 0;
+  font-size: clamp(1.2rem, 1.6vw, 1.35rem);
   font-style: italic;
-  line-height: 1.6;
-  color: var(--texte-doux);
+  line-height: 1.45;
+  color: var(--texte-second);
 }
 
-/* Credit photo : une ligne discrete, calee sous l'extrait. Le nom devient
-   un lien quand l'entete fournit une adresse. */
+/* Credit photo : une ligne discrete posee juste au-dessus de la galerie, sur
+   son bord gauche. Le nom devient un lien quand l'entete fournit une adresse.
+   La marge basse est celle qui separait la galerie du filet : le credit prend
+   la place, la galerie se recale dessous sans espace supplementaire. */
 .projet-credit {
-  margin: var(--pas) 0 0;
-  font-size: 0.78rem;
+  margin: clamp(1.75rem, 3.5vw, 2.75rem) 0 0;
+  font-size: 0.8rem;
   letter-spacing: 0.04em;
-  color: var(--texte-doux);
+  color: var(--texte-second);
 }
 .projet-credit a { color: var(--texte); }
+
+/* La galerie colle alors au credit plutot que de reprendre sa marge haute. */
+.projet-credit + .galerie { margin-top: 0.6rem; }
 
 .projet-intro {
   margin-top: var(--pas);
@@ -477,17 +620,49 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
 .projet-intro p { margin: 0 0 var(--pas); }
 .projet-intro p:last-child { margin-bottom: 0; }
 
-/* c. Metadonnees : liste de definition en deux colonnes. */
+/* c. Metadonnees : liste de definition en deux colonnes.
+
+   La colonne des intitules est en max-content : elle vaut exactement la
+   largeur du plus long d'entre eux, et s'adapte donc a un intitule futur plus
+   long que SERVICES sans qu'aucune valeur ne soit a reprendre ici. La
+   deuxieme colonne prend le reste. La gouttiere qui separe l'intitule de sa
+   valeur descend a 1.25 fois le pas du theme, et l'ecart vertical entre deux
+   paires a la moitie de ce pas : les lignes se lisent comme un groupe.
+
+   width: fit-content empeche la liste de s'etirer sur toute la colonne de
+   droite, et la fait plier plutot que deborder quand la place manque. Un
+   width: max-content ferait gonfler la colonne au-dela du viewport une fois
+   les deux blocs empiles, la piste 1fr prenant alors pour minimum la largeur
+   imposee a la liste. justify-self: end la maintient calee sur le bord
+   droit ; sous 700px, ou tout est empile, elle revient a gauche.
+
+   align-items: baseline pose l'intitule et sa valeur sur la meme ligne de
+   base malgre leurs corps differents.
+
+   Le gris des intitules est --texte-second, seul a tenir 4.5:1 sur l'ivoire. */
 .projet-meta {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 0.4rem 1.5rem;
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-items: baseline;
+  justify-self: end;
+  width: fit-content;
+  max-width: 100%;
+  gap: calc(var(--pas) * 0.5) calc(var(--pas) * 1.25);
   margin: 0;
-  font-size: 0.78rem;
-  line-height: 1.5;
+  font-size: 0.95rem;
+  line-height: 1.65;
 }
+
+/* Une fois les deux colonnes empilees, la liste revient au bord gauche comme
+   le reste de la page. Cette surcharge doit suivre la regle ci-dessus : a
+   specificite egale, c'est la derniere declaree qui l'emporte. */
+@media (max-width: 700px) {
+  .projet-meta { justify-self: start; }
+}
+
 .projet-meta dt {
-  color: var(--gris);
+  color: var(--texte-second);
+  font-size: 0.8rem;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -504,15 +679,181 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   margin-block: clamp(1.75rem, 3.5vw, 2.75rem);
 }
 
-/* e. Navigation de fin. */
+/* Le media ne depasse jamais la fenetre en hauteur. Un bloc a ratio fixe
+   tire sa hauteur de sa largeur : sur une fenetre large et basse, la pleine
+   largeur du contenu produisait un lecteur plus haut que l'ecran, qu'il
+   fallait faire defiler pour voir en entier. On plafonne donc la largeur par
+   la hauteur disponible, reconvertie par le ratio du media.
+
+   var(--ratio) est le ratio pose en ligne par le partial video ; sa valeur de
+   repli, 16 / 9, sert au bloc qui n'en declare pas, dont l'image de
+   couverture affichee a la place du lecteur. Les deux plafonds sont
+   identiques : la couverture et le lecteur ont exactement la meme emprise.
+
+   La premiere declaration sert de repli aux navigateurs sans svh ; la
+   seconde tient compte des barres mobiles retractables. Le media reste
+   centre par ses marges automatiques. Aucune mesure en JavaScript. */
+.projet-medias > .video,
+.projet-medias > img {
+  max-width: min(var(--largeur-media), calc((100vh - var(--media-reserve)) * var(--ratio, 16 / 9)));
+  max-width: min(var(--largeur-media), calc((100svh - var(--media-reserve)) * var(--ratio, 16 / 9)));
+  margin-inline: auto;
+}
+
+/* f. Distinctions : intitule discret, puis une distinction par ligne. Au-dela
+   de quatre, les suivantes vivent dans un <details> natif. */
+.distinctions {
+  margin-block: clamp(2rem, 4vw, 3rem) 0;
+  max-width: var(--mesure);
+}
+
+.distinctions-titre {
+  margin: 0 0 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texte-second);
+}
+
+.distinctions-liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.distinctions-liste li { padding: 0.2rem 0; }
+
+/* Mention et annee : meme ligne que le nom, en retrait de couleur. */
+.distinctions-detail { color: var(--texte-second); }
+
+/* Le depliant reprend la facture des accordeons du theme : pas de fleche
+   native, un indicateur + / - dessine en CSS, et une cible cliquable large. */
+.distinctions-plus { margin-top: 0.9rem; }
+
+.distinctions-plus summary {
+  cursor: pointer;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5ch;
+  padding: 0.35rem 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--texte);
+}
+.distinctions-plus summary::-webkit-details-marker { display: none; }
+.distinctions-plus summary::before {
+  content: "+";
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--texte-second);
+}
+.distinctions-plus[open] summary::before { content: "\2212"; }
+.distinctions-plus summary:hover { color: var(--texte-second); }
+.distinctions-plus .distinctions-liste { margin-top: 0.4rem; }
+
+/* g. Navigation de fin. */
 .projet-retour { margin-block: clamp(2rem, 4vw, 3rem); }
+
+/* -------------------------------------------------------------------------
+   PAGE STUDIO
+   Haut de page en deux colonnes : le texte a gauche, le contact a droite.
+   ------------------------------------------------------------------------- */
+.studio-haut {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 1.75rem 4rem;
+  padding-block: clamp(1rem, 3vw, 2rem) 0;
+}
+
+/* La colonne de texte garde une mesure de lecture confortable : sans elle,
+   deux tiers du conteneur produiraient des lignes trop longues. */
+.studio-texte { max-width: var(--mesure); }
+.studio-texte h1 { margin-bottom: calc(var(--pas) * 1.5); }
+
+/* Colonne de droite collante. align-items: start sur la grille est ce qui la
+   rend possible : etiree sur toute la hauteur de la ligne, elle n'aurait rien
+   a faire glisser. Son bloc conteneur est la grille, elle s'arrete donc
+   d'elle-meme au bas des deux colonnes, sans jamais recouvrir le mur. */
+@media (min-width: 701px) {
+  .studio-contact {
+    position: sticky;
+    top: clamp(1.5rem, 4vw, 3rem);
+  }
+}
+
+/* Sous 700px le contact passe sous le texte, cale a gauche, et perd son
+   comportement collant. */
+@media (max-width: 700px) {
+  .studio-haut {
+    grid-template-columns: 1fr;
+    gap: clamp(2rem, 5vw, 3rem);
+  }
+}
+
+.studio-action { margin: 0; }
+
+.studio-adresse {
+  margin: 0.9rem 0 0;
+  font-size: 0.9rem;
+}
+
+.studio-collectif {
+  margin: 0.9rem 0 0;
+  font-size: 0.9rem;
+  color: var(--texte-second);
+}
+.studio-collectif a { color: var(--texte); }
+
+/* -------------------------------------------------------------------------
+   MUR DE PHOTOS DE TOURNAGE
+   Mosaique irreguliere en `columns` : les images gardent leur rapport, ne
+   sont pas recadrees et les colonnes se remplissent a des hauteurs
+   differentes. Aucune bibliotheque de maconnerie, aucun JavaScript.
+   ------------------------------------------------------------------------- */
+.mur { margin-block: clamp(2.5rem, 6vw, 4.5rem) 0; }
+
+.mur-titre {
+  margin: 0 0 clamp(1.25rem, 3vw, 2rem);
+  font-weight: 300;
+}
+
+/* Trois colonnes au-dela de 1000px, deux en dessous, tablette comme mobile.
+   La gouttiere est celle du theme, horizontale par column-gap et verticale
+   par la marge basse des images : `columns` ne connait pas row-gap. */
+.mur-grille {
+  columns: 3;
+  column-gap: var(--gouttiere);
+}
+
+@media (max-width: 1000px) {
+  .mur-grille { columns: 2; }
+}
+
+/* break-inside evite qu'une image soit coupee entre deux colonnes. Les angles
+   sont vifs, comme la galerie des fiches projet. */
+.mur-grille img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: var(--gouttiere);
+  border-radius: 0;
+  background: var(--surface);
+  break-inside: avoid;
+}
 
 /* -------------------------------------------------------------------------
    FICHE — accordeons natifs <details> / <summary>
    Indicateur + / - en CSS pur, aucun JavaScript.
    ------------------------------------------------------------------------- */
 .fiche {
-  max-width: var(--largeur-texte);
+  max-width: var(--mesure);
   margin-block: calc(var(--pas) * 2);
   border-top: 1px solid var(--trait);
 }
@@ -686,10 +1027,13 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
 /* La vignette entiere est un lien vers l'image en grand. Son nom accessible
    vient de son aria-label : l'image ne porte un alt que si la ressource
    declare un titre. */
+/* Angles vifs : l'arrondi du theme habille la couverture et le lecteur video,
+   pas les photographies de la galerie. La regle est portee par la classe de
+   la galerie, jamais retiree d'un selecteur global. */
 .galerie-lien {
   display: block;
   text-decoration: none;
-  border-radius: var(--rayon);
+  border-radius: 0;
   overflow: hidden;
 }
 
@@ -868,29 +1212,31 @@ html:has(.loupe:target) { overflow: hidden; }
    PIED DE PAGE
    ------------------------------------------------------------------------- */
 /* Bande sombre pleine largeur : le fond sort des marges du contenu, seul
-   le contenu interieur reprend la marge laterale du site. Aucun arrondi. */
+   le contenu interieur reprend le cadre du site. Aucun arrondi.
+   La respiration verticale vaut au moins l'espacement entre deux blocs de
+   contenu d'une page projet, clamp(1.75rem, 3.5vw, 2.75rem) : le pied ne
+   colle donc jamais au contenu qui le precede. */
 .pied {
   background: var(--noir);
   color: var(--blanc-casse);
-  padding-block: 48px;
+  padding-block: clamp(3rem, 5vw, 4rem);
   font-size: 0.75rem;
 }
 
+/* Trois colonnes alignees sur leur ligne haute : le contenu occupe toute la
+   largeur du cadre, sans vide central. La premiere est deux fois plus large
+   que les autres, elle porte la phrase de presentation en plus des lignes
+   d'identite. La gouttiere est celle du theme, jamais une valeur en dur. */
 .pied-grille {
   display: grid;
-  grid-template-columns: auto 1fr auto auto;
-  align-items: baseline;
-  gap: 2rem 3rem;
+  grid-template-columns: 2fr 1fr 1fr;
+  align-items: start;
+  gap: var(--gouttiere);
 }
 
-/* Sous 900px les quatre zones s'empilent dans l'ordre du document :
-   logo, identite, reseaux, pilule. */
+/* Sous 900px les trois colonnes s'empilent dans l'ordre du document. */
 @media (max-width: 900px) {
-  .pied-grille {
-    grid-template-columns: 1fr;
-    align-items: start;
-    gap: 2rem;
-  }
+  .pied-grille { grid-template-columns: 1fr; }
 }
 
 .pied-logo img { height: 34px; width: auto; display: block; }
@@ -905,8 +1251,11 @@ html:has(.loupe:target) { overflow: hidden; }
   color: var(--blanc-casse);
 }
 
-.pied-identite {
-  margin: 0;
+/* Lignes d'identite, colonne 1, et mention du collectif, colonne 2 : meme
+   traitement typographique, une ligne par element. */
+.pied-lignes,
+.pied-collectif {
+  margin: 1.1rem 0 0;
   list-style: none;
   padding: 0;
   font-weight: 500;
@@ -914,24 +1263,67 @@ html:has(.loupe:target) { overflow: hidden; }
   letter-spacing: 0.08em;
   line-height: 1.35;
 }
+/* Premier element de sa colonne : sa marge haute viendrait doubler
+   l'alignement sur la ligne haute des trois colonnes. */
+.pied-collectif { margin-top: 0; }
+.pied-lignes a,
+.pied-collectif a { color: var(--blanc-casse); }
+.pied-lignes a:hover,
+.pied-collectif a:hover { color: var(--gris); }
 
-.pied-reseaux {
-  margin: 0;
-  list-style: none;
-  padding: 0;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  line-height: 1.35;
+/* Phrase de presentation du studio. Casse normale, corps legerement inferieur
+   aux lignes en capitales qui l'encadrent : c'est une phrase, pas un libelle.
+   Sa mesure de lecture est bornee par --mesure pour qu'elle ne s'etire pas
+   sur toute la colonne, deux fois plus large que les deux autres. */
+.pied-presentation {
+  margin: 0.9rem 0 0;
+  max-width: var(--mesure);
+  font-size: 0.7rem;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
 }
-.pied-reseaux a { color: var(--blanc-casse); text-decoration: none; }
-.pied-reseaux a:hover { color: var(--gris); }
 
-.pied-action { justify-self: end; }
+/* Le lieu reprend les capitales, detache de la phrase qui le precede. */
+.pied-lignes--lieu { margin-top: 0.9rem; }
+
+/* Le podcast est secondaire : plus petit, en gris, sans capitales, detache
+   de la ligne du collectif par une respiration. Le lien reste souligne,
+   c'est le seul indice qui le distingue du texte sur fond sombre. */
+.pied-podcast {
+  margin: 0.9rem 0 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  color: var(--gris);
+}
+.pied-podcast a { color: inherit; }
+.pied-podcast a:hover { color: var(--blanc-casse); }
+
+/* Colonne 3 : bouton d'ecriture puis reseaux, cales sur le bord droit du
+   cadre. En pile sous 900px, tout revient a gauche. */
+.pied-colonne--action {
+  display: grid;
+  justify-items: end;
+  gap: var(--pas);
+}
+
 @media (max-width: 900px) {
-  .pied-action { justify-self: start; }
+  .pied-colonne--action { justify-items: start; }
 }
 
+/* Bouton d'ecriture. Il reprend la pilule du theme telle quelle — fond de
+   surface, arrondi --rayon-pilule, ni ombre ni aplat de couleur — et
+   n'ajoute qu'un plancher de hauteur pour rester confortable au pouce. Son
+   survol assombrit le fond, son focus clavier pose le contour kaki : deux
+   etats distincts, tous deux visibles sur la bande noire. */
+.pied-action {
+  margin: 0;
+}
+.pied-action .pilule {
+  min-height: 44px;
+  align-items: center;
+}
+
+/* Copyright : toute la largeur, cale a gauche, detache des colonnes. */
 .pied-mention {
   margin: 2.5rem 0 0;
   color: var(--gris);
@@ -945,7 +1337,7 @@ html:has(.loupe:target) { overflow: hidden; }
    404
    ------------------------------------------------------------------------- */
 .erreur {
-  max-width: var(--largeur-texte);
+  max-width: var(--mesure);
   padding-block: clamp(3rem, 10vw, 7rem);
 }
 

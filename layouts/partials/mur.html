@@ -1,0 +1,54 @@
+{{- /*
+  Mur de photos de tournage.
+
+  Alimentation entierement automatique : toutes les ressources image du page
+  bundle dont le nom de fichier commence par `bts-` sont ramassees ici. Aucun
+  champ d'entete a renseigner, deposer un fichier dans content/studio/ suffit.
+  L'ordre est celui des noms de fichiers, d'ou la numerotation a deux chiffres
+  decrite dans le README : c'est elle, et elle seule, qui pilote l'ordre.
+
+  Aucune image `bts-` dans le bundle : rien n'est rendu, pas meme le titre.
+
+  Mise en page : une mosaique irreguliere obtenue par la propriete CSS
+  `columns`. Les images gardent leur rapport d'origine, ne sont ni recadrees
+  ni calees sur une hauteur commune, et les colonnes se remplissent a des
+  hauteurs differentes : le mur parait desorganise sans une ligne de
+  JavaScript ni bibliotheque de maconnerie.
+
+  Les images ne sont pas cliquables : pas de loupe ici, contrairement a la
+  galerie d'une fiche projet. Elles ne sont donc atteignables ni a la souris
+  ni au clavier, et leur alt reste vide : elles sont decoratives, c'est le
+  titre de section qui porte l'information.
+
+  Poids : sortie WebP a la largeur reelle d'une colonne du mur, jamais plus.
+  Trois colonnes dans un conteneur plafonne a --contenu-max donnent environ
+  470px par colonne, la sortie est calee dessus. width et height sont poses
+  sur chaque balise pour reserver la place avant chargement, et seule la
+  premiere image est chargee immediatement.
+
+  Contexte attendu : la page studio.
+*/ -}}
+{{- $images := slice -}}
+{{- range .Resources.ByType "image" -}}
+  {{- if hasPrefix .Name "bts-" }}{{ $images = $images | append . }}{{ end -}}
+{{- end -}}
+{{- $images = sort $images "Name" -}}
+
+{{- with $images }}
+<section class="mur" aria-labelledby="mur-titre">
+  <h2 class="mur-titre" id="mur-titre">Voici un aperçu de nos vies en tournage</h2>
+
+  <div class="mur-grille">
+    {{- range $rang, $r := . }}
+      {{- /* Jamais d'agrandissement : une source plus etroite que la colonne
+             est servie a sa taille d'origine. */ -}}
+      {{- $largeur := cond (gt $r.Width 470) 470 $r.Width -}}
+      {{- $photo := $r.Resize (printf "%dx webp q78" $largeur) }}
+    <img src="{{ $photo.RelPermalink }}"
+         width="{{ $photo.Width }}" height="{{ $photo.Height }}"
+         alt=""
+         {{ if $rang }}loading="lazy" {{ end }}decoding="async">
+    {{- end }}
+  </div>
+</section>
+{{- end -}}

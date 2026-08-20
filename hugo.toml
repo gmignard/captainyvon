@@ -23,11 +23,6 @@ disableKinds = ["taxonomy", "term", "rss"]
   url = "/studio/"
   weight = 20
 
-[[menus.main]]
-  name = "Contact"
-  url = "/contact/"
-  weight = 30
-
 # Garde-fou de date, pas une source de verite : si un projet n'a pas de
 # `date` exploitable dans son entete, Hugo retombe sur la date de
 # modification du fichier plutot que sur la date zero. Les projets encore
@@ -38,7 +33,7 @@ disableKinds = ["taxonomy", "term", "rss"]
   date = ["date", ":fileModTime", ":default"]
 
 [params]
-  description = "Captain Yvon Studio, duo de réalisateurs et photographes entre le Finistère Nord et Lille."
+  description = "Captain Yvon Studio, duo de réalisateurs et photographes entre Brest et Lille."
   logo = "img/logo-captainyvon-noir.svg"
   logoAlt = "Captain Yvon Studio"
   # Dimensions intrinseques du fichier logo, pour eviter tout decalage de mise en page.
@@ -46,9 +41,7 @@ disableKinds = ["taxonomy", "term", "rss"]
   logoHauteur = 36
   ogImageDefaut = "img/og-defaut.jpg"
   email = "studio@captainyvon.fr"
-  lieu = "Finistère Nord et Lille"
-  fondation = 2016
-  onePercent = true
+  lieu = "Brest et Lille"
 
 [[params.social]]
   nom = "Instagram"

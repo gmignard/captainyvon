@@ -3,12 +3,14 @@
   Page projet.
 
   Ordre fixe, de haut en bas :
-    a. ligne de titre : titre a gauche, annee a droite, filet dessous
-    b. presentation : extrait, credit photo et note d'intention, deux tiers
-    c. metadonnees : client, services, livrables, avec, un tiers
+    a. ligne de titre : titre a gauche, annee et type de projet a droite,
+       filet dessous
+    b. presentation : extrait et note d'intention, deux tiers
+    c. metadonnees : client, services, avec, un tiers
     d. medias : lecteur video ou couverture seule
-    e. galerie : filet, puis grille de vignettes du page bundle
-    f. fin de page : pilule de retour vers la liste des projets
+    e. galerie : filet, credit photo, puis grille de vignettes du bundle
+    f. distinctions : selections et prix, si l'entete en declare
+    g. fin de page : pilule de retour vers la liste des projets
 
   Chaque bloc teste la presence de son contenu avant de s'afficher : un champ
   vide ne produit ni espace, ni tiret, ni parentheses vides, ni libelle
@@ -22,13 +24,52 @@
 {{- /* Annee, ou chaine vide si la date reste a remplir. Voir annee.html. */ -}}
 {{- $annee := partial "annee.html" . -}}
 
+{{- /* Type de projet, tire du champ `nature`. Deux valeurs au contrat :
+       `commande` et `personnel`. Toute autre valeur, ou l'absence de champ,
+       ne produit aucun libelle : la ligne se reduit alors a l'annee.
+       Les capitales viennent de la feuille de style, comme partout ailleurs
+       sur le site : le contenu reste lisible dans l'entete du fichier et
+       correctement restitue par les lecteurs d'ecran. */ -}}
+{{- $type := "" -}}
+{{- with .Params.nature -}}
+  {{- if eq . "commande" }}{{ $type = "Commissionné" }}{{ end -}}
+  {{- if eq . "personnel" }}{{ $type = "Projet personnel" }}{{ end -}}
+{{- end -}}
+
+{{- /* Ligne de metadonnees du titre : annee, puis type de projet. Chaque
+       valeur n'entre dans la liste que si elle existe, et le separateur est
+       pose entre deux entrees presentes : ni separateur orphelin, ni ligne
+       vide quand les deux manquent. */ -}}
+{{- $ligneTitre := slice -}}
+{{- with $annee }}{{ $ligneTitre = $ligneTitre | append . }}{{ end -}}
+{{- with $type }}{{ $ligneTitre = $ligneTitre | append . }}{{ end -}}
+
 {{- /* Metadonnees, dans l'ordre du schema. Les listes sont jointes par une
-       virgule. Un champ absent ou vide ne cree aucune entree. */ -}}
+       virgule. Un champ absent ou vide ne cree aucune entree.
+       `livrables` n'est plus rendu : le champ reste dans les entetes, la
+       donnee est conservee, mais la fiche ne l'affiche pas. */ -}}
 {{- $meta := slice -}}
 {{- with .Params.client }}{{ $meta = $meta | append (dict "cle" "Client" "valeur" .) }}{{ end -}}
 {{- with .Params.services }}{{ $meta = $meta | append (dict "cle" "Services" "valeur" (delimit . ", ")) }}{{ end -}}
-{{- with .Params.livrables }}{{ $meta = $meta | append (dict "cle" "Livrables" "valeur" (delimit . ", ")) }}{{ end -}}
 {{- with .Params.avec }}{{ $meta = $meta | append (dict "cle" "Avec" "valeur" (delimit . ", ")) }}{{ end -}}
+
+{{- /* Credit photo. Deux ecritures acceptees dans l'entete :
+         credit_photo: "Prenom Nom"  +  credit_photo_url: "https://..."
+         credit_photo: {nom: "Prenom Nom", url: "https://..."}
+       La seconde est la forme a privilegier pour les nouveaux projets, la
+       premiere reste lue pour ne pas avoir a reecrire les entetes en place.
+       Sans nom, aucune ligne n'est rendue et aucune place n'est reservee. */ -}}
+{{- $creditNom := "" -}}
+{{- $creditURL := "" -}}
+{{- with .Params.credit_photo -}}
+  {{- if reflect.IsMap . -}}
+    {{- with .nom }}{{ $creditNom = printf "%v" . }}{{ end -}}
+    {{- with .url }}{{ $creditURL = printf "%v" . }}{{ end -}}
+  {{- else -}}
+    {{- $creditNom = printf "%v" . -}}
+  {{- end -}}
+{{- end -}}
+{{- if not $creditURL }}{{ with .Params.credit_photo_url }}{{ $creditURL = printf "%v" . }}{{ end }}{{ end -}}
 
 {{- $couverture := partial "couverture.html" . -}}
 {{- $aVideo := false -}}
@@ -37,17 +78,23 @@
 
 <article class="projet enveloppe">
 
-  {{- /* a. Ligne de titre : titre et annee sur la meme ligne de base, un
-         espace flexible entre les deux. L'annee vit hors du <h1> : elle
-         n'appartient pas au titre du document. Sans annee, le titre reste
-         seul et cale a gauche, sans reserve d'espace a droite.
+  {{- /* a. Ligne de titre : titre et ligne de metadonnees sur la meme ligne
+         de base, un espace flexible entre les deux. Ces metadonnees vivent
+         hors du <h1> : elles n'appartiennent pas au titre du document. Sans
+         annee ni type, le titre reste seul et cale a gauche, sans reserve
+         d'espace a droite.
          Les capitales viennent de la feuille de style, jamais du contenu :
          le titre reste lisible dans l'entete du fichier et correctement
          restitue par les lecteurs d'ecran. */ -}}
   <header class="projet-titre">
     <h1>{{ $titre }}</h1>
-    {{- with $annee }}
-    <p class="projet-annee">{{ . }}</p>
+    {{- with $ligneTitre }}
+    <p class="projet-annee">
+      {{- range $i, $valeur := . }}
+        {{- if $i }}<span class="projet-separateur" aria-hidden="true">&middot;</span>{{ end }}
+        {{- printf "%v" $valeur }}
+      {{- end }}
+    </p>
     {{- end }}
   </header>
 
@@ -61,25 +108,17 @@
 
          Chaque niveau teste son contenu : le conteneur n'existe que si l'un
          des deux blocs a quelque chose a dire, la colonne de gauche n'existe
-         que si l'un de ses trois elements est renseigne. Une entete sans
-         extrait, sans credit et sans livrables ne laisse donc ni bloc vide
-         ni espacement fantome. */ -}}
+         que si l'un de ses deux elements est renseigne. Une entete sans
+         extrait et sans metadonnees ne laisse donc ni bloc vide ni
+         espacement fantome. */ -}}
   {{- $extrait := .Params.extrait -}}
-  {{- $credit := .Params.credit_photo -}}
-  {{- $aPresentation := or $extrait $credit .Content -}}
+  {{- $aPresentation := or $extrait .Content -}}
   {{- if or $aPresentation $meta }}
   <div class="projet-haut">
     {{- if $aPresentation }}
     <div class="projet-presentation">
       {{- with $extrait }}
       <p class="projet-extrait">{{ . }}</p>
-      {{- end }}
-      {{- with $credit }}
-      {{- $nom := . -}}
-      <p class="projet-credit">Crédit photo :
-        {{- with $.Params.credit_photo_url }} <a href="{{ . }}" rel="noopener">{{ $nom }}</a>
-        {{- else }} {{ $nom }}
-        {{- end }}</p>
       {{- end }}
       {{- with .Content }}
       <div class="projet-intro">{{ . }}</div>
@@ -117,10 +156,22 @@
          du champ `galerie`, qui n'est qu'une des deux sources possibles. */ -}}
   {{- if trim $galerie " \n\r\t" }}
   <hr class="projet-filet">
+  {{- /* Le credit photo n'a de sens qu'au-dessus des photographies : il vit
+         donc ici, cale sur le bord gauche de la galerie, et nulle part
+         ailleurs. Sans galerie, il n'est pas rendu du tout. */ -}}
+  {{- with $creditNom }}
+  <p class="projet-credit">Photographies
+    {{- with $creditURL }} <a href="{{ . }}" rel="noopener">{{ $creditNom }}</a>
+    {{- else }} {{ . }}
+    {{- end }}</p>
+  {{- end }}
   {{ $galerie }}
   {{- end }}
 
-  {{- /* f. Fin de page. */ -}}
+  {{- /* f. Distinctions. Le partial ne rend rien si le champ est absent. */ -}}
+  {{ partial "distinctions.html" . }}
+
+  {{- /* g. Fin de page. */ -}}
   <div class="projet-retour">
     {{ partial "pilule.html" (dict "href" ("/" | relURL) "libelle" "Tous les projets") }}
   </div>

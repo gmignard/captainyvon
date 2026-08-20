@@ -1,7 +1,12 @@
-# La page contact a fusionné dans la page studio : /contact renvoie
-# désormais vers la section correspondante, en permanent.
-/contact   /studio/#contact   301
-/contact/* /studio/#contact   301
+# La page contact n'existe plus : son contenu est repris par la colonne de
+# droite de la page studio. Les trois formes de l'ancienne adresse renvoient
+# donc vers /studio/, en permanent. Plus d'ancre #contact : la section qui la
+# portait a disparu avec la fusion, y pointer mènerait à une ancre morte.
+# Les règles sont lues dans l'ordre, la première qui correspond gagne : la
+# forme exacte d'abord, le joker ensuite.
+/contact   /studio/   301
+/contact/  /studio/   301
+/contact/* /studio/   301
 
 # Anciennes URLs Squarespace sans équivalent sur le nouveau site.
 # Les URLs /work/<slug> et /studio sont identiques, aucune redirection.

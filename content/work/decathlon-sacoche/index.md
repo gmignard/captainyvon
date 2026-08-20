@@ -1,7 +1,7 @@
 ---
 title: "La sacoche qui pousse dans les champs"
 date: 2026-02-01
-nature: "film"
+nature: "commande"
 client: "Decathlon"
 extrait: "Réalisation d’un film documentaire pour Décathlon et présenter la sacoche de bikepacking qui pousse dans les champs."
 credit_photo: "Maxence Malak"

@@ -8,6 +8,10 @@
 
   {{ partial "header.html" . }}
 
+  {{- /* Le <main> ne porte pas de largeur : chaque gabarit declare la sienne,
+         .enveloppe pour une page de texte ou une page projet,
+         .enveloppe--pleine pour la grille d'accueil. L'alignement avec
+         l'entete et le pied vient de la gouttiere, commune a tous. */ -}}
   <main id="contenu">
     {{ block "main" . }}{{ end }}
   </main>

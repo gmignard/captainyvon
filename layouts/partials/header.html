@@ -1,16 +1,23 @@
 {{- /*
-  En-tete sur une ligne en desktop : nav a gauche, logo centre.
-  En mobile la CSS empile logo puis nav.
+  En-tete sur une ligne au-dela de 46em, en trois zones : navigation a
+  gauche, logo centre, liens sociaux a droite. Sous 46em la CSS empile le
+  logo puis la nav et masque les liens sociaux : ils restent accessibles
+  dans le pied de page.
 
-  Les liens sociaux ont ete retires : ils faisaient double emploi avec le
-  pied de page, ou ils portent un libelle texte, alors qu'ici les lecteurs
-  d'ecran les annoncaient par leur URL brute.
+  Le logo est centre dans le cadre par une grille a trois colonnes dont les
+  deux laterales sont strictement egales, jamais par l'espacement entre
+  trois blocs de largeurs differentes : la longueur de la navigation ou le
+  nombre de reseaux n'ont donc aucun effet sur sa position.
 
-  Pleine largeur comme en production : l'entete partage la marge laterale
-  de la grille d'accueil (--site-marge) et n'a pas de max-width, pour que le
-  logo reste centre sur le viewport et aligne avec la grille a toute largeur.
+  L'entete partage le cadre global (.cadre) avec le pied de page, cale sur la
+  largeur des pages interieures : la navigation, le contenu d'une page projet
+  et le pied tombent donc sur les memes bords, gauche et droit. Seule la
+  grille d'accueil est plus large et deborde du cadre, volontairement.
   Ni bordure ni separateur en bas : c'est l'espacement qui separe l'entete
   du contenu. L'entete n'est pas collante.
+
+  L'ordre du document — nav, logo, reseaux — est celui du rendu sur une
+  ligne : la tabulation suit ce que l'oeil parcourt, de gauche a droite.
 
   Logo : le fichier vient de params.logo, sa hauteur d'affichage de la
   variable CSS --logo-hauteur, la largeur suivant le ratio du fichier.
@@ -18,7 +25,7 @@
   chargement.
 */ -}}
 <header class="entete">
-  <div class="enveloppe enveloppe--pleine entete-grille">
+  <div class="cadre entete-grille">
 
     <div class="entete-nav">{{ partial "nav.html" . }}</div>
 
@@ -37,6 +44,8 @@
         {{- end -}}
       </a>
     </div>
+
+    <div class="entete-social">{{ partial "social.html" . }}</div>
 
   </div>
 </header>

@@ -1,16 +1,27 @@
 {{- /*
   Vignette de projet.
 
-  La vignette porte la couverture puis une legende : le titre du projet,
-  mis en capitales par la CSS, suivi de l'annee entre parentheses.
+  La vignette porte la couverture, puis le titre du projet mis en capitales
+  par la CSS, puis une ligne de metadonnees en gris : le nom, un separateur,
+  l'annee.
+
+  Le nom depend du champ `nature`. Un projet en `commande` porte le nom de
+  son client, un projet `personnel` la mention Captain Yvon Originals. Ce nom
+  n'existait jusqu'ici que sous forme de logo incruste dans la couverture,
+  donc ni lisible en petit, ni indexable, ni restituable a la voix.
 
   L'annee est derivee de la date de la page, jamais d'un champ dedie. Un
-  projet dont la date reste a remplir affiche le titre seul, sans
-  parentheses vides : la regle est centralisee dans annee.html.
+  projet dont la date reste a remplir affiche le nom seul : la regle est
+  centralisee dans annee.html.
 
-  La legende etant du texte visible a l'interieur du lien, elle en fournit
-  le nom accessible : l'image porte un alt vide pour ne pas faire annoncer
-  le titre deux fois.
+  Les deux valeurs n'entrent dans la ligne que si elles existent, et le
+  separateur n'est pose qu'entre deux entrees presentes : jamais de
+  separateur orphelin, et pas de ligne du tout quand les deux manquent.
+
+  Titre et metadonnees sont du texte visible a l'interieur du lien : ils en
+  fournissent le nom accessible, et l'image porte un alt vide pour ne rien
+  faire annoncer deux fois. Rien n'est masque puis revele au survol, tout
+  est lisible en permanence.
 
   Contexte attendu : un dict
     page  — la page projet
@@ -31,6 +42,20 @@
 {{- if not $titre }}{{ with $page.File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
 {{- $annee := partial "annee.html" $page -}}
 
+{{- /* Nom affiche dans la ligne de metadonnees. Une valeur de `nature` autre
+       que `personnel` retombe sur le client : c'est le cas d'un projet en
+       commande, et aussi le repli sain d'un champ absent ou mal saisi. */ -}}
+{{- $nom := "" -}}
+{{- if eq $page.Params.nature "personnel" -}}
+  {{- $nom = "Captain Yvon Originals" -}}
+{{- else -}}
+  {{- with $page.Params.client }}{{ $nom = printf "%v" . }}{{ end -}}
+{{- end -}}
+
+{{- $meta := slice -}}
+{{- with $nom }}{{ $meta = $meta | append . }}{{ end -}}
+{{- with $annee }}{{ $meta = $meta | append . }}{{ end -}}
+
 {{- $couverture := partial "couverture.html" $page -}}
 {{- with $couverture }}
 
@@ -44,7 +69,7 @@
   {{- $grande := cond (gt $l1600 $l800) (.Resize (printf "%dx webp q82" $l1600)) $petite -}}
 
   {{- /* Deux colonnes au-dela de 700px : chaque vignette occupe
-         (100vw - 2 * --site-marge - --grille-gap) / 2, soit ~45vw.
+         (100vw - 2 * --conteneur-gouttiere - --grille-gap) / 2, soit ~45vw.
          En dessous, une colonne : 100vw - 2 * 5vw. */ -}}
   {{- $sizes := "(max-width: 700px) 90vw, 45vw" -}}
   {{- $immediate := lt $rang 2 -}}
@@ -58,7 +83,15 @@
          width="{{ $petite.Width }}" height="{{ $petite.Height }}"
          alt=""
          {{ if $immediate }}loading="eager" fetchpriority="high"{{ else }}loading="lazy" decoding="async"{{ end }}>
-    <p class="vignette-legende">{{ $titre }}{{ with $annee }} ({{ . }}){{ end }}</p>
+    <p class="vignette-titre">{{ $titre }}</p>
+    {{- with $meta }}
+    <p class="vignette-meta">
+      {{- range $i, $valeur := . }}
+        {{- if $i }}<span class="vignette-separateur" aria-hidden="true">&middot;</span>{{ end }}
+        {{- printf "%v" $valeur }}
+      {{- end }}
+    </p>
+    {{- end }}
   </a>
 </li>
 {{- end }}

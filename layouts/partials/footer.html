@@ -1,59 +1,104 @@
 {{- /*
   Pied de page : bande sombre pleine largeur, presente au bas de chaque page.
 
-  Quatre zones alignees sur une meme ligne de base au-dela de 900px, empilees
-  en dessous dans l'ordre du document : logo, identite, reseaux, pilule.
+  C'est le seul partial de pied du site : il est appele une fois dans
+  baseof.html et sert donc a l'identique l'accueil, la liste, la page studio
+  et les pages projet.
 
-  Aucune donnee n'est ecrite en dur ici : les coordonnees et les reseaux
-  viennent de [params] dans hugo.toml, le reste de data/pied.yaml.
+  Trois colonnes de largeur egale au-dela du point de rupture, puis la
+  mention de copyright sur toute la largeur :
+    1. nom du studio, activite, phrase de presentation, lieu
+    2. collectif, podcast
+    3. bouton d'ecriture puis reseaux sociaux, cales a droite
+  Sous 900px les trois colonnes s'empilent dans l'ordre 1, 2, 3, toutes
+  alignees a gauche, bouton et reseaux compris.
+
+  L'ordre du balisage est celui de la lecture : la tabulation suit ce que
+  l'oeil parcourt. Un seul groupe d'icones sociales, en colonne 3.
+
+  Aucune coordonnee n'est ecrite en dur ici : l'e-mail, le lieu et les
+  reseaux viennent de [params] dans hugo.toml, le reste de data/pied.yaml.
+  Seule l'annee de fondation est en dur, avec l'annee de fin generee au
+  build : c'est la seule graphie du copyright sur tout le site.
+
+  Les liens externes du bloc d'identite — collectif et podcast — s'ouvrent
+  dans le meme onglet.
 */ -}}
 {{- $pied := site.Data.pied -}}
 <footer class="pied">
-  <div class="enveloppe enveloppe--pleine">
+  <div class="cadre">
 
     <div class="pied-grille">
 
-      {{- /* 1. Logo clair, ou repli texte si le fichier n'est pas depose. */ -}}
-      <div class="pied-logo">
-        {{- $logo := "" -}}
-        {{- with $pied.logo_clair }}{{ $logo = resources.Get . }}{{ end -}}
-        {{- with $logo -}}
-          <img src="{{ .RelPermalink }}" alt="{{ site.Params.logoAlt | default site.Title }}"
-               loading="lazy" decoding="async">
-        {{- else -}}
-          <span class="pied-logo-texte">{{ site.Title }}</span>
-        {{- end -}}
-      </div>
+      {{- /* Colonne 1 : nom du studio, activite, phrase de presentation, lieu.
+             Le nom est le logo clair, ou un repli texte si le fichier n'est
+             pas depose dans le depot. La phrase de presentation s'intercale
+             entre l'activite et le lieu : elle est en casse normale, les
+             lignes qui l'encadrent restent en capitales. */ -}}
+      <div class="pied-colonne">
+        <div class="pied-logo">
+          {{- $logo := "" -}}
+          {{- with $pied.logo_clair }}{{ $logo = resources.Get . }}{{ end -}}
+          {{- with $logo -}}
+            <img src="{{ .RelPermalink }}" alt="{{ site.Params.logoAlt | default site.Title }}"
+                 loading="lazy" decoding="async">
+          {{- else -}}
+            <span class="pied-logo-texte">{{ site.Title }}</span>
+          {{- end -}}
+        </div>
 
-      {{- /* 2. Bloc d'identite, trois lignes. */ -}}
-      <ul class="pied-identite">
-        {{- with $pied.activite }}<li>{{ . }}</li>{{ end }}
-        {{- with site.Params.lieu }}<li>{{ . }}</li>{{ end }}
-        {{- if site.Params.onePercent }}{{ with $pied.un_pourcent }}<li>{{ . }}</li>{{ end }}{{ end }}
-      </ul>
+        <ul class="pied-lignes">
+          {{- with $pied.activite }}<li>{{ . }}</li>{{ end }}
+        </ul>
 
-      {{- /* 3. Reseaux sociaux en texte, un par ligne. */ -}}
-      {{- with site.Params.social }}
-      <ul class="pied-reseaux">
-        {{- range . }}
-        <li><a href="{{ .url }}" rel="noopener" target="_blank">{{ .nom }}</a></li>
+        {{- with $pied.presentation }}
+        <p class="pied-presentation">{{ . }}</p>
         {{- end }}
-      </ul>
-      {{- end }}
 
-      {{- /* 4. Pilule de contact. */ -}}
-      {{- with site.Params.email }}
-      <div class="pied-action">
-        {{ partial "pilule.html" (dict "href" (printf "mailto:%s" .) "libelle" ($pied.action | default "Écrire au studio")) }}
+        <ul class="pied-lignes pied-lignes--lieu">
+          {{- with site.Params.lieu }}<li>{{ . }}</li>{{ end }}
+        </ul>
       </div>
-      {{- end }}
+
+      {{- /* Colonne 2 : collectif, puis podcast en ligne secondaire. */ -}}
+      <div class="pied-colonne">
+        {{- with $pied.collectif }}
+          {{- if .nom }}
+        <p class="pied-collectif">{{ with .intro }}{{ . }} {{ end }}{{ with .url }}<a href="{{ . }}" rel="noopener">{{ $pied.collectif.nom }}</a>{{ else }}{{ .nom }}{{ end }}</p>
+          {{- end }}
+        {{- end }}
+        {{- with $pied.podcast }}
+          {{- if and .nom .url }}
+        <p class="pied-podcast"><a href="{{ .url }}" rel="noopener">{{ .nom }}</a>{{ with .mention }}, {{ . }}{{ end }}</p>
+          {{- end }}
+        {{- end }}
+      </div>
+
+      {{- /* Colonne 3 : bouton d'ecriture puis reseaux sociaux, cales sur le
+             bord droit du cadre au-dela du point de rupture.
+
+             Le bouton reprend la pilule du theme sans passer par pilule.html :
+             le partial ne sait pas porter de complement masque, et l'adresse
+             doit rester dans le nom accessible du lien. Ce dernier se lit donc
+             « Écrire au studio, studio@captainyvon.fr », alors que l'oeil ne
+             voit que le libelle. La fleche reste du texte. */ -}}
+      <div class="pied-colonne pied-colonne--action">
+        {{- with site.Params.email }}
+        <p class="pied-action">
+          <a class="pilule" href="mailto:{{ . }}">
+            <span class="pilule-fleche" aria-hidden="true">&rarr;</span>
+            <span>Écrire au studio<span class="visuellement-cache">, {{ . }}</span></span>
+          </a>
+        </p>
+        {{- end }}
+        <div class="pied-reseaux">{{ partial "social.html" . }}</div>
+      </div>
 
     </div>
 
-    {{- /* Millesime de fin genere depuis la date de build. */ -}}
-    <p class="pied-mention">
-      &copy;{{ with site.Params.fondation }} {{ . }}-{{ end }}{{ now.Format "2006" }} {{ site.Title }}
-    </p>
+    {{- /* Copyright sur toute la largeur : annee de depart en dur, annee de
+           fin generee depuis la date de build, trait d'union simple. */ -}}
+    <p class="pied-mention">&copy; 2016-{{ now.Format "2006" }} {{ site.Title }}</p>
 
   </div>
 </footer>
