@@ -1041,6 +1041,20 @@ html:has(.loupe:target) { overflow: hidden; }
 .pied-lignes a { color: var(--blanc-casse); }
 .pied-lignes a:hover { color: var(--gris); }
 
+/* Bouton d'ecriture, a la place de la ligne d'adresse. Il reprend la pilule
+   du theme telle quelle — fond de surface, arrondi --rayon-pilule, ni ombre
+   ni aplat de couleur — et n'ajoute qu'un plancher de hauteur pour rester
+   confortable au pouce. Son survol assombrit le fond, son focus clavier
+   pose le contour kaki : deux etats distincts, tous deux visibles sur la
+   bande noire. */
+.pied-action {
+  margin: 1.1rem 0 0;
+}
+.pied-action .pilule {
+  min-height: 44px;
+  align-items: center;
+}
+
 /* Le podcast est secondaire : plus petit, en gris, sans capitales, detache
    du bloc d'identite par une respiration. Le lien reste souligne, c'est le
    seul indice qui le distingue du texte sur fond sombre. */

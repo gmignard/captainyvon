@@ -6,8 +6,8 @@
   et les pages projet.
 
   Ordre du document, qui est aussi celui du rendu et de la tabulation :
-  nom du studio, activite, lieu, collectif, e-mail, podcast, reseaux,
-  mention de copyright.
+  nom du studio, activite, lieu, collectif, bouton d'ecriture, podcast,
+  reseaux, mention de copyright.
 
   Aucune coordonnee n'est ecrite en dur ici : l'e-mail, le lieu et les
   reseaux viennent de [params] dans hugo.toml, le reste de data/pied.yaml.
@@ -37,7 +37,7 @@
           {{- end -}}
         </div>
 
-        {{- /* 2 a 5. Activite, lieu, collectif, e-mail. */ -}}
+        {{- /* 2 a 4. Activite, lieu, collectif. */ -}}
         <ul class="pied-lignes">
           {{- with $pied.activite }}<li>{{ . }}</li>{{ end }}
           {{- with site.Params.lieu }}<li>{{ . }}</li>{{ end }}
@@ -46,8 +46,22 @@
           <li>{{ with .intro }}{{ . }} {{ end }}{{ with .url }}<a href="{{ . }}" rel="noopener">{{ $pied.collectif.nom }}</a>{{ else }}{{ .nom }}{{ end }}</li>
             {{- end }}
           {{- end }}
-          {{- with site.Params.email }}<li><a href="mailto:{{ . }}">{{ . }}</a></li>{{ end }}
         </ul>
+
+        {{- /* 5. Bouton d'ecriture, a la place de la ligne d'adresse. Il
+               reprend la pilule du theme, sans passer par pilule.html : le
+               partial ne sait pas porter de complement masque, et l'adresse
+               doit rester dans le nom accessible du lien. Ce dernier se lit
+               donc « Écrire au studio, studio@captainyvon.fr », alors que
+               l'oeil ne voit que le libelle. La fleche reste du texte. */ -}}
+        {{- with site.Params.email }}
+        <p class="pied-action">
+          <a class="pilule" href="mailto:{{ . }}">
+            <span class="pilule-fleche" aria-hidden="true">&rarr;</span>
+            <span>Écrire au studio<span class="visuellement-cache">, {{ . }}</span></span>
+          </a>
+        </p>
+        {{- end }}
 
         {{- /* 6. Podcast : une ligne discrete, en retrait du reste. */ -}}
         {{- with $pied.podcast }}
