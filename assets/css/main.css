@@ -567,15 +567,20 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   color: var(--texte-doux);
 }
 
-/* Credit photo : une ligne discrete, calee sous l'extrait. Le nom devient
-   un lien quand l'entete fournit une adresse. */
+/* Credit photo : une ligne discrete posee juste au-dessus de la galerie, sur
+   son bord gauche. Le nom devient un lien quand l'entete fournit une adresse.
+   La marge basse est celle qui separait la galerie du filet : le credit prend
+   la place, la galerie se recale dessous sans espace supplementaire. */
 .projet-credit {
-  margin: var(--pas) 0 0;
-  font-size: 0.78rem;
+  margin: clamp(1.75rem, 3.5vw, 2.75rem) 0 0;
+  font-size: 0.8rem;
   letter-spacing: 0.04em;
-  color: var(--texte-doux);
+  color: var(--texte-second);
 }
 .projet-credit a { color: var(--texte); }
+
+/* La galerie colle alors au credit plutot que de reprendre sa marge haute. */
+.projet-credit + .galerie { margin-top: 0.6rem; }
 
 .projet-intro {
   margin-top: var(--pas);

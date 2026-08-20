@@ -5,10 +5,10 @@
   Ordre fixe, de haut en bas :
     a. ligne de titre : titre a gauche, annee et type de projet a droite,
        filet dessous
-    b. presentation : extrait, credit photo et note d'intention, deux tiers
+    b. presentation : extrait et note d'intention, deux tiers
     c. metadonnees : client, services, avec, un tiers
     d. medias : lecteur video ou couverture seule
-    e. galerie : filet, puis grille de vignettes du page bundle
+    e. galerie : filet, credit photo, puis grille de vignettes du bundle
     f. fin de page : pilule de retour vers la liste des projets
 
   Chaque bloc teste la presence de son contenu avant de s'afficher : un champ
@@ -52,6 +52,24 @@
 {{- with .Params.services }}{{ $meta = $meta | append (dict "cle" "Services" "valeur" (delimit . ", ")) }}{{ end -}}
 {{- with .Params.avec }}{{ $meta = $meta | append (dict "cle" "Avec" "valeur" (delimit . ", ")) }}{{ end -}}
 
+{{- /* Credit photo. Deux ecritures acceptees dans l'entete :
+         credit_photo: "Prenom Nom"  +  credit_photo_url: "https://..."
+         credit_photo: {nom: "Prenom Nom", url: "https://..."}
+       La seconde est la forme a privilegier pour les nouveaux projets, la
+       premiere reste lue pour ne pas avoir a reecrire les entetes en place.
+       Sans nom, aucune ligne n'est rendue et aucune place n'est reservee. */ -}}
+{{- $creditNom := "" -}}
+{{- $creditURL := "" -}}
+{{- with .Params.credit_photo -}}
+  {{- if reflect.IsMap . -}}
+    {{- with .nom }}{{ $creditNom = printf "%v" . }}{{ end -}}
+    {{- with .url }}{{ $creditURL = printf "%v" . }}{{ end -}}
+  {{- else -}}
+    {{- $creditNom = printf "%v" . -}}
+  {{- end -}}
+{{- end -}}
+{{- if not $creditURL }}{{ with .Params.credit_photo_url }}{{ $creditURL = printf "%v" . }}{{ end }}{{ end -}}
+
 {{- $couverture := partial "couverture.html" . -}}
 {{- $aVideo := false -}}
 {{- with .Params.video }}{{ if .id }}{{ $aVideo = true }}{{ end }}{{ end -}}
@@ -89,25 +107,17 @@
 
          Chaque niveau teste son contenu : le conteneur n'existe que si l'un
          des deux blocs a quelque chose a dire, la colonne de gauche n'existe
-         que si l'un de ses trois elements est renseigne. Une entete sans
-         extrait, sans credit et sans metadonnees ne laisse donc ni bloc vide
-         ni espacement fantome. */ -}}
+         que si l'un de ses deux elements est renseigne. Une entete sans
+         extrait et sans metadonnees ne laisse donc ni bloc vide ni
+         espacement fantome. */ -}}
   {{- $extrait := .Params.extrait -}}
-  {{- $credit := .Params.credit_photo -}}
-  {{- $aPresentation := or $extrait $credit .Content -}}
+  {{- $aPresentation := or $extrait .Content -}}
   {{- if or $aPresentation $meta }}
   <div class="projet-haut">
     {{- if $aPresentation }}
     <div class="projet-presentation">
       {{- with $extrait }}
       <p class="projet-extrait">{{ . }}</p>
-      {{- end }}
-      {{- with $credit }}
-      {{- $nom := . -}}
-      <p class="projet-credit">Crédit photo :
-        {{- with $.Params.credit_photo_url }} <a href="{{ . }}" rel="noopener">{{ $nom }}</a>
-        {{- else }} {{ $nom }}
-        {{- end }}</p>
       {{- end }}
       {{- with .Content }}
       <div class="projet-intro">{{ . }}</div>
@@ -145,6 +155,15 @@
          du champ `galerie`, qui n'est qu'une des deux sources possibles. */ -}}
   {{- if trim $galerie " \n\r\t" }}
   <hr class="projet-filet">
+  {{- /* Le credit photo n'a de sens qu'au-dessus des photographies : il vit
+         donc ici, cale sur le bord gauche de la galerie, et nulle part
+         ailleurs. Sans galerie, il n'est pas rendu du tout. */ -}}
+  {{- with $creditNom }}
+  <p class="projet-credit">Photographies
+    {{- with $creditURL }} <a href="{{ . }}" rel="noopener">{{ $creditNom }}</a>
+    {{- else }} {{ . }}
+    {{- end }}</p>
+  {{- end }}
   {{ $galerie }}
   {{- end }}
 

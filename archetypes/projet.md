@@ -16,16 +16,17 @@ nature: "commande"
 client: ""
 
 # extrait : une à trois phrases. Sert de meta description SEO et s'affiche
-# en tête de la page projet, dans la colonne de gauche, au-dessus du crédit
-# photo et de la note d'intention qu'est le corps de ce fichier.
-# N'apparaît pas sur l'accueil.
+# en tête de la page projet, dans la colonne de gauche, au-dessus de la note
+# d'intention qu'est le corps de ce fichier. N'apparaît pas sur l'accueil.
 extrait: ""
 
-# credit_photo : nom du ou de la photographe, affiché sous l'extrait.
-# credit_photo_url : adresse du site, facultative. Renseignée, elle transforme
-# le nom en lien. Laisser les deux vides n'affiche aucune ligne de crédit.
-credit_photo: ""
-credit_photo_url: ""
+# credit_photo : nom du ou de la photographe, affiché juste au-dessus de la
+# galerie, sous la forme « Photographies Prénom Nom ». url est facultative :
+# renseignée, elle transforme le nom en lien. Sans nom, ou sans galerie,
+# aucune ligne n'est affichée.
+# credit_photo:
+#   nom: "Prénom Nom"
+#   url: "https://example.com"
 
 # services, avec : listes affichées dans le bloc de métadonnées de la page
 # projet, chacune sur une ligne, les entrées jointes par une virgule. Une
