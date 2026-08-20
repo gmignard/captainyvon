@@ -8,10 +8,10 @@
     b. extrait : le texte court de l'entete YAML, borne par la mesure
        de lecture
     c. metadonnees : client, services, avec, dimensionnees par leur contenu
-    d. medias : lecteur video ou couverture seule, puis la note d'intention,
-       c'est-a-dire le corps du fichier Markdown
-    e. galerie : filet, credit photo, puis grille de vignettes du bundle
-    f. distinctions : selections et prix, si l'entete en declare
+    d. medias : lecteur video ou couverture seule
+    e. bande de lecture : la note d'intention a gauche, c'est-a-dire le corps
+       du fichier Markdown, les distinctions a droite
+    f. galerie : filet, credit photo, puis grille de vignettes du bundle
     g. fin de page : pilule de retour vers la liste des projets
 
   Chaque bloc teste la presence de son contenu avant de s'afficher : un champ
@@ -77,6 +77,14 @@
 {{- $aVideo := false -}}
 {{- with .Params.video }}{{ if .id }}{{ $aVideo = true }}{{ end }}{{ end -}}
 {{- $galerie := partial "galerie.html" . -}}
+
+{{- /* Distinctions et corps du fichier, captures ici parce que la bande de
+       lecture teste les deux avant de s'ouvrir. Le partial ne rend rien si
+       l'entete ne declare aucune distinction nommee ; le corps est vide de
+       tout blanc pour qu'un fichier qui s'arrete a son entete YAML compte
+       pour rien. */ -}}
+{{- $distinctions := trim (partial "distinctions.html" .) " \n\r\t" -}}
+{{- $corps := trim .Content " \n\r\t" -}}
 
 <article class="projet enveloppe">
 
@@ -150,15 +158,33 @@
   </div>
   {{- end }}
 
-  {{- /* Note d'intention : le corps du fichier Markdown, rendu sous la
-         couverture et cale sur la marge gauche du contenu. Le test porte sur
-         le corps une fois vide de tout blanc : un fichier qui s'arrete a son
-         entete YAML ne produit ni conteneur vide, ni espacement residuel. */ -}}
-  {{- with trim .Content " \n\r\t" }}
-  <div class="projet-corps">{{ . | safeHTML }}</div>
+  {{- /* e. Bande de lecture, sous la couverture : la note d'intention a
+         gauche, les distinctions a droite. C'est la structure de l'entete,
+         texte a gauche et informations a droite, reprise une seconde fois :
+         les deux bandes se repondent, et le lecteur retrouve les selections
+         et les prix la ou il decide s'il continue, juste apres la video.
+
+         Les quatre cas sont couverts par la seule presence des enfants dans
+         la grille, sans classe de circonstance :
+           - texte et distinctions : deux colonnes ;
+           - texte seul : il occupe la bande, la piste auto vaut zero ;
+           - distinctions seules : elles sont le premier enfant, donc dans la
+             premiere piste, calees sur la marge gauche du contenu et jamais
+             a droite d'une colonne vide ;
+           - ni l'un ni l'autre : la bande n'est pas rendue du tout, ni
+             conteneur vide ni marge residuelle. */ -}}
+  {{- if or $corps $distinctions }}
+  <div class="projet-bande">
+    {{- with $corps }}
+    <div class="projet-corps">{{ . | safeHTML }}</div>
+    {{- end }}
+    {{- with $distinctions }}
+    {{ . | safeHTML }}
+    {{- end }}
+  </div>
   {{- end }}
 
-  {{- /* e. Galerie, precedee du meme filet que l'entete. Le filet appartient
+  {{- /* f. Galerie, precedee du meme filet que l'entete. Le filet appartient
          a la galerie : sans image a montrer, ni l'un ni l'autre n'est rendu.
          La condition porte sur la sortie du partial, jamais sur la presence
          du champ `galerie`, qui n'est qu'une des deux sources possibles. */ -}}
@@ -175,9 +201,6 @@
   {{- end }}
   {{ $galerie }}
   {{- end }}
-
-  {{- /* f. Distinctions. Le partial ne rend rien si le champ est absent. */ -}}
-  {{ partial "distinctions.html" . }}
 
   {{- /* g. Fin de page. */ -}}
   <div class="projet-retour">
