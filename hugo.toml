@@ -23,11 +23,6 @@ disableKinds = ["taxonomy", "term", "rss"]
   url = "/studio/"
   weight = 20
 
-[[menus.main]]
-  name = "Contact"
-  url = "/contact/"
-  weight = 30
-
 # Garde-fou de date, pas une source de verite : si un projet n'a pas de
 # `date` exploitable dans son entete, Hugo retombe sur la date de
 # modification du fichier plutot que sur la date zero. Les projets encore
