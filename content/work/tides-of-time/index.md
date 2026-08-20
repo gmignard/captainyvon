@@ -5,7 +5,7 @@ annee: 2025
 nature: "personnel"
 client: ""
 extrait: "Un homme restaure une vieille planche de surf, et ce geste devient une méditation sur notre rapport au temps."
-services: ["Réalisation", "Écriture", "Montage", "Étalonnage"]
+competences: ["Réalisation", "Écriture", "Montage", "Étalonnage"]
 couverture: "cover.webp"
 video:
   plateforme: "youtube"

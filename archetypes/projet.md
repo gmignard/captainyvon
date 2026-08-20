@@ -28,10 +28,10 @@ extrait: ""
 #   nom: "Prénom Nom"
 #   url: "https://example.com"
 
-# services, avec : listes affichées dans le bloc de métadonnées de la page
+# competences, avec : listes affichées dans le bloc de métadonnées de la page
 # projet, chacune sur une ligne, les entrées jointes par une virgule. Une
 # liste vide n'affiche aucune ligne.
-services: []
+competences: []
 avec: []
 
 # livrables : champ conservé mais NON RENDU. La fiche projet ne l'affiche

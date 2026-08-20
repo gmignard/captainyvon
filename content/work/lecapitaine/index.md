@@ -8,7 +8,7 @@ date: 0001-01-01
 nature: "commande"
 client: "Lecapitaine"
 extrait: "Réalisation d'un film de marque pour l'entreprise Lecapitaine, spécialisé dans le développement et la construction de camions frigorifiques."
-services:
+competences:
   - "Réalisation"
   - "Cadrage"
   - "Montage"

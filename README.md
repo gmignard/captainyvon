@@ -31,7 +31,7 @@ publier.
 | `annee` | nombre | Année d'affichage, quand elle ne coïncide pas avec `date`. Fait autorité sur `date`. |
 | `client` | texte | Nom du client. Vide ou absent, la ligne Client n'apparaît pas. |
 | `extrait` | texte | Une à trois phrases. Sert de meta description SEO et s'affiche en tête de la fiche. N'apparaît pas sur l'accueil. |
-| `services` | liste | Affiché dans le bloc de métadonnées, entrées jointes par une virgule. |
+| `competences` | liste | Affiché dans le bloc de métadonnées, entrées jointes par une virgule. |
 | `avec` | liste | Idem, pour les collaborateurs. |
 | `credit_photo` | structure | Crédit photographique, affiché au-dessus de la galerie. Voir ci-dessous. |
 | `galerie` | liste de noms de fichiers | Sélection et ordre explicites des images. Absente, toutes les images du dossier sont reprises, couverture exclue, dans l'ordre des noms de fichiers. |
