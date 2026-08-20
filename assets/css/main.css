@@ -258,8 +258,8 @@ blockquote, .citation {
 
 /* -------------------------------------------------------------------------
    EN-TETE
-   Desktop : logo a gauche, nav a sa suite, reseaux sur le bord droit.
-   Mobile  : logo puis nav empiles, cales a gauche ; les reseaux sont masques,
+   Desktop : nav a gauche, logo centre, reseaux sur le bord droit.
+   Mobile  : logo puis nav empiles et centres ; les reseaux sont masques,
    ils restent accessibles dans le pied de page.
    Ni bordure ni separateur : l'espacement fait le travail, comme en
    production. L'entete n'est pas collante.
@@ -269,14 +269,13 @@ blockquote, .citation {
 }
 
 /* Les trois zones sont posees sur des aires nommees : l'ordre du document
-   (logo, nav, reseaux) est celui du rendu, la tabulation suit donc l'oeil.
-   justify-items: start cale le logo empile sur le bord gauche du conteneur,
-   la ou tombe le contenu de la page et le pied. */
+   (nav, logo, reseaux) est celui du rendu sur une ligne, la tabulation suit
+   donc l'oeil. En dessous de 46em, la grille empile le logo puis la nav. */
 .entete-grille {
   display: grid;
   grid-template-areas: "logo" "nav";
   gap: 1rem;
-  justify-items: start;
+  justify-items: center;
   align-items: center;
 }
 
@@ -303,13 +302,19 @@ blockquote, .citation {
 }
 
 @media (min-width: 46em) {
+  /* Trois colonnes : la centrale est dimensionnee par le logo, les deux
+     laterales sont strictement egales grace a minmax(0, 1fr). C'est cette
+     egalite qui centre reellement le logo dans le cadre : sans le minmax,
+     une navigation plus large que les reseaux pousserait la colonne centrale
+     vers la droite. La longueur de la nav n'a donc aucun effet sur le
+     centrage, elle ne fait que rogner l'espace libre de sa propre colonne. */
   .entete-grille {
-    grid-template-areas: "logo nav social";
-    grid-template-columns: auto 1fr auto;
+    grid-template-areas: "nav logo social";
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     gap: var(--gouttiere);
   }
   .entete-nav { justify-self: start; }
-  /* Cale sur le bord droit du conteneur, exactement en vis-a-vis du logo. */
+  /* Cale sur le bord droit du cadre, en vis-a-vis du premier lien de nav. */
   .entete-social {
     display: block;
     justify-self: end;

@@ -1,17 +1,22 @@
 {{- /*
-  En-tete sur une ligne au-dela de 46em : logo a gauche, navigation a sa
-  suite, liens sociaux cales sur le bord droit du conteneur.
-  Sous 46em la CSS empile le logo puis la nav, tous deux cales a gauche, et
-  masque les liens sociaux : ils restent accessibles dans le pied de page.
+  En-tete sur une ligne au-dela de 46em, en trois zones : navigation a
+  gauche, logo centre, liens sociaux a droite. Sous 46em la CSS empile le
+  logo puis la nav et masque les liens sociaux : ils restent accessibles
+  dans le pied de page.
 
-  L'entete partage le conteneur unique du site (.enveloppe) avec le <main>
-  de toutes les pages et avec le pied : c'est ce qui garantit que le logo et
-  le contenu tombent sur le meme bord gauche a toute largeur.
+  Le logo est centre dans le cadre par une grille a trois colonnes dont les
+  deux laterales sont strictement egales, jamais par l'espacement entre
+  trois blocs de largeurs differentes : la longueur de la navigation ou le
+  nombre de reseaux n'ont donc aucun effet sur sa position.
+
+  L'entete partage le cadre global (.cadre) avec le pied de page, et non la
+  largeur de la page affichee : c'est ce qui garantit que le bord gauche de
+  la navigation et celui du pied tombent au meme endroit sur tout le site.
   Ni bordure ni separateur en bas : c'est l'espacement qui separe l'entete
   du contenu. L'entete n'est pas collante.
 
-  L'ordre du document — logo, navigation, reseaux — est celui du rendu : la
-  tabulation suit ce que l'oeil parcourt, de gauche a droite.
+  L'ordre du document — nav, logo, reseaux — est celui du rendu sur une
+  ligne : la tabulation suit ce que l'oeil parcourt, de gauche a droite.
 
   Logo : le fichier vient de params.logo, sa hauteur d'affichage de la
   variable CSS --logo-hauteur, la largeur suivant le ratio du fichier.
@@ -20,6 +25,8 @@
 */ -}}
 <header class="entete">
   <div class="cadre entete-grille">
+
+    <div class="entete-nav">{{ partial "nav.html" . }}</div>
 
     <div class="entete-logo">
       <a href="{{ "/" | relURL }}"{{ if .IsHome }} aria-current="page"{{ end }}>
@@ -36,8 +43,6 @@
         {{- end -}}
       </a>
     </div>
-
-    <div class="entete-nav">{{ partial "nav.html" . }}</div>
 
     <div class="entete-social">{{ partial "social.html" . }}</div>
 
