@@ -652,7 +652,11 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   outline-offset: 4px;
 }
 
-.galerie img {
+/* Selecteur volontairement porte sur le lien de la vignette et non sur
+   `.galerie img` : la vue plein ecran vit elle aussi dans la liste, et une
+   largeur de 100% imposee ici l'emporterait sur les regles de la loupe, dont
+   l'image serait etiree a la boite entiere. */
+.galerie-lien img {
   width: 100%;
   height: auto;
   background: var(--surface);
@@ -662,6 +666,122 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
 /* Survol discret, aligne sur celui des vignettes d'accueil : opacite seule.
    Le bloc « mouvement reduit » en fin de feuille neutralise la transition. */
 .galerie-lien:hover img { opacity: 0.85; }
+
+/* -------------------------------------------------------------------------
+   LOUPE — image de galerie en plein ecran, CSS seul
+   Le mecanisme est le selecteur :target. Chaque vue est masquee tant que son
+   identifiant n'est pas celui de l'adresse : cliquer une vignette l'affiche,
+   la croix et le fond renvoient a l'identifiant de la vignette, ce qui la
+   referme et repositionne la page dessus. Aucun JavaScript, aucune
+   dependance : la loupe fonctionne script desactive.
+   ------------------------------------------------------------------------- */
+.loupe {
+  --loupe-marge: clamp(0.75rem, 3vw, 2.5rem);
+
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  padding: var(--loupe-marge);
+  /* Le fond reprend le noir de la charte, rendu translucide a partir de la
+     palette : aucune teinte en dur. */
+  background: color-mix(in srgb, var(--noir) 94%, transparent);
+}
+
+.loupe:target { display: block; }
+
+/* Fige le defilement de la page derriere une loupe ouverte. Les navigateurs
+   sans :has ignorent la regle : le fond defile alors sous la loupe, ce qui
+   reste parfaitement utilisable. */
+html:has(.loupe:target) { overflow: hidden; }
+
+/* Le fond entier ferme la loupe. Il est sous le cadre dans l'ordre de
+   superposition, un clic sur l'image ne le declenche donc pas. */
+.loupe-fond {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+/* Le cadre centre l'image et ne capte aucun clic : tout ce qui n'est pas
+   l'image elle-meme tombe sur le fond, et ferme.
+   Au-dela de 700px, une gouttiere laterale reserve la place des fleches pour
+   qu'elles se posent a cote de l'image et non dessus. */
+.loupe-cadre {
+  position: relative;
+  margin: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+@media (min-width: 701px) {
+  .loupe-cadre { padding-inline: 3.5rem; }
+}
+
+/* L'image occupe la place disponible sans jamais deborder ni changer de
+   rapport. Les attributs width et height restent poses sur la balise pour le
+   rapport intrinseque, la taille affichee vient d'ici.
+   Le plafond de hauteur est exprime en unites de fenetre, pas en pourcentage :
+   un pourcentage se resoudrait contre la hauteur du cadre, qui suit celle de
+   l'image et ne contraint donc rien. Un portrait de 1500px de haut debordait
+   ainsi la fenetre. La premiere declaration sert de repli aux navigateurs sans
+   dvh, la seconde tient compte de la barre d'adresse mobile. */
+.loupe-image {
+  pointer-events: auto;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(100vh - 2 * var(--loupe-marge));
+  max-height: calc(100dvh - 2 * var(--loupe-marge));
+  object-fit: contain;
+  border-radius: var(--rayon);
+  background: var(--surface);
+}
+
+/* Commandes : meme pastille que la pilule, en plus compact. */
+.loupe-bouton {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--rayon-pilule);
+  background: var(--surface);
+  color: var(--noir);
+  font-size: 1.1rem;
+  line-height: 1;
+  text-decoration: none;
+  transition: background-color 200ms ease;
+}
+.loupe-bouton:hover { background: color-mix(in srgb, var(--surface) 90%, var(--noir)); }
+.loupe-bouton:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
+.loupe-fermer { top: var(--loupe-marge); right: var(--loupe-marge); }
+.loupe-prec { left: var(--loupe-marge); top: 50%; transform: translateY(-50%); }
+.loupe-suiv { right: var(--loupe-marge); top: 50%; transform: translateY(-50%); }
+
+/* Sous 700px les fleches passent en bas, cote a cote : sur les bords elles
+   couvriraient l'image, qui occupe alors presque toute la largeur. */
+@media (max-width: 700px) {
+  /* La bande des fleches est retiree de la zone de centrage et du plafond de
+     hauteur, sinon une image haute passerait dessous. */
+  .loupe-cadre { padding-bottom: 3.75rem; }
+  .loupe-image {
+    max-height: calc(100vh - 2 * var(--loupe-marge) - 3.75rem);
+    max-height: calc(100dvh - 2 * var(--loupe-marge) - 3.75rem);
+  }
+  .loupe-prec, .loupe-suiv {
+    top: auto;
+    bottom: var(--loupe-marge);
+    transform: none;
+  }
+  .loupe-prec { left: calc(50% - 3.25rem); }
+  .loupe-suiv { right: calc(50% - 3.25rem); }
+}
 
 /* -------------------------------------------------------------------------
    PILULE
