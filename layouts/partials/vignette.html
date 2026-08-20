@@ -1,10 +1,14 @@
 {{- /*
   Vignette de projet.
 
-  Comme en production, la vignette ne contient que la couverture : ni titre,
-  ni extrait, ni nature. Le titre du projet est incruste dans l'image.
-  L'attribut alt reprend le titre : il donne son nom accessible au lien
-  sans rien afficher, ce que ni alt="" ni un texte decoratif ne permettent.
+  La vignette porte la couverture puis une legende : le titre du projet,
+  mis en capitales par la CSS, suivi de l'annee entre parentheses quand elle
+  est renseignee. Ni extrait ni nature.
+
+  La legende etant du texte visible a l'interieur du lien, elle en fournit
+  le nom accessible : l'image porte un alt vide pour ne pas faire annoncer
+  le titre deux fois. Le titre reste en casse normale dans le front matter,
+  seul le rendu le passe en capitales.
 
   Contexte attendu : un dict
     page  — la page projet
@@ -20,6 +24,10 @@
 
 {{- $titre := $page.Title -}}
 {{- if not $titre }}{{ with $page.File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
+
+{{- /* Annee : facultative. Absente, la legende n'affiche que le titre,
+       sans parentheses vides. Le champ est prevu dans archetypes/projet.md. */ -}}
+{{- $annee := $page.Params.annee -}}
 
 {{- $couverture := partial "couverture.html" $page -}}
 {{- with $couverture }}
@@ -46,8 +54,9 @@
          {{ if ne $grande.RelPermalink $petite.RelPermalink }}srcset="{{ $petite.RelPermalink }} {{ $petite.Width }}w, {{ $grande.RelPermalink }} {{ $grande.Width }}w"
          sizes="{{ $sizes }}"{{ end }}
          width="{{ $petite.Width }}" height="{{ $petite.Height }}"
-         alt="{{ $titre }}"
+         alt=""
          {{ if $immediate }}loading="eager" fetchpriority="high"{{ else }}loading="lazy" decoding="async"{{ end }}>
+    <p class="vignette-legende">{{ $titre }}{{ with $annee }} ({{ . }}){{ end }}</p>
   </a>
 </li>
 {{- end }}

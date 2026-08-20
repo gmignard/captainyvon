@@ -11,13 +11,17 @@ nature: "film"
 # Nom du client ou de la structure commanditaire.
 client: ""
 
-# Année de réalisation, ex. 2024. Laisser vide si inconnue.
+# Année de réalisation, ex. 2024.
+# Affichée sur l'accueil, entre parenthèses après le titre du projet.
+# Laisser vide si inconnue : la légende n'affiche alors que le titre,
+# sans parenthèses vides.
 annee:
 
 date: {{ .Date }}
 
-# extrait : une à trois phrases. Sert de description sur la vignette d'accueil,
-# de texte italique sous le titre, et de meta description SEO.
+# extrait : une à trois phrases. Sert de texte d'introduction sur la page
+# projet et de meta description SEO. N'apparaît pas sur l'accueil, dont les
+# vignettes ne portent que le titre et l'année.
 extrait: ""
 
 # Listes affichées en accordéon. Une liste vide n'affiche aucun bloc.

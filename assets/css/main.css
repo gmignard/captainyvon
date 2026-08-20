@@ -23,9 +23,13 @@
   --bleu-ocean: #4E6771;
   --gris: #ACAAA4;
 
+  /* Fond de page : ivoire plus clair que le blanc casse de la charte,
+     retenu apres comparaison avec la production. Reste hors blanc pur. */
+  --blanc-page: #F9F8F4;
+
   /* Roles. Le contraste est inverse par rapport a la maquette precedente :
      fond ivoire, texte sombre. */
-  --fond: var(--blanc-casse);
+  --fond: var(--blanc-page);
   --texte: var(--noir);
   --texte-doux: var(--gris);
   --trait: var(--gris);
@@ -60,14 +64,24 @@
 
 /* -------------------------------------------------------------------------
    MISE EN PAGE — variables d'ajustement fin
-   Ces quatre valeurs suffisent a caler la page sur la production :
-   marge laterale, gouttiere de grille, ratio des vignettes, hauteur du logo.
+   Ces valeurs suffisent a caler la page sur la production : marge laterale,
+   gouttiere de grille, ratio et arrondi des vignettes, hauteur du logo,
+   respiration au-dessus et au-dessous du logo.
    ------------------------------------------------------------------------- */
 :root {
   --site-marge: 3.9vw;      /* marge laterale, identique a gauche et a droite */
   --grille-gap: 2vw;        /* gouttiere horizontale et verticale */
   --ratio-vignette: 2.39/1; /* cinemascope */
+  --vignette-rayon: 8px;    /* arrondi des vignettes d'accueil */
   --logo-hauteur: 50px;
+
+  /* Respiration de l'entete. Ces deux valeurs, plus la hauteur du logo — et
+     sur mobile la nav empilee sous celui-ci — forment la distance entre le
+     haut de l'ecran et la premiere vignette. Reglees pour doubler l'espace
+     precedent : environ 272px en mise en page empilee et 244px a 1440px,
+     contre 136px et 122px auparavant. */
+  --entete-espace-haut: clamp(6.5rem, 7.5vw, 7rem);
+  --entete-espace-bas: clamp(5rem, 6vw, 5.5rem);
 
   /* Rythme vertical et largeurs de lecture, hors grille d'accueil. */
   --pas: 1rem;
@@ -175,7 +189,7 @@ blockquote, .citation {
    production. L'entete n'est pas collante.
    ------------------------------------------------------------------------- */
 .entete {
-  padding-block: clamp(1.5rem, 3vw, 2.5rem) clamp(1.25rem, 2.5vw, 2rem);
+  padding-block: var(--entete-espace-haut) var(--entete-espace-bas);
 }
 
 .entete-grille {
@@ -278,9 +292,9 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
    ACCUEIL — grille des projets
    Deux colonnes en CSS Grid, jamais trois. Largeur fluide : la grille
    occupe toute la largeur disponible moins les marges, sans max-width.
-   Chaque vignette ne contient que la couverture, le titre du projet est
-   incruste dans l'image. Aucune hauteur en dur : le cadrage vient de
-   aspect-ratio + object-fit.
+   Chaque vignette porte la couverture puis, en dessous, le titre du projet
+   en capitales suivi de l'annee entre parentheses quand elle est renseignee.
+   Aucune hauteur en dur : le cadrage vient de aspect-ratio + object-fit.
    ------------------------------------------------------------------------- */
 .grille-projets {
   list-style: none;
@@ -288,7 +302,12 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   padding: 0;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--grille-gap);
+  /* La gouttiere verticale a un plancher depuis l'ajout des legendes : a
+     2vw seuls, sur petit ecran, une legende se retrouvait plus pres de la
+     vignette suivante que de la sienne. Au-dela de ~2000px, 2vw reprend
+     la main. */
+  column-gap: var(--grille-gap);
+  row-gap: max(var(--grille-gap), 2.5rem);
 }
 
 /* Une seule colonne sous 700px, meme ratio de vignette. */
@@ -299,9 +318,10 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
 /* Un projet mis en avant remonte en tete de grille, sans trou de mise en page. */
 .vignette--avant { order: -1; }
 
-/* La vignette entiere est un lien unique : aucun lien imbrique.
-   Son nom accessible vient de l'attribut alt de l'image, qui reprend
-   le titre du projet sans rien afficher. */
+/* La vignette entiere — couverture et legende — est un lien unique :
+   aucun lien imbrique. Son nom accessible vient de la legende, qui est du
+   texte visible ; l'image porte donc un alt vide pour ne pas doubler le
+   titre a la lecture d'ecran. */
 .vignette-lien {
   display: block;
   text-decoration: none;
@@ -318,12 +338,27 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
   aspect-ratio: var(--ratio-vignette);
   object-fit: cover;
   background: var(--trait);
+  border-radius: var(--vignette-rayon);
   transition: opacity 200ms ease;
 }
 
-/* Survol discret : opacite seule. Pas de zoom, pas de voile, pas de texte.
+/* Survol discret : opacite seule. Pas de zoom, pas de voile.
    Le bloc « mouvement reduit » en fin de feuille neutralise la transition. */
 .vignette-lien:hover .vignette-image { opacity: 0.85; }
+
+/* Legende : titre en capitales, cale a gauche sous la couverture.
+   Les capitales viennent du rendu, pas du contenu : le titre reste lisible
+   dans le front matter et correctement restitue par les lecteurs d'ecran. */
+.vignette-legende {
+  margin: 0.85rem 0 0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--texte);
+}
 
 /* -------------------------------------------------------------------------
    PAGE PROJET
