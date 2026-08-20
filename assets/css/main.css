@@ -61,13 +61,13 @@
 /* -------------------------------------------------------------------------
    MISE EN PAGE — variables d'ajustement fin
    Ces quatre valeurs suffisent a caler la page sur la production :
-   marge laterale, gouttiere de grille, ratio des vignettes, largeur du logo.
+   marge laterale, gouttiere de grille, ratio des vignettes, hauteur du logo.
    ------------------------------------------------------------------------- */
 :root {
   --site-marge: 3.9vw;      /* marge laterale, identique a gauche et a droite */
   --grille-gap: 2vw;        /* gouttiere horizontale et verticale */
   --ratio-vignette: 2.39/1; /* cinemascope */
-  --logo-largeur: 180px;
+  --logo-hauteur: 50px;
 
   /* Rythme vertical et largeurs de lecture, hors grille d'accueil. */
   --pas: 1rem;
@@ -188,7 +188,16 @@ blockquote, .citation {
 
 .entete-logo { grid-area: logo; }
 .entete-logo a { text-decoration: none; display: block; }
-.entete-logo img { width: var(--logo-largeur); height: auto; }
+/* Le logo est cale sur sa hauteur, la largeur suit le ratio du fichier.
+   max-width + object-fit: contain evitent tout debordement sur les tres
+   petits ecrans, ou la largeur induite depasserait la zone disponible :
+   le logo y retrecit proportionnellement au lieu de s'ecraser. */
+.entete-logo img {
+  height: var(--logo-hauteur);
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
 
 .entete-nav { grid-area: nav; }
 .entete-social { display: none; }
