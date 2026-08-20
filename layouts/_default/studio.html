@@ -2,8 +2,11 @@
 {{- /*
   Page studio.
 
-  Haut de page en deux colonnes : le texte de presentation a gauche, le
-  contact a droite.
+  Deux zones, dans cet ordre :
+    a. haut de page en deux colonnes : le texte de presentation a gauche, le
+       contact a droite ;
+    b. mur de photos de tournage, rendu par son partial. Le partial ne rend
+       rien si le bundle ne contient aucune image `bts-`.
 
   Au-dela de 700px les deux colonnes sont cote a cote et la colonne de droite
   est collante : elle accompagne le defilement du texte et s'arrete au bas de
@@ -49,6 +52,8 @@
       </aside>
 
     </div>
+
+    {{ partial "mur.html" . }}
 
   </article>
 </div>

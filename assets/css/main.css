@@ -793,6 +793,43 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
 .studio-collectif a { color: var(--texte); }
 
 /* -------------------------------------------------------------------------
+   MUR DE PHOTOS DE TOURNAGE
+   Mosaique irreguliere en `columns` : les images gardent leur rapport, ne
+   sont pas recadrees et les colonnes se remplissent a des hauteurs
+   differentes. Aucune bibliotheque de maconnerie, aucun JavaScript.
+   ------------------------------------------------------------------------- */
+.mur { margin-block: clamp(2.5rem, 6vw, 4.5rem) 0; }
+
+.mur-titre {
+  margin: 0 0 clamp(1.25rem, 3vw, 2rem);
+  font-weight: 300;
+}
+
+/* Trois colonnes au-dela de 1000px, deux en dessous, tablette comme mobile.
+   La gouttiere est celle du theme, horizontale par column-gap et verticale
+   par la marge basse des images : `columns` ne connait pas row-gap. */
+.mur-grille {
+  columns: 3;
+  column-gap: var(--gouttiere);
+}
+
+@media (max-width: 1000px) {
+  .mur-grille { columns: 2; }
+}
+
+/* break-inside evite qu'une image soit coupee entre deux colonnes. Les angles
+   sont vifs, comme la galerie des fiches projet. */
+.mur-grille img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: var(--gouttiere);
+  border-radius: 0;
+  background: var(--surface);
+  break-inside: avoid;
+}
+
+/* -------------------------------------------------------------------------
    FICHE — accordeons natifs <details> / <summary>
    Indicateur + / - en CSS pur, aucun JavaScript.
    ------------------------------------------------------------------------- */
