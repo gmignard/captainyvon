@@ -7,7 +7,7 @@
        filet dessous
     b. extrait : le texte court de l'entete YAML, borne par la mesure
        de lecture
-    c. metadonnees : client, services, avec, dimensionnees par leur contenu
+    c. metadonnees : client, competences, avec, dimensionnees par leur contenu
     d. medias : lecteur video ou couverture seule
     e. bande de lecture : la note d'intention a gauche, c'est-a-dire le corps
        du fichier Markdown, les distinctions a droite
@@ -52,7 +52,7 @@
        donnee est conservee, mais la fiche ne l'affiche pas. */ -}}
 {{- $meta := slice -}}
 {{- with .Params.client }}{{ $meta = $meta | append (dict "cle" "Client" "valeur" .) }}{{ end -}}
-{{- with .Params.services }}{{ $meta = $meta | append (dict "cle" "Services" "valeur" (delimit . ", ")) }}{{ end -}}
+{{- with .Params.competences }}{{ $meta = $meta | append (dict "cle" "Compétences" "valeur" (delimit . ", ")) }}{{ end -}}
 {{- with .Params.avec }}{{ $meta = $meta | append (dict "cle" "Avec" "valeur" (delimit . ", ")) }}{{ end -}}
 
 {{- /* Credit photo. Deux ecritures acceptees dans l'entete :

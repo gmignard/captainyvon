@@ -4,11 +4,11 @@
   Un bloc dont le champ est vide n'est pas rendu du tout.
 */ -}}
 {{- $client := .Params.client -}}
-{{- $services := .Params.services -}}
+{{- $competences := .Params.competences -}}
 {{- $livrables := .Params.livrables -}}
 {{- $avec := .Params.avec -}}
 
-{{- if or $client $services $livrables $avec }}
+{{- if or $client $competences $livrables $avec }}
 <div class="fiche">
 
   {{- with $client }}
@@ -18,9 +18,9 @@
   </details>
   {{- end }}
 
-  {{- with $services }}
+  {{- with $competences }}
   <details class="fiche-bloc">
-    <summary>Services</summary>
+    <summary>Compétences</summary>
     <div class="fiche-corps">
       <ul>{{ range . }}<li>{{ . }}</li>{{ end }}</ul>
     </div>

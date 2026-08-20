@@ -588,7 +588,7 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
    excedentaire reste entre les deux blocs.
 
    Le minimum de la piste de gauche est un plancher de lecture, pas zero. Avec
-   un minimum a zero, c'est toujours le texte qui cede : une liste de services
+   un minimum a zero, c'est toujours le texte qui cede : une liste de competences
    un peu longue prend sa largeur de max-content et laisse l'extrait a une
    vingtaine de caracteres — mesure sur cette page, 200px de texte a 768px de
    fenetre. Le plancher inverse la priorite : sous ce seuil, c'est la meta qui

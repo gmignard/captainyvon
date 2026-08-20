@@ -6,7 +6,7 @@ client: "Decathlon"
 extrait: "Réalisation d’un film documentaire pour Décathlon et présenter la sacoche de bikepacking qui pousse dans les champs."
 credit_photo: "Maxence Malak"
 credit_photo_url: "https://www.maxencemalak.com"
-services:
+competences:
   - "Réalisation"
   - "Écriture"
   - "Cadrage"
