@@ -13,7 +13,7 @@ livrables:
   - "Un documentaire de 52 minutes"
   - "Photographies"
 avec: []
-couverture: "couverture.jpg"
+couverture: "cover.webp"
 video:
   plateforme: "youtube"
   id: "h8FitE68Q_s"
