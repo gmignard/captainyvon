@@ -2,16 +2,15 @@
 {{- /*
   Page studio.
 
-  Trois zones, dans cet ordre :
-    a. titre seul sur sa ligne, pleine largeur du conteneur, suivi du filet
-       d'entete des pages projet — le meme element, la meme regle, pour que
-       les deux entetes du site se repondent ;
-    b. sous le filet seulement, deux colonnes : le texte de presentation a
-       gauche, la fiche contact a droite ;
-    c. mur de photos de tournage, rendu par son partial. Il est volontairement
+  Deux zones, dans cet ordre :
+    a. deux colonnes : le texte de presentation a gauche, la fiche contact a
+       droite. La page s'ouvre directement dessus : ni titre, ni filet
+       d'entete — le nom du studio est deja pose par l'entete du site, le
+       repeter ici ne disait rien de neuf ;
+    b. mur de photos de tournage, rendu par son partial. Il est volontairement
        pose hors de `.enveloppe` : c'est un bloc pleine largeur sur fond
        sombre, il doit sortir du cadre de contenu de la page. L'article, lui,
-       enveloppe toujours les trois zones. Le partial ne rend rien si l'entete
+       enveloppe toujours les deux zones. Le partial ne rend rien si l'entete
        ne declare pas de cle `galerie`.
 
   Au-dela de 700px les deux colonnes sont cote a cote et la colonne de droite
@@ -19,7 +18,7 @@
   la grille, donc au ras du mur. En dessous, tout s'empile et la colonne de
   droite redevient statique.
 
-  L'ordre du balisage est celui de la lecture : titre, texte, puis contact.
+  L'ordre du balisage est celui de la lecture : texte, puis contact.
 
   La colonne de droite se lit dans cet ordre : les lignes de la fiche, un
   filet, les deux realisateurs, puis le bouton d'ecriture qui la ferme.
@@ -29,9 +28,6 @@
   bouton de params.email. Chaque bloc teste sa valeur avant de s'afficher : un
   champ vide ne produit ni libelle orphelin, ni ponctuation isolee.
 */ -}}
-{{- $titre := .Title -}}
-{{- if not $titre }}{{ with .File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
-
 {{- /* Lignes de la fiche venant de l'entete. Une entree sans valeur n'entre
        pas dans la liste : c'est la valeur qui porte l'information, un libelle
        seul n'aurait rien a annoncer. */ -}}
@@ -72,18 +68,7 @@
 <article class="studio">
   <div class="enveloppe">
 
-    {{- /* a. Titre seul, puis le filet des pages projet. La classe est celle
-           de la fiche projet, volontairement : reprendre la regle plutot que
-           la recopier est ce qui garantit que les deux filets ne peuvent pas
-           diverger. */ -}}
-    <header class="studio-titre">
-      {{- with $titre }}
-      <h1>{{ . }}</h1>
-      {{- end }}
-    </header>
-    <hr class="projet-filet">
-
-    {{- /* b. Les deux colonnes ne commencent qu'ici, sous le filet. */ -}}
+    {{- /* a. Les deux colonnes ouvrent la page. */ -}}
     <div class="studio-haut">
 
       <div class="studio-texte">

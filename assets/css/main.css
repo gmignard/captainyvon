@@ -607,10 +607,10 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
   color: var(--texte-doux);
 }
 
-/* Filet de l'entete, repris a l'identique avant la galerie d'une fiche projet
-   et sous le titre de la page studio. Discret : le gris de la charte, jamais
-   le noir du texte. Une seule regle pour les trois : c'est ce qui garantit
-   qu'ils ne peuvent pas diverger. */
+/* Filet de l'entete d'une fiche projet, repris a l'identique avant sa
+   galerie. Discret : le gris de la charte, jamais le noir du texte. Une seule
+   regle pour les deux : c'est ce qui garantit qu'ils ne peuvent pas
+   diverger. */
 .projet-filet {
   margin: 0.9rem 0 0;
   border-top: 1px solid var(--trait);
@@ -921,27 +921,14 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
 
 /* -------------------------------------------------------------------------
    PAGE STUDIO — HAUT DE PAGE
-   Le titre occupe sa propre ligne, sur toute la largeur du conteneur, et le
-   filet des pages projet le ferme. Les deux colonnes ne commencent qu'en
-   dessous : le texte de presentation a gauche, la fiche contact a droite.
-
-   Le filet lui-meme n'est pas redecrit ici. Le gabarit pose la classe
-   .projet-filet, deja definie plus haut : reprendre la regle plutot que la
-   recopier est ce qui garantit que les deux entetes du site ne peuvent pas
-   diverger d'un demi-pixel.
+   La page s'ouvre directement sur ses deux colonnes : le texte de
+   presentation a gauche, la fiche contact a droite. Ni titre, ni filet
+   d'entete — le nom du studio est deja pose par l'entete du site.
    ------------------------------------------------------------------------- */
 
-/* Respiration au-dessus du titre. L'entete du site pose deja la sienne sous
-   le logo ; celle-ci s'y ajoute pour degager franchement le h1, qui n'a plus
-   rien a partager avec le texte. La marge basse est celle qui separe le titre
-   de son filet, et vaut celle de la ligne de titre des pages projet. */
-.studio-titre {
-  margin-block: clamp(2rem, 4vw, 3rem) 0;
-}
-.studio-titre h1 { margin: 0; }
-
-/* Deux colonnes, sous le filet. L'ecart haut est genereux : c'est lui qui
-   fait respirer la bascule entre l'entete de page et le corps.
+/* Deux colonnes, en ouverture de page. L'ecart haut est celui de la ligne de
+   titre des pages projet : les deux gabarits demarrent donc a la meme
+   hauteur, sous l'entete du site.
 
    align-items: start pose les deux colonnes sur la meme ligne haute et rend
    possible le comportement collant de celle de droite.
@@ -956,7 +943,7 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
   grid-template-columns: minmax(0, 2fr) minmax(min-content, 1fr);
   align-items: start;
   gap: 1.75rem 4rem;
-  margin-block: clamp(2.5rem, 5vw, 4rem) 0;
+  margin-block: clamp(2rem, 4vw, 3rem) 0;
 }
 
 /* La colonne de texte garde une mesure de lecture confortable : sans elle,
