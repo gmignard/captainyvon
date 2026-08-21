@@ -1,19 +1,52 @@
 {{- /*
   Image pleine largeur du contenu, traitee par Hugo Image Processing.
   Sortie WebP, largeurs 800 et 1600, sans jamais agrandir la source.
-  Utilisee par la galerie et par la couverture affichee seule.
+  Sert la couverture d'une page projet ; la galerie a son propre
+  redimensionnement dans galerie.html.
 
   Contexte attendu : un dict
     ressource — la ressource image du page bundle
     alt       — texte alternatif, obligatoire
     immediate — true pour un chargement immediat, sinon differe
+    ratio     — facultatif, "16:9" par exemple. Absent, l'image garde son
+                rapport d'origine et n'est que redimensionnee. Present, elle
+                est recadree a ce rapport, ancree au centre, pour prendre
+                exactement l'emprise du lecteur video.
 */ -}}
 {{- $r := .ressource -}}
+{{- $ratio := .ratio -}}
 {{- with $r -}}
-  {{- $l800 := cond (gt .Width 800) 800 .Width -}}
-  {{- $l1600 := cond (gt .Width 1600) 1600 .Width -}}
-  {{- $petite := .Resize (printf "%dx webp q82" $l800) -}}
-  {{- $grande := cond (gt $l1600 $l800) (.Resize (printf "%dx webp q82" $l1600)) $petite -}}
+  {{- $rw := 16.0 -}}
+  {{- $rh := 9.0 -}}
+  {{- with $ratio -}}
+    {{- $p := split . ":" -}}
+    {{- $rw = float (index $p 0) -}}
+    {{- $rh = float (index $p 1) -}}
+  {{- end -}}
+
+  {{- /* Plafond de largeur. Sans recadrage, c'est la largeur de la source.
+         Avec recadrage, la source la borne dans ses deux dimensions : une
+         source plus plate que le rapport demande n'a pas assez de hauteur
+         pour le remplir a sa pleine largeur, c'est donc sa hauteur qui
+         commande. On n'agrandit jamais. */ -}}
+  {{- $lmax := float .Width -}}
+  {{- if $ratio -}}
+    {{- $parLaHauteur := div (mul (float .Height) $rw) $rh -}}
+    {{- if lt $parLaHauteur $lmax }}{{ $lmax = $parLaHauteur }}{{ end -}}
+  {{- end -}}
+
+  {{- $l800 := cond (gt $lmax 800.0) 800.0 $lmax -}}
+  {{- $l1600 := cond (gt $lmax 1600.0) 1600.0 $lmax -}}
+
+  {{- $petite := "" -}}
+  {{- $grande := "" -}}
+  {{- if $ratio -}}
+    {{- $petite = .Fill (printf "%.0fx%.0f webp q82 Center" $l800 (div (mul $l800 $rh) $rw)) -}}
+    {{- $grande = cond (gt $l1600 $l800) (.Fill (printf "%.0fx%.0f webp q82 Center" $l1600 (div (mul $l1600 $rh) $rw))) $petite -}}
+  {{- else -}}
+    {{- $petite = .Resize (printf "%.0fx webp q82" $l800) -}}
+    {{- $grande = cond (gt $l1600 $l800) (.Resize (printf "%.0fx webp q82" $l1600)) $petite -}}
+  {{- end -}}
   {{- /* La largeur affichee suit celle du contenu, plafonnee par --contenu-max
          et, dans le bloc medias d'une page projet, par la hauteur de fenetre.
          La source n'excedant jamais 1600px de large, l'image sert sa plus

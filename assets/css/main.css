@@ -829,6 +829,17 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
   margin-inline: auto;
 }
 
+/* La couverture affichee seule prend la meme emprise et le meme arrondi
+   que le lecteur video. Le recadrage 16:9 est fait par Hugo, les attributs
+   width et height decrivent donc la boite reellement affichee, et aucun
+   decalage de mise en page n'apparait au chargement. Aucune zone cliquable,
+   aucun survol : ce n'est qu'une image. */
+.projet-medias > img {
+  width: 100%;
+  border-radius: var(--rayon);
+  background: var(--surface);
+}
+
 /* Distinctions : colonne de droite de la bande de lecture. Intitule discret,
    puis une distinction par ligne ; au-dela de quatre, les suivantes vivent
    dans un <details> natif.
