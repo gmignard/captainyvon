@@ -152,7 +152,7 @@
     {{ partial "video.html" . }}
     {{- else }}
       {{- with $couverture }}
-    {{ partial "image-large.html" (dict "ressource" . "alt" $titre "immediate" true) }}
+    {{ partial "image-large.html" (dict "ressource" . "alt" $titre "immediate" true "ratio" "16:9") }}
       {{- end }}
     {{- end }}
   </div>
