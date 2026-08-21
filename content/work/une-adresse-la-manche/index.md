@@ -10,7 +10,7 @@ competences:
   - "Cadrage"
   - "Montage"
 avec: []
-couverture: "couverture.webp"
+couverture: "cover.webp"
 video:
   plateforme: "youtube"
   id: "hxV5_cpaE7I"

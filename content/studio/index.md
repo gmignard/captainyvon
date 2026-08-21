@@ -39,36 +39,42 @@ fiche:
 # les portraits sur les emplacements les plus etroits du motif : c'est ce qui
 # evite qu'une image verticale prenne six colonnes et ecrase le reste.
 galerie:
-  - image: bts-01.jpg
-    alt: "Un opérateur filme au trépied une personne assise à une table, seule au milieu d'un champ noyé de brume."
-  - image: bts-05.jpg
-    alt: "Un réalisateur en chemise à carreaux, caméra en main et retour au casque, indique une direction dans un champ de lin."
-  - image: bts-02.jpg
-    alt: "Champ de lin en fleurs photographié au ras des tiges, fleurs bleues piquées dans le vert."
-  - image: bts-03.jpg
-    alt: "Un cycliste pousse un vélo jaune sur un chemin de terre, en lisière de champ, dans la brume du matin."
-  - image: bts-06.jpg
-    alt: "Détail d'une sacoche de cadre en toile de lin brute, son étiquette cousue et ses sangles noires."
-  - image: bts-09.jpg
-    alt: "Allée centrale d'un atelier de tissage, deux rangées de métiers à tisser sous les néons."
-  - image: bts-04.jpg
-    alt: "Un homme présente à bout de bras une sacoche de cadre en lin, debout dans un champ de lin en fleurs."
-  - image: bts-12.jpg
-    alt: "Un ouvrier en blouse claire surveille une ligne de bobines de fil dans une filature."
-  - image: bts-07.jpg
-    alt: "Une couturière assemble une pièce de toile de lin à la machine, dans un atelier de confection."
-  - image: bts-08.jpg
-    alt: "Vue d'ensemble d'un atelier de confection, plusieurs postes de couture alignés sous les néons."
-  - image: bts-10.jpg
-    alt: "Une sacoche de cadre en toile suspendue dans l'allée d'un atelier de tissage, machines floues à l'arrière-plan."
-  - image: bts-11.jpg
-    alt: "Un groupe de cyclistes de dos sur une piste cyclable couverte de feuilles mortes, sous une allée de platanes."
-  - image: bts-14.jpg
-    alt: "Bottes de lin fraîchement arrachées, tiges et capsules étalées au sol."
-  - image: bts-15.jpg
-    alt: "Un cycliste casqué progresse derrière un champ de blé, sous un ciel couvert."
-  - image: bts-13.jpg
-    alt: "Gros plan sur des bobines de fil de lin écru, marquées d'un repère orange."
+  - image: bts-cys_1.webp
+    alt: "Deux femmes assises à une table de pique-nique en montagne, thermos et caméra posés devant elles, la vallée en contrebas."
+  - image: bts-cys_2.webp
+    alt: "Deux mains engagent un film argentique dans un dos moyen format, posé sur une valise de transport marquée Captain Yvon."
+  - image: bts-cys_5.webp
+    alt: "Un opérateur filme un cycliste qui se change au bord d'un muret de pierre, face à l'océan au crépuscule."
+  - image: bts-cys_12.webp
+    alt: "Une silhouette seule debout sur un plateau rocheux au bord de la mer, dans la lumière rasante du soir."
+  - image: bts-cys_4.webp
+    alt: "Un surfeur en combinaison remonte une plage recouverte de neige, le village et la falaise derrière lui."
+  - image: bts-cys_3.webp
+    alt: "Un opérateur accroupi filme un troupeau de moutons dans les herbus, le Mont-Saint-Michel à l'horizon."
+  - image: bts-cys_9.webp
+    alt: "Deux pieds nus en combinaison sur le sable mouillé, à côté de palmes jaunes et d'un caisson étanche."
+  - image: bts-cys_6.webp
+    alt: "Un opérateur cadre au moniteur déporté, micro monté sur la caméra, dans la lumière rose de fin de journée."
+  - image: bts-cys_10.webp
+    alt: "Deux surfeurs en combinaison remontent la cale, l'un portant une planche blanche, l'autre un caisson photo."
+  - image: bts-cys_7.webp
+    alt: "Un homme filme debout sur une pointe rocheuse balayée par la neige, la mer blanche derrière lui."
+  - image: bts-cys_14.webp
+    alt: "Une main tend un enregistreur et ses micros au-dessus d'un ruisseau bordé de pierres rouges."
+  - image: bts-cys_8.webp
+    alt: "Un photographe assis sur un rocher, son appareil et sa casquette posés dans la végétation rase."
+  - image: bts-cys_13.webp
+    alt: "Un photographe progresse entre des sapins chargés de neige, appareil autour du cou."
+  - image: bts-cys_18.webp
+    alt: "Un appareil photo couvert de neige, suspendu à sa sangle sur une veste kaki."
+  - image: bts-cys_15.webp
+    alt: "Un preneur de son tient une barrette stéréo à deux micros, casque aux oreilles, devant un dériveur à la tombée du jour."
+  - image: bts-cys_11.webp
+    alt: "Deux hommes adossés à un vieux panneau de bois dans les dunes, sous un ciel gris."
+  - image: bts-cys_19.webp
+    alt: "Un opérateur cadre sous la pluie, gouttes d'eau sur l'écran du moniteur déporté."
+  - image: bts-cys_16.webp
+    alt: "Un preneur de son accroupi oriente ses micros vers le port, les lumières des quais dans le fond."
 
 # Ne sont pas dans ce fichier, et n'ont pas a y etre saisies : l'adresse
 # e-mail, qui vient de [params] de hugo.toml, et les deux realisateurs, qui
