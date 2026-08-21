@@ -25,7 +25,11 @@
   --vert-foret: #3D5941;
   --bleu-ocean: #4E6771;
   --gris: #ACAAA4;
-  --gris-fonce: #726F68;    /* gris de texte sur fond clair, contraste 4.72:1 */
+  /* Gris du texte secondaire sur le fond ivoire. Seule valeur hexadecimale
+     de ce gris dans toute la feuille : aucune regle ne le reecrit en dur.
+     Contraste mesure sur --blanc-casse : 5.08:1, au-dessus du seuil WCAG AA
+     de 4.5:1. L'ancien #726F68 n'atteignait que 4.72:1. */
+  --couleur-texte-secondaire: #6E6A5F;
 
   /* Arrondis. --rayon est mesure sur la reference et s'applique a toutes
      les images ; --rayon-pilule produit un demi-cercle a toute hauteur. */
@@ -36,11 +40,11 @@
      fond ivoire, texte sombre. Le pied de page inverse a nouveau. */
   --fond: var(--blanc-casse);
   --texte: var(--noir);
+  /* --texte-doux, plus clair, ne passe pas le seuil de 4.5:1 sur l'ivoire :
+     il reste reserve aux fonds sombres et aux elements non textuels. Tout
+     texte secondaire pose sur le fond clair prend
+     --couleur-texte-secondaire, declaree plus haut. */
   --texte-doux: var(--gris);
-  /* Texte secondaire pose sur le fond ivoire. --texte-doux, plus clair, ne
-     passe pas le seuil de 4.5:1 sur ce fond : il reste reserve aux fonds
-     sombres et aux elements non textuels. */
-  --texte-second: var(--gris-fonce);
   --trait: var(--gris);
   --focus: var(--kaki);
 }
@@ -438,15 +442,21 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
   padding: 0;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  /* La gouttiere verticale a un plancher depuis l'ajout des legendes : a
-     2vw seuls, sur petit ecran, une legende se retrouvait plus pres de la
-     vignette suivante que de la sienne. Au-dela de ~2000px, 2vw reprend
-     la main. */
+  /* La gouttiere verticale est fixe et nettement plus large que
+     l'horizontale : la legende doit rester plus pres de sa propre vignette
+     que de la suivante. 2.75rem, soit 44px, separent la ligne de
+     metadonnees d'une rangee du haut de la vignette de la rangee suivante,
+     contre 14px entre une vignette et son propre titre : le rapport de un a
+     trois leve toute ambiguite sur l'appartenance de la legende.
+     Une seule valeur, en une comme en deux colonnes — 4rem creusait trop la
+     page une fois la grille repliee. Elle ne suit plus --grille-gap, qui ne
+     gouverne que l'horizontale. */
   column-gap: var(--grille-gap);
-  row-gap: max(var(--grille-gap), 2.5rem);
+  row-gap: 2.75rem;
 }
 
-/* Une seule colonne sous 700px, meme ratio de vignette. */
+/* Une seule colonne sous 700px, meme ratio de vignette et meme gouttiere
+   verticale : rien a surcharger ici. */
 @media (max-width: 700px) {
   .grille-projets { grid-template-columns: 1fr; }
 }
@@ -482,31 +492,46 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
 /* Titre : capitales, cale a gauche sous la couverture. Les capitales viennent
    du rendu, pas du contenu : le titre reste lisible dans l'entete du fichier
    et correctement restitue par les lecteurs d'ecran.
-   Sa marge haute est celle qui separe le bloc de texte de l'image. */
+   Sa marge haute est celle qui separe le bloc de texte de l'image, sa marge
+   basse celle qui le separe de la ligne de metadonnees — cette derniere
+   n'ayant pas de marge haute, la valeur posee ici gouverne seule l'ecart.
+   Le titre gagne en densite plutot qu'en presence : la taille monte de
+   0.8rem a 0.9375rem et la graisse de 500 a 600, mais l'interlettrage
+   retombe de 0.08em a 0.03em. Les capitales se resserrent au lieu de
+   s'etaler, la ligne occupe une largeur comparable et se lit a un metre
+   de l'ecran sans jamais peser autant que la couverture au-dessus.
+   Montserrat etant chargee en fonte variable (axe wght 100-900), la graisse
+   600 ne declenche aucun fichier supplementaire. */
 .vignette-titre {
-  margin: 0.85rem 0 0;
-  font-size: 0.8rem;
-  font-weight: 500;
+  margin: 0.875rem 0 0.25rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
   line-height: 1.5;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   text-align: left;
   color: var(--texte);
 }
 
 /* Ligne de metadonnees : nom et annee, en casse normale et en corps plus
-   petit que le titre. Sa marge haute est cinq fois plus serree que celle du
-   titre : les deux lignes se lisent comme un bloc, detache de l'image.
-   Le gris est --texte-second, seul de la palette a tenir 4.5:1 sur l'ivoire :
-   --texte-doux, plus clair, y plafonne a 2.2:1. */
+   petit que le titre. Elle n'a pas de marge propre : l'ecart avec le titre
+   vient de la marge basse de celui-ci, une seule valeur a regler au lieu de
+   deux marges qui se chevauchent. Les deux lignes se lisent comme un bloc,
+   detache de l'image.
+   Le gris est --couleur-texte-secondaire, a 5.08:1 sur l'ivoire. C'est la
+   ligne qui manquait le plus de contraste : le corps monte de 0.75rem a
+   0.8125rem et le gris se fonce, sans changer de graisse — l'ecart de
+   calibre et de couleur avec le titre reste franc, le regard va toujours
+   a l'image d'abord. --texte-doux, plus clair, plafonne a 2.2:1 sur ce
+   fond et n'a rien a faire ici. */
 .vignette-meta {
-  margin: 0.15rem 0 0;
-  font-size: 0.75rem;
+  margin: 0;
+  font-size: 0.8125rem;
   font-weight: 400;
   line-height: 1.5;
   letter-spacing: 0.02em;
   text-align: left;
-  color: var(--texte-second);
+  color: var(--couleur-texte-secondaire);
 }
 
 /* -------------------------------------------------------------------------
@@ -568,7 +593,7 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
   letter-spacing: 0.04em;
   line-height: 1.2;
   text-transform: uppercase;
-  color: var(--texte-second);
+  color: var(--couleur-texte-secondaire);
   font-variant-numeric: tabular-nums;
 }
 
@@ -651,7 +676,7 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
   font-size: clamp(1.2rem, 1.6vw, 1.35rem);
   font-style: italic;
   line-height: 1.45;
-  color: var(--texte-second);
+  color: var(--couleur-texte-secondaire);
 }
 
 /* Credit photo : une ligne discrete posee juste au-dessus de la galerie, sur
@@ -662,7 +687,7 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
   margin: clamp(1.75rem, 3.5vw, 2.75rem) 0 0;
   font-size: 0.8rem;
   letter-spacing: 0.04em;
-  color: var(--texte-second);
+  color: var(--couleur-texte-secondaire);
 }
 .projet-credit a { color: var(--texte); }
 
@@ -740,7 +765,8 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
    align-items: baseline pose l'intitule et sa valeur sur la meme ligne de
    base malgre leurs corps differents.
 
-   Le gris des intitules est --texte-second, seul a tenir 4.5:1 sur l'ivoire. */
+   Le gris des intitules est --couleur-texte-secondaire, seul de la palette
+   a tenir 4.5:1 sur l'ivoire. */
 .projet-meta {
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr);
@@ -764,7 +790,7 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
 }
 
 .projet-meta dt {
-  color: var(--texte-second);
+  color: var(--couleur-texte-secondaire);
   font-size: 0.8rem;
   font-weight: 500;
   text-transform: uppercase;
@@ -845,7 +871,7 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--texte-second);
+  color: var(--couleur-texte-secondaire);
 }
 
 .distinctions-liste {
@@ -859,7 +885,7 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
 .distinctions-liste li { padding: 0.2rem 0; }
 
 /* Mention et annee : meme ligne que le nom, en retrait de couleur. */
-.distinctions-detail { color: var(--texte-second); }
+.distinctions-detail { color: var(--couleur-texte-secondaire); }
 
 /* Le depliant reprend la facture des accordeons du theme : pas de fleche
    native, un indicateur + / - dessine en CSS, et une cible cliquable large. */
@@ -884,10 +910,10 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
   font-size: 1rem;
   font-weight: 400;
   line-height: 1;
-  color: var(--texte-second);
+  color: var(--couleur-texte-secondaire);
 }
 .distinctions-plus[open] summary::before { content: "\2212"; }
-.distinctions-plus summary:hover { color: var(--texte-second); }
+.distinctions-plus summary:hover { color: var(--couleur-texte-secondaire); }
 .distinctions-plus .distinctions-liste { margin-top: 0.4rem; }
 
 /* g. Navigation de fin. */
@@ -1014,7 +1040,7 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
   text-transform: lowercase;
   letter-spacing: 0.1em;
   line-height: 1.3;
-  color: var(--texte-second);
+  color: var(--couleur-texte-secondaire);
 }
 
 /* Les noms de personnes echappent a la casse basse : ce sont des noms
