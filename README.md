@@ -113,6 +113,12 @@ motif de dix emplacements que le gabarit boucle — colonne de départ, largeur
 en colonnes et décalage vertical sont décrits une fois pour toutes dans
 `assets/css/main.css`.
 
+Le mur **rejoint le pied de page sans couture** : les deux fonds sont le même
+noir, ils se lisent comme une seule bande sombre qui ferme la page. C'est le
+seul endroit du site où la respiration que `main` pose sous le contenu est
+annulée, par une marge négative qui vaut exactement `--contenu-espace-bas`.
+Les autres pages gardent la leur.
+
 ### Ajouter une photo de tournage
 
 Deux gestes, pas un seul :

@@ -138,6 +138,12 @@
   --entete-espace-haut: clamp(6.5rem, 7.5vw, 7rem);
   --entete-espace-bas: clamp(5rem, 6vw, 5.5rem);
 
+  /* Respiration posee par <main> sous le contenu de toute page, avant le
+     pied. Elle est nommee parce qu'un bloc la reprend : le mur de la page
+     studio, qui doit rejoindre le pied sans couture, l'annule d'une marge
+     negative de meme valeur. Une seule valeur, pas deux a tenir en phase. */
+  --contenu-espace-bas: clamp(2rem, 5vw, 4rem);
+
   /* Medias de la page projet. --largeur-media est la largeur naturelle d'un
      media, celle de la colonne de contenu. --media-reserve est la hauteur
      retiree a la fenetre avant de convertir le reste en largeur : c'est la
@@ -408,7 +414,7 @@ blockquote, .citation {
 /* -------------------------------------------------------------------------
    MISE EN PAGE GENERALE
    ------------------------------------------------------------------------- */
-main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); }
+main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas); }
 
 .page-texte { max-width: var(--mesure); padding-block: clamp(1rem, 3vw, 2rem) 0; }
 .page-texte h1 { margin-bottom: calc(var(--pas) * 1.5); }
@@ -957,15 +963,20 @@ main { display: block; flex: 1 0 auto; padding-block: 0 clamp(2rem, 5vw, 4rem); 
    --noir sur le fond, --blanc-casse sur le texte, soit le meme contraste de
    18:1 qu'en bas de page.
 
-   Respiration : au moins 10vh a l'interieur, en haut et en bas, pour que la
-   bascule ivoire vers sombre ne colle a rien ; 12vh d'ivoire apres la
-   section, pour que le pied reste lisible comme un bloc distinct et non
-   comme la suite du mur. Ces 12vh sont une somme : `main` pose deja sa
-   propre marge basse sous le contenu de toutes les pages, le mur n'ajoute
-   donc que ce qui manque. Sans ce retrait, la bande ferait pres de 20vh. */
+   Respiration : au moins 10vh a l'interieur, en haut et en bas. En haut,
+   c'est ce qui empeche la bascule ivoire vers sombre de coller au texte de
+   presentation. En bas, c'est la seule respiration entre la derniere photo
+   et le pied, puisque le mur rejoint celui-ci sans couture : les deux fonds
+   sont le meme --noir, ils se lisent comme une seule bande sombre qui ferme
+   la page.
+
+   Cette jonction demande d'annuler la respiration que `main` pose sous le
+   contenu de toute page. La marge negative vaut exactement
+   --contenu-espace-bas, donc `main` garde son reglage et sa valeur reste
+   ecrite a un seul endroit ; seule la page studio l'annule, par cette regle
+   qui ne peut atteindre aucun autre gabarit. */
 .mur {
-  margin-block: clamp(2.5rem, 6vw, 4.5rem)
-                max(0px, calc(12vh - clamp(2rem, 5vw, 4rem)));
+  margin-block: clamp(2.5rem, 6vw, 4.5rem) calc(var(--contenu-espace-bas) * -1);
   padding-block: max(10vh, 4rem);
   background: var(--noir);
   color: var(--blanc-casse);
