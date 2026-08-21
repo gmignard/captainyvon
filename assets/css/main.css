@@ -444,23 +444,21 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
   grid-template-columns: repeat(2, 1fr);
   /* La gouttiere verticale est fixe et nettement plus large que
      l'horizontale : la legende doit rester plus pres de sa propre vignette
-     que de la suivante, et le bloc titre + metadonnees vient de se
-     resserrer. 4rem separe donc deux rangees, quelle que soit la fenetre.
-     Elle ne suit plus --grille-gap, qui ne gouverne que l'horizontale. */
+     que de la suivante. 2.75rem, soit 44px, separent la ligne de
+     metadonnees d'une rangee du haut de la vignette de la rangee suivante,
+     contre 14px entre une vignette et son propre titre : le rapport de un a
+     trois leve toute ambiguite sur l'appartenance de la legende.
+     Une seule valeur, en une comme en deux colonnes — 4rem creusait trop la
+     page une fois la grille repliee. Elle ne suit plus --grille-gap, qui ne
+     gouverne que l'horizontale. */
   column-gap: var(--grille-gap);
-  row-gap: 4rem;
+  row-gap: 2.75rem;
 }
 
-/* Une seule colonne sous 700px, meme ratio de vignette.
-   La gouttiere verticale y recule a 2.75rem : repliee en une colonne, elle
-   est le seul separateur entre deux projets, mais 4rem represente alors
-   plus du tiers de la hauteur d'une vignette et disloque la liste. 2.75rem
-   garde le titre solidaire de son image sans creuser l'ecran. */
+/* Une seule colonne sous 700px, meme ratio de vignette et meme gouttiere
+   verticale : rien a surcharger ici. */
 @media (max-width: 700px) {
-  .grille-projets {
-    grid-template-columns: 1fr;
-    row-gap: 2.75rem;
-  }
+  .grille-projets { grid-template-columns: 1fr; }
 }
 
 /* La vignette entiere — couverture et legende — est un lien unique :
