@@ -963,9 +963,14 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
    PAGE STUDIO — FICHE CONTACT
    Format fiche : chaque ligne est un intitule pose au-dessus de sa valeur.
    C'est la grammaire des metadonnees d'une page projet — meme calibre, meme
-   casse, meme gris, meme interlettrage — a deux differences pres, voulues :
-   l'intitule est en Courier Prime, et il passe au-dessus de la valeur au lieu
-   d'etre a sa gauche. La colonne est trop etroite pour deux pistes.
+   gris, meme interlettrage — a trois differences pres, voulues : l'intitule
+   est en Courier Prime, il passe au-dessus de la valeur faute de place pour
+   deux pistes dans cette colonne, et il est en bas de casse la ou la fiche
+   projet crie en capitales.
+
+   La colonne se lit dans cet ordre : les lignes, un filet, les personnes,
+   puis le bouton d'ecriture qui la ferme. L'adresse en toutes lettres a
+   disparu : le bouton pointe deja dessus.
    ------------------------------------------------------------------------- */
 
 /* Rythme vertical de la fiche, en une seule variable : les deux blocs et le
@@ -979,30 +984,42 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
   .studio-contact { --fiche-pas: 1rem; }
 }
 
-.studio-action { margin: 0; }
+/* Quel que soit le bloc qui ouvre la colonne, il commence a la hauteur du
+   texte de gauche : c'est ce qui met les deux colonnes sur la meme ligne
+   haute. Sans cette regle, la marge du premier bloc les decalerait. */
+.studio-contact > :first-child { margin-top: 0; }
 
-.studio-adresse {
-  margin: 0.9rem 0 0;
-  font-size: 0.9rem;
-}
+/* L'action ferme la colonne, detachee du bloc qui la precede : c'est le seul
+   element cliquable en pleine largeur de la fiche, il ne se confond avec
+   aucune ligne. */
+.studio-action { margin: calc(var(--fiche-pas) * 1.7) 0 0; }
 
 /* Les lignes de la fiche. L'intitule et sa valeur forment un bloc, les blocs
-   sont espaces du pas de la fiche. La marge haute de la liste vaut ce meme
-   pas : la premiere ligne se detache de l'adresse comme les suivantes se
-   detachent entre elles. */
+   sont espaces du pas de la fiche, et la liste se detache du bloc precedent
+   du meme pas. */
 .studio-lignes {
   margin: var(--fiche-pas) 0 0;
   font-size: 0.9rem;
   line-height: 1.5;
 }
+
+/* Intitules en bas de casse. Le libelle est saisi en francais courant dans
+   l'entete, « Basés à », et c'est la feuille de style qui le met en
+   minuscules : le contenu reste lisible dans le fichier et correctement
+   restitue par les lecteurs d'ecran, comme partout ailleurs sur le site ou
+   c'est la mise en capitales qui vient d'ici. */
 .studio-lignes dt {
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  text-transform: uppercase;
+  text-transform: lowercase;
   letter-spacing: 0.1em;
   line-height: 1.3;
   color: var(--texte-second);
 }
+
+/* Les noms de personnes echappent a la casse basse : ce sont des noms
+   propres, pas des libelles. Ils gardent la graphie de data/equipe.yaml. */
+.studio-lignes--personnes dt { text-transform: none; }
 .studio-lignes dd {
   margin: 0.25rem 0 0;
   color: var(--texte);
@@ -1018,10 +1035,6 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
   border: 0;
   border-top: 1px solid color-mix(in srgb, var(--trait) 45%, transparent);
 }
-
-/* Le bloc des personnes ouvre sur une liste, sans adresse au-dessus : sa
-   marge haute est deja portee par le filet. */
-.studio-fiche--personnes .studio-lignes { margin-top: var(--fiche-pas); }
 
 /* Point median entre le site et le compte Instagram d'une personne. Il n'est
    pose qu'entre deux entrees presentes, par le gabarit : vider un champ ne

@@ -77,8 +77,12 @@ galerie:
 
 Fondé en 2016 par Grégory Mignard et Jeremy Janin, Captain Yvon est un studio de création visuelle dédié à la vie en plein air et à l'aventure. Nous racontons les histoires de ceux qui vivent, travaillent et s'épanouissent dans la nature. Nous travaillons entre Brest et Lille, et partout où le sujet nous emmène.
 
-Nous ne mettons pas en scène. Nous prenons le temps, nous écoutons, nous attendons la lumière. Notre expérience du documentaire nous a appris à capter les moments honnêtes plutôt que les poses forcées, et à composer avec ce que la nature offre quand la météo tourne ou que la marée change.
+Nous collaborons avec des agences, des destinations touristiques et des marques engagées, sur des projets qui célèbrent l'humain et son territoire. Notre travail a été distingué à plusieurs reprises en festival et dans les milieux de la communication et du tourisme.
 
-Pas d'agence, pas d'interlocuteurs multiples. Vous travaillez avec ceux qui font les images, de la conception à la livraison. Tout notre matériel tient dans un sac à dos. Cette légèreté nous rend discrets : on entre dans un atelier, sur un bateau, dans une cuisine, sans transformer l'endroit en plateau.
+Nous ne mettons pas en scène. Nous prenons le temps, nous écoutons, nous attendons la lumière. Notre expérience du documentaire nous a appris à capter les moments honnêtes plutôt que les poses forcées, et à composer avec ce que la nature offre quand la météo tourne ou que la marée change. Nous sommes à l'aise à terre, sur l'eau et en l'air, et nous nous adaptons aux conditions plutôt que de les combattre.
 
-Le résultat, c'est une image qu'on pourrait regarder dans dix ans sans rougir.
+Nous ne cherchons pas la perfection technique mais la vérité d'un instant. Une lumière qui baisse trop vite, un visage à contre-jour, un mouvement qu'on n'avait pas prévu. Nous ne corrigeons pas ces accidents, nous les accueillons. C'est souvent dans ce léger écart avec l'image idéale que quelque chose de vrai se glisse. Le son suit la même logique : nous l'enregistrons avec le même soin que l'image, parce qu'un film sans matière sonore n'est qu'une belle image muette.
+
+Pas d'agence, pas d'interlocuteurs multiples. Vous travaillez avec ceux qui font les images, de la conception à la livraison. Tout notre matériel tient dans un sac à dos. Cette légèreté nous rend discrets : on entre dans un atelier, sur un bateau, dans une cuisine, sans transformer l'endroit en plateau. Elle nous laisse aussi une liberté totale, celle de rester quand la scène se prolonge et de partir quand elle est finie.
+
+Le résultat, c'est une image qu'on pourrait regarder dans dix ans sans rougir. Pas parce qu'elle suit une mode, mais parce qu'elle cherchait quelque chose de juste.

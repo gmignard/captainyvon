@@ -21,9 +21,12 @@
 
   L'ordre du balisage est celui de la lecture : titre, texte, puis contact.
 
-  Aucune coordonnee n'est ecrite en dur ici. L'adresse vient de params.email,
-  les lignes de la fiche de la cle `fiche` de l'entete, les deux realisateurs
-  de data/equipe.yaml. Chaque bloc teste sa valeur avant de s'afficher : un
+  La colonne de droite se lit dans cet ordre : les lignes de la fiche, un
+  filet, les deux realisateurs, puis le bouton d'ecriture qui la ferme.
+
+  Aucune coordonnee n'est ecrite en dur ici. Les lignes viennent de la cle
+  `fiche` de l'entete, les realisateurs de data/equipe.yaml, l'adresse du
+  bouton de params.email. Chaque bloc teste sa valeur avant de s'afficher : un
   champ vide ne produit ni libelle orphelin, ni ponctuation isolee.
 */ -}}
 {{- $titre := .Title -}}
@@ -89,62 +92,55 @@
 
       <aside class="studio-contact" aria-label="Contact">
 
-        {{- /* Premier bloc : l'action, l'adresse, puis les lignes de l'entete.
-               Le bloc entier disparait si l'entete ne declare ni adresse ni
-               ligne, sans laisser de filet en l'air. */ -}}
-        {{- $email := site.Params.email -}}
-        {{- if or $email $lignes }}
-        <div class="studio-fiche">
-          {{- with $email }}
-          <p class="studio-action">
-            {{ partial "pilule.html" (dict "href" (printf "mailto:%s" .) "libelle" "Écrire au studio") }}
-          </p>
-          <p class="studio-adresse"><a href="mailto:{{ . }}">{{ . }}</a></p>
+        {{- /* Les lignes de l'entete. */ -}}
+        {{- with $lignes }}
+        <dl class="studio-lignes">
+          {{- range $ligne := . }}
+          <dt>{{ $ligne.libelle }}</dt>
+          <dd>
+            {{- with $ligne.url -}}
+              <a href="{{ . }}" rel="noopener" target="_blank">{{ $ligne.valeur }}</a>
+            {{- else -}}
+              {{ $ligne.valeur }}
+            {{- end -}}
+          </dd>
           {{- end }}
-
-          {{- with $lignes }}
-          <dl class="studio-lignes">
-            {{- range $ligne := . }}
-            <dt>{{ $ligne.libelle }}</dt>
-            <dd>
-              {{- with $ligne.url -}}
-                <a href="{{ . }}" rel="noopener" target="_blank">{{ $ligne.valeur }}</a>
-              {{- else -}}
-                {{ $ligne.valeur }}
-              {{- end -}}
-            </dd>
-            {{- end }}
-          </dl>
-          {{- end }}
-        </div>
+        </dl>
         {{- end }}
 
-        {{- /* Second bloc : les personnes. Le filet lui appartient, il n'est
-               donc pose que si le bloc precedent existe aussi : sans lui, ce
-               serait un trait au-dessus de rien. Le nom n'est pas un lien,
-               seules les entrees de la ligne du dessous le sont. */ -}}
+        {{- /* Les personnes. Le filet leur appartient : il n'est pose que si
+               des lignes le precedent, sans quoi ce serait un trait au-dessus
+               de rien. Le nom n'est pas un lien, seules les entrees de la
+               ligne du dessous le sont. */ -}}
         {{- with $membres }}
-          {{- if or $email $lignes }}
+          {{- if $lignes }}
         <hr class="studio-filet">
           {{- end }}
-        <div class="studio-fiche studio-fiche--personnes">
-          <dl class="studio-lignes">
-            {{- range . }}
-            <dt>{{ .nom }}</dt>
-            <dd>
-              {{- range $i, $lien := .liens -}}
-                {{- /* <wbr> : une occasion de cesure de largeur nulle, posee apres
-                       le point median. Sans elle, le site et le compte forment un
-                       seul mot insecable qui deborde de la colonne des que celle-ci
-                       se resserre. Le point median reste sur la premiere ligne, la
-                       coupure ne se voit pas tant qu'elle ne sert pas. */ -}}
-                {{- if $i }}<span class="studio-separateur" aria-hidden="true">&middot;</span><wbr>{{ end -}}
-                <a href="{{ $lien.href }}" rel="noopener" target="_blank">{{ $lien.texte }}</a>
-              {{- end -}}
-            </dd>
-            {{- end }}
-          </dl>
-        </div>
+        <dl class="studio-lignes studio-lignes--personnes">
+          {{- range . }}
+          <dt>{{ .nom }}</dt>
+          <dd>
+            {{- range $i, $lien := .liens -}}
+              {{- /* <wbr> : une occasion de cesure de largeur nulle, posee apres
+                     le point median. Sans elle, le site et le compte forment un
+                     seul mot insecable qui deborde de la colonne des que celle-ci
+                     se resserre. Le point median reste sur la premiere ligne, la
+                     coupure ne se voit pas tant qu'elle ne sert pas. */ -}}
+              {{- if $i }}<span class="studio-separateur" aria-hidden="true">&middot;</span><wbr>{{ end -}}
+              <a href="{{ $lien.href }}" rel="noopener" target="_blank">{{ $lien.texte }}</a>
+            {{- end -}}
+          </dd>
+          {{- end }}
+        </dl>
+        {{- end }}
+
+        {{- /* L'action ferme la colonne. L'adresse ne la double plus : le
+               bouton pointe deja dessus, l'ecrire une seconde fois en toutes
+               lettres ne disait rien de neuf. */ -}}
+        {{- with site.Params.email }}
+        <p class="studio-action">
+          {{ partial "pilule.html" (dict "href" (printf "mailto:%s" .) "libelle" "Écrire au studio") }}
+        </p>
         {{- end }}
 
       </aside>

@@ -111,15 +111,23 @@ même règle. Il n'est décrit qu'une fois dans la feuille de style, sous le nom
 ### La fiche contact
 
 Colonne de droite du haut de page. Format fiche : un intitulé en Courier
-Prime, petite taille et casse haute, posé au-dessus de sa valeur. C'est la
+Prime, petite taille et bas de casse, posé au-dessus de sa valeur. C'est la
 grammaire des métadonnées d'une page projet, avec l'intitulé au-dessus plutôt
 qu'à gauche, la colonne étant trop étroite pour deux pistes.
 
-Deux blocs séparés par un filet léger, plus discret que celui du titre.
+Les libellés sont saisis en français courant, `Basés à`, et c'est la feuille de
+style qui les met en minuscules : le contenu reste lisible dans le fichier et
+correctement restitué par les lecteurs d'écran. Les noms de personnes, eux,
+gardent la graphie du fichier de données. Ce sont des noms propres, pas des
+libellés.
 
-**Le bloc studio** : le bouton d'écriture et l'adresse viennent de
-`params.email` dans `hugo.toml`. Les lignes suivantes viennent de la clé
-`fiche` de l'entête de `content/studio/index.md` :
+La colonne se lit dans cet ordre : les lignes de la fiche, un filet léger plus
+discret que celui du titre, les deux réalisateurs, puis le bouton d'écriture
+qui la ferme. L'adresse n'y figure pas en toutes lettres, le bouton pointe
+déjà dessus.
+
+**Le bloc studio** vient de la clé `fiche` de l'entête de
+`content/studio/index.md` :
 
 ```yaml
 fiche:
@@ -134,6 +142,8 @@ fiche:
 un lien qui s'ouvre dans un nouvel onglet. Une entrée sans libellé ou sans
 valeur est ignorée. Retirer une entrée, ou la clé entière, ne demande aucune
 retouche du gabarit.
+
+**Le bouton** pointe sur `params.email` de `hugo.toml`.
 
 **Le bloc personnes** vient de `data/equipe.yaml`. Le nom fait l'intitulé, le
 site et le compte Instagram forment la ligne de valeur, séparés par un point
