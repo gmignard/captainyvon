@@ -2,59 +2,154 @@
 {{- /*
   Page studio.
 
-  Deux zones, dans cet ordre :
-    a. haut de page en deux colonnes : le texte de presentation a gauche, le
-       contact a droite ;
-    b. mur de photos de tournage, rendu par son partial. Le partial ne rend
-       rien si le bundle ne contient aucune image `bts-`.
+  Trois zones, dans cet ordre :
+    a. titre seul sur sa ligne, pleine largeur du conteneur, suivi du filet
+       d'entete des pages projet — le meme element, la meme regle, pour que
+       les deux entetes du site se repondent ;
+    b. sous le filet seulement, deux colonnes : le texte de presentation a
+       gauche, la fiche contact a droite ;
+    c. mur de photos de tournage, rendu par son partial. Il est volontairement
+       pose hors de `.enveloppe` : c'est un bloc pleine largeur sur fond
+       sombre, il doit sortir du cadre de contenu de la page. L'article, lui,
+       enveloppe toujours les trois zones. Le partial ne rend rien si l'entete
+       ne declare pas de cle `galerie`.
 
   Au-dela de 700px les deux colonnes sont cote a cote et la colonne de droite
   est collante : elle accompagne le defilement du texte et s'arrete au bas de
   la grille, donc au ras du mur. En dessous, tout s'empile et la colonne de
   droite redevient statique.
 
-  L'ordre du balisage est celui de la lecture : texte puis contact.
+  L'ordre du balisage est celui de la lecture : titre, texte, puis contact.
 
-  Aucune coordonnee n'est ecrite en dur ici. L'adresse vient de params.email,
-  le collectif de data/pied.yaml, ou il est deja decrit pour le pied de page :
-  c'est le meme fait, il n'a pas a etre saisi deux fois.
+  La colonne de droite se lit dans cet ordre : les lignes de la fiche, un
+  filet, les deux realisateurs, puis le bouton d'ecriture qui la ferme.
+
+  Aucune coordonnee n'est ecrite en dur ici. Les lignes viennent de la cle
+  `fiche` de l'entete, les realisateurs de data/equipe.yaml, l'adresse du
+  bouton de params.email. Chaque bloc teste sa valeur avant de s'afficher : un
+  champ vide ne produit ni libelle orphelin, ni ponctuation isolee.
 */ -}}
 {{- $titre := .Title -}}
 {{- if not $titre }}{{ with .File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
-{{- $collectif := site.Data.pied.collectif -}}
-<div class="enveloppe">
-  <article class="studio">
 
+{{- /* Lignes de la fiche venant de l'entete. Une entree sans valeur n'entre
+       pas dans la liste : c'est la valeur qui porte l'information, un libelle
+       seul n'aurait rien a annoncer. */ -}}
+{{- $lignes := slice -}}
+{{- range .Params.fiche -}}
+  {{- if and .libelle .valeur -}}
+    {{- $lignes = $lignes | append . -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* Les deux realisateurs, depuis data/equipe.yaml.
+
+       Une personne n'entre dans la liste que si elle a un nom et au moins un
+       lien : sans lien, sa ligne de valeur serait vide sous son nom. Les
+       liens presents sont rassembles ici, et c'est leur nombre, plus bas, qui
+       decide de la presence du point median — jamais la presence d'un champ
+       en particulier. Vider `site` ou `instagram` ne peut donc pas laisser de
+       ponctuation orpheline.
+
+       Le texte affiche d'un site est deduit de son adresse, protocole et
+       barre finale retires : l'adresse n'est ecrite qu'une fois dans le
+       fichier de donnees. Le compte Instagram y est saisi sans arobase,
+       l'arobase de l'affichage et l'adresse du profil sont posees ici. */ -}}
+{{- $membres := slice -}}
+{{- range site.Data.equipe.membres -}}
+  {{- $liens := slice -}}
+  {{- with .site -}}
+    {{- $liens = $liens | append (dict "href" . "texte" (trim (replaceRE `^https?://(www\.)?` "" .) "/")) -}}
+  {{- end -}}
+  {{- with .instagram -}}
+    {{- $liens = $liens | append (dict "href" (printf "https://instagram.com/%s" .) "texte" (printf "@%s" .)) -}}
+  {{- end -}}
+  {{- if and .nom $liens -}}
+    {{- $membres = $membres | append (dict "nom" .nom "liens" $liens) -}}
+  {{- end -}}
+{{- end -}}
+
+<article class="studio">
+  <div class="enveloppe">
+
+    {{- /* a. Titre seul, puis le filet des pages projet. La classe est celle
+           de la fiche projet, volontairement : reprendre la regle plutot que
+           la recopier est ce qui garantit que les deux filets ne peuvent pas
+           diverger. */ -}}
+    <header class="studio-titre">
+      {{- with $titre }}
+      <h1>{{ . }}</h1>
+      {{- end }}
+    </header>
+    <hr class="projet-filet">
+
+    {{- /* b. Les deux colonnes ne commencent qu'ici, sous le filet. */ -}}
     <div class="studio-haut">
 
       <div class="studio-texte">
-        {{- with $titre }}
-        <h1>{{ . }}</h1>
-        {{- end }}
         {{ .Content }}
       </div>
 
       <aside class="studio-contact" aria-label="Contact">
+
+        {{- /* Les lignes de l'entete. */ -}}
+        {{- with $lignes }}
+        <dl class="studio-lignes">
+          {{- range $ligne := . }}
+          <dt>{{ $ligne.libelle }}</dt>
+          <dd>
+            {{- with $ligne.url -}}
+              <a href="{{ . }}" rel="noopener" target="_blank">{{ $ligne.valeur }}</a>
+            {{- else -}}
+              {{ $ligne.valeur }}
+            {{- end -}}
+          </dd>
+          {{- end }}
+        </dl>
+        {{- end }}
+
+        {{- /* Les personnes. Le filet leur appartient : il n'est pose que si
+               des lignes le precedent, sans quoi ce serait un trait au-dessus
+               de rien. Le nom n'est pas un lien, seules les entrees de la
+               ligne du dessous le sont. */ -}}
+        {{- with $membres }}
+          {{- if $lignes }}
+        <hr class="studio-filet">
+          {{- end }}
+        <dl class="studio-lignes studio-lignes--personnes">
+          {{- range . }}
+          <dt>{{ .nom }}</dt>
+          <dd>
+            {{- range $i, $lien := .liens -}}
+              {{- /* <wbr> : une occasion de cesure de largeur nulle, posee apres
+                     le point median. Sans elle, le site et le compte forment un
+                     seul mot insecable qui deborde de la colonne des que celle-ci
+                     se resserre. Le point median reste sur la premiere ligne, la
+                     coupure ne se voit pas tant qu'elle ne sert pas. */ -}}
+              {{- if $i }}<span class="studio-separateur" aria-hidden="true">&middot;</span><wbr>{{ end -}}
+              <a href="{{ $lien.href }}" rel="noopener" target="_blank">{{ $lien.texte }}</a>
+            {{- end -}}
+          </dd>
+          {{- end }}
+        </dl>
+        {{- end }}
+
+        {{- /* L'action ferme la colonne. L'adresse ne la double plus : le
+               bouton pointe deja dessus, l'ecrire une seconde fois en toutes
+               lettres ne disait rien de neuf. */ -}}
         {{- with site.Params.email }}
         <p class="studio-action">
           {{ partial "pilule.html" (dict "href" (printf "mailto:%s" .) "libelle" "Écrire au studio") }}
         </p>
-        <p class="studio-adresse"><a href="mailto:{{ . }}">{{ . }}</a></p>
         {{- end }}
-        {{- with $collectif }}
-          {{- if .nom }}
-        <p class="studio-collectif">
-          {{- with .intro }}{{ . }} {{ end -}}
-          {{- with .url }}<a href="{{ . }}" rel="noopener">{{ $collectif.nom }}</a>{{ else }}{{ .nom }}{{ end -}}
-        </p>
-          {{- end }}
-        {{- end }}
+
       </aside>
 
     </div>
 
-    {{ partial "mur.html" . }}
+  </div>
 
-  </article>
-</div>
+  {{ partial "mur.html" . }}
+
+</article>
 {{ end }}

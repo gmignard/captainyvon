@@ -100,29 +100,121 @@ ni titre.
 
 ## Page studio
 
-La page studio est un page bundle, `content/studio/`. Son texte de
-présentation vit dans `index.md`, la colonne de contact est rendue par le
-gabarit depuis `[params]` et `data/pied.yaml` : rien à saisir dans l'entête.
+La page studio est un page bundle, `content/studio/`. Elle se lit de haut en
+bas dans cet ordre : le titre seul sur sa ligne, le filet, deux colonnes, puis
+le mur de photos de tournage.
+
+Le filet sous le titre est **celui des pages projet**, le même élément et la
+même règle. Il n'est décrit qu'une fois dans la feuille de style, sous le nom
+`.projet-filet` : les deux entêtes du site ne peuvent donc pas diverger.
+
+### La fiche contact
+
+Colonne de droite du haut de page. Format fiche : un intitulé en Courier
+Prime, petite taille et bas de casse, posé au-dessus de sa valeur. C'est la
+grammaire des métadonnées d'une page projet, avec l'intitulé au-dessus plutôt
+qu'à gauche, la colonne étant trop étroite pour deux pistes.
+
+Les libellés sont saisis en français courant, `Basés à`, et c'est la feuille de
+style qui les met en minuscules : le contenu reste lisible dans le fichier et
+correctement restitué par les lecteurs d'écran. Les noms de personnes, eux,
+gardent la graphie du fichier de données. Ce sont des noms propres, pas des
+libellés.
+
+La colonne se lit dans cet ordre : les lignes de la fiche, un filet léger plus
+discret que celui du titre, les deux réalisateurs, puis le bouton d'écriture
+qui la ferme. L'adresse n'y figure pas en toutes lettres, le bouton pointe
+déjà dessus.
+
+**Le bloc studio** vient de la clé `fiche` de l'entête de
+`content/studio/index.md` :
+
+```yaml
+fiche:
+  - libelle: "Basés à"
+    valeur: "Brest et Lille"
+  - libelle: "Représentés par"
+    valeur: "Le collectif AUNORD"
+    url: "https://aunord.fr"
+```
+
+`url` est facultatif : sans lui la valeur reste du texte, avec lui elle devient
+un lien qui s'ouvre dans un nouvel onglet. Une entrée sans libellé ou sans
+valeur est ignorée. Retirer une entrée, ou la clé entière, ne demande aucune
+retouche du gabarit.
+
+**Le bouton** pointe sur `params.email` de `hugo.toml`.
+
+**Le bloc personnes** vient de `data/equipe.yaml`. Le nom fait l'intitulé, le
+site et le compte Instagram forment la ligne de valeur, séparés par un point
+médian. Le nom n'est jamais un lien.
+
+Le fichier ne porte que les adresses : le texte affiché d'un site est déduit de
+son adresse, protocole retiré, et le compte Instagram y est saisi sans arobase,
+le gabarit posant l'arobase et l'adresse du profil. Rien n'est écrit deux fois.
+
+Vider `site` ou `instagram` retire l'entrée et le point médian avec elle, sans
+laisser de ponctuation orpheline. Une personne sans aucun des deux n'apparaît
+pas dans la fiche. Les champs `portrait` et `bio` sont là pour un futur bloc
+équipe et restent vides aujourd'hui, sans rien produire.
+
+Orthographe : **Jeremy Janin sans accent, Grégory Mignard avec**. Les deux
+graphies sont volontaires, ne pas les uniformiser.
+
+### Le mur de photos de tournage
+
+Le mur est un bloc **pleine largeur sur fond sombre**, en rupture avec le fond
+ivoire du site. Ses deux couleurs sont celles du pied de page, reprises de la
+palette : rien n'est saisi en dur. Les photos y sont posées librement, sur un
+motif de dix emplacements que le gabarit boucle — colonne de départ, largeur
+en colonnes et décalage vertical sont décrits une fois pour toutes dans
+`assets/css/main.css`.
+
+Le mur **rejoint le pied de page sans couture** : les deux fonds sont le même
+noir, ils se lisent comme une seule bande sombre qui ferme la page. C'est le
+seul endroit du site où la respiration que `main` pose sous le contenu est
+annulée, par une marge négative qui vaut exactement `--contenu-espace-bas`.
+Les autres pages gardent la leur.
 
 ### Ajouter une photo de tournage
 
-Déposer le fichier dans `content/studio/` en le nommant `bts-NN.<ext>`, par
-exemple `bts-16.jpg`. C'est tout : le mur ramasse automatiquement toutes les
-images du dossier dont le nom commence par `bts-`, aucune entête n'est à
-modifier et aucune liste n'est à tenir à jour.
+Deux gestes, pas un seul :
 
-L'ordre d'affichage suit le nom de fichier, donc la numérotation. Elle est
-sur **deux chiffres** pour la même raison que les images de projet : sans le
-zéro de tête, `bts-10` passerait avant `bts-2`.
+1. déposer le fichier dans `content/studio/`, nommé `bts-NN.<ext>` ;
+2. ajouter son entrée à la clé `galerie` de `content/studio/index.md`.
 
-Retirer toutes les images `bts-` fait disparaître la section entière, titre
-compris.
+C'est cette liste, et elle seule, qui décide de ce qui s'affiche et dans quel
+ordre : rien n'est ramassé automatiquement, rien n'est trié, rien n'est tiré
+au sort. Deux constructions successives donnent donc exactement le même HTML.
+Une photo déposée mais absente de la liste n'apparaît pas ; une entrée dont le
+fichier n'existe pas est ignorée sans casser la mise en page.
+
+Chaque entrée porte son texte alternatif :
+
+```yaml
+galerie:
+  - image: bts-16.jpg
+    alt: "Ce que montre la photo, en une phrase."
+```
+
+`alt` absent donne `alt=""` : la photo est alors traitée comme décorative.
+Une entrée peut aussi se réduire au seul nom de fichier, avec le même effet.
+
+Le nombre de photos est libre — de 6 à 20 sans y penser. Le motif boucle sur
+dix emplacements : la onzième photo retombe sur le premier, en retirer trois
+ne dérange rien. L'ordre de la liste alterne volontairement paysages et
+portraits, et place les portraits sur les emplacements les plus étroits :
+c'est ce qui évite qu'une image verticale prenne six colonnes.
+
+Retirer la clé `galerie`, ou la vider, fait disparaître la section entière,
+titre et fond sombre compris.
 
 Format et poids des fichiers déposés : du JPEG, **1000 px de large au plus**
 et **300 Ko par fichier au plus**. Hugo produit ensuite les WebP servis au
-visiteur, calés sur la largeur réelle d'une colonne du mur, mais il n'agrandit
+visiteur, calés sur la largeur réelle de l'emplacement, mais il n'agrandit
 jamais une source ni ne compense un fichier trop lourd au dépôt. Cette limite
-tient le poids de la page sous 1,5 Mo.
+tient le poids de la page sous 1,5 Mo — mesuré à 718 Ko avec quinze photos,
+fontes comprises.
 
 ## Nommage des images d'un page bundle
 
