@@ -1,6 +1,6 @@
 ---
 title: "Vendée Globe 2024"
-date: 2020-06-14
+date: 2025-02-10
 nature: "commande"
 client: "Stand As One Altavia"
 extrait: "Réalisation d’épisodes pour la webserie de l’Imoca Stand As One avec le skipper Eric Bellion pour son Vendée Globe 2024."
