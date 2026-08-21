@@ -5,8 +5,11 @@
   Deux zones, dans cet ordre :
     a. haut de page en deux colonnes : le texte de presentation a gauche, le
        contact a droite ;
-    b. mur de photos de tournage, rendu par son partial. Le partial ne rend
-       rien si le bundle ne contient aucune image `bts-`.
+    b. mur de photos de tournage, rendu par son partial. Il est volontairement
+       pose hors de `.enveloppe` : c'est un bloc pleine largeur sur fond
+       sombre, il doit sortir du cadre de contenu de la page. L'article, lui,
+       enveloppe toujours les deux zones. Le partial ne rend rien si l'entete
+       ne declare pas de cle `galerie`.
 
   Au-dela de 700px les deux colonnes sont cote a cote et la colonne de droite
   est collante : elle accompagne le defilement du texte et s'arrete au bas de
@@ -22,8 +25,8 @@
 {{- $titre := .Title -}}
 {{- if not $titre }}{{ with .File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
 {{- $collectif := site.Data.pied.collectif -}}
-<div class="enveloppe">
-  <article class="studio">
+<article class="studio">
+  <div class="enveloppe">
 
     <div class="studio-haut">
 
@@ -53,8 +56,9 @@
 
     </div>
 
-    {{ partial "mur.html" . }}
+  </div>
 
-  </article>
-</div>
+  {{ partial "mur.html" . }}
+
+</article>
 {{ end }}

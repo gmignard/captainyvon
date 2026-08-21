@@ -1,54 +1,100 @@
 {{- /*
   Mur de photos de tournage.
 
-  Alimentation entierement automatique : toutes les ressources image du page
-  bundle dont le nom de fichier commence par `bts-` sont ramassees ici. Aucun
-  champ d'entete a renseigner, deposer un fichier dans content/studio/ suffit.
-  L'ordre est celui des noms de fichiers, d'ou la numerotation a deux chiffres
-  decrite dans le README : c'est elle, et elle seule, qui pilote l'ordre.
+  Bloc pleine largeur sur fond sombre, en rupture avec le fond ivoire du
+  site. Le gabarit studio sort ce partial de `.enveloppe` : la section est un
+  bloc de `<main>`, sa largeur est donc celle du viewport sans qu'aucune
+  unite `vw` n'intervienne — c'est ce qui evite le scroll horizontal que
+  produit `100vw` des qu'une barre de defilement est visible.
 
-  Aucune image `bts-` dans le bundle : rien n'est rendu, pas meme le titre.
+  Alimentation : la cle `galerie` de l'entete de content/studio/index.md, et
+  elle seule. Chaque entree est soit un nom de fichier du page bundle, soit
+  une table `image` / `alt`. Rien n'est trie ni tire au sort ici : l'ordre est
+  celui de la liste, deux constructions successives donnent le meme HTML.
 
-  Mise en page : une mosaique irreguliere obtenue par la propriete CSS
-  `columns`. Les images gardent leur rapport d'origine, ne sont ni recadrees
-  ni calees sur une hauteur commune, et les colonnes se remplissent a des
-  hauteurs differentes : le mur parait desorganise sans une ligne de
-  JavaScript ni bibliotheque de maconnerie.
+  Robustesse : un fichier absent du bundle est ignore, un `alt` absent devient
+  `alt=""` — la photo est alors decorative, ce qui vaut toujours mieux qu'une
+  balise sans attribut. Sans cle `galerie`, rien n'est rendu, pas meme le
+  titre.
 
-  Les images ne sont pas cliquables : pas de loupe ici, contrairement a la
-  galerie d'une fiche projet. Elles ne sont donc atteignables ni a la souris
-  ni au clavier, et leur alt reste vide : elles sont decoratives, c'est le
-  titre de section qui porte l'information.
+  Mise en page : un motif de dix emplacements, boucle avec `math.Mod` sur le
+  rang. Chaque emplacement porte sa colonne de depart, sa largeur en colonnes
+  et son decalage vertical, tous decrits dans la feuille de style — le
+  gabarit ne connait que le numero d'emplacement, pose en classe. Le nombre
+  de photos est donc libre : en ajouter ou en retirer ne peut pas casser la
+  grille, la onzieme photo retombe simplement sur le premier emplacement.
 
-  Poids : sortie WebP a la largeur reelle d'une colonne du mur, jamais plus.
-  Trois colonnes dans un conteneur plafonne a --contenu-max donnent environ
-  470px par colonne, la sortie est calee dessus. width et height sont poses
-  sur chaque balise pour reserver la place avant chargement, et seule la
-  premiere image est chargee immediatement.
+  Les images gardent leur rapport d'origine : ni recadrage, ni hauteur
+  imposee, ni agrandissement d'une source plus etroite que son emplacement.
+
+  Elles ne sont pas cliquables : pas de loupe ici, contrairement a la galerie
+  d'une fiche projet.
+
+  Poids : sortie WebP calee sur la largeur reelle de l'emplacement au plus
+  large viewport, jamais plus. `--largeur-colonne` ci-dessous est la largeur
+  d'une colonne sur douze dans le cadre plafonne a --contenu-max ; la largeur
+  d'une photo en est deduite par son nombre de colonnes. width et height sont
+  poses sur chaque balise pour reserver la place avant chargement.
 
   Contexte attendu : la page studio.
 */ -}}
-{{- $images := slice -}}
-{{- range .Resources.ByType "image" -}}
-  {{- if hasPrefix .Name "bts-" }}{{ $images = $images | append . }}{{ end -}}
+
+{{- $page := . -}}
+
+{{- /* Lecture de l'entete. Chaque champ est teste avant usage : ni `image`
+       manquant, ni `alt` manquant, ni fichier introuvable ne doivent
+       interrompre le rendu. */ -}}
+{{- $photos := slice -}}
+{{- with .Params.galerie -}}
+  {{- range . -}}
+    {{- $fichier := "" -}}
+    {{- $texte := "" -}}
+    {{- if reflect.IsMap . -}}
+      {{- with .image }}{{ $fichier = . }}{{ end -}}
+      {{- with .alt }}{{ $texte = . }}{{ end -}}
+    {{- else -}}
+      {{- $fichier = . -}}
+    {{- end -}}
+    {{- with $fichier -}}
+      {{- with $page.Resources.GetMatch . -}}
+        {{- $photos = $photos | append (dict "ressource" . "alt" $texte) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
 {{- end -}}
-{{- $images = sort $images "Name" -}}
 
-{{- with $images }}
+{{- /* Largeur de chacun des dix emplacements, en colonnes. Le meme ordre que
+       les regles .mur-photo--1 a --10 de la feuille de style : c'est le seul
+       endroit ou les deux fichiers doivent rester d'accord. */ -}}
+{{- $colonnes := slice 5 4 4 6 3 4 6 3 5 5 -}}
+{{- $largeurColonne := 120 -}}
+
+{{- with $photos }}
 <section class="mur" aria-labelledby="mur-titre">
-  <h2 class="mur-titre" id="mur-titre">Voici un aperçu de nos vies en tournage</h2>
+  <div class="mur-cadre">
 
-  <div class="mur-grille">
-    {{- range $rang, $r := . }}
-      {{- /* Jamais d'agrandissement : une source plus etroite que la colonne
-             est servie a sa taille d'origine. */ -}}
-      {{- $largeur := cond (gt $r.Width 470) 470 $r.Width -}}
-      {{- $photo := $r.Resize (printf "%dx webp q78" $largeur) }}
-    <img src="{{ $photo.RelPermalink }}"
-         width="{{ $photo.Width }}" height="{{ $photo.Height }}"
-         alt=""
-         {{ if $rang }}loading="lazy" {{ end }}decoding="async">
-    {{- end }}
+    <h2 class="mur-titre" id="mur-titre">Voici un aperçu de nos vies en tournage</h2>
+    <p class="mur-fleche" aria-hidden="true">&darr;</p>
+
+    <div class="mur-grille">
+      {{- range $rang, $photo := . }}
+        {{- $r := $photo.ressource -}}
+        {{- $emplacement := math.Mod $rang 10 -}}
+        {{- $cible := mul (index $colonnes $emplacement) $largeurColonne -}}
+
+        {{- /* Jamais d'agrandissement : une source plus etroite que son
+               emplacement est servie a sa taille d'origine. */ -}}
+        {{- $largeur := cond (gt $r.Width $cible) $cible $r.Width -}}
+        {{- $image := $r.Resize (printf "%dx webp q76" $largeur) }}
+      <figure class="mur-photo mur-photo--{{ add $emplacement 1 }}">
+        <img src="{{ $image.RelPermalink }}"
+             width="{{ $image.Width }}" height="{{ $image.Height }}"
+             alt="{{ $photo.alt }}"
+             loading="lazy" decoding="async">
+      </figure>
+      {{- end }}
+    </div>
+
   </div>
 </section>
 {{- end -}}
