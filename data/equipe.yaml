@@ -1,0 +1,28 @@
+# Les deux realisateurs du studio.
+#
+# Ce fichier porte les personnes, pas leur mise en page : la fiche contact du
+# haut de la page studio y lit le nom et les deux liens, un futur bloc equipe
+# a portraits y lira `portrait` et `bio`. Ces deux champs existent des
+# maintenant, vides : leur place est decidee, leur contenu attend. Un champ
+# vide n'est jamais rendu, ni en libelle, ni en ponctuation orpheline.
+#
+# `site` est une adresse complete, le gabarit en tire seul le texte affiche en
+# retirant le protocole : l'adresse n'est donc ecrite qu'une fois.
+# `instagram` est le compte sans arobase, le gabarit pose l'un et l'autre.
+# `portrait` sera un chemin resolu depuis assets/.
+#
+# Orthographe : Jeremy Janin sans accent, Gregory Mignard avec. Les deux
+# graphies sont volontaires, ne pas les uniformiser.
+
+membres:
+  - nom: "Grégory Mignard"
+    site: "https://gregorymignard.com"
+    instagram: "gregmignard"
+    portrait: ""
+    bio: ""
+
+  - nom: "Jeremy Janin"
+    site: "https://jeremyjanin.com"
+    instagram: "jeremy.janin"
+    portrait: ""
+    bio: ""

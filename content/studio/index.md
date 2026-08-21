@@ -6,6 +6,22 @@ description: "Captain Yvon Studio, duo de réalisateurs et photographes entre Br
 # la colonne de contact, puis rend le mur de photos de tournage.
 layout: "studio"
 
+# fiche : les lignes de la fiche contact, colonne de droite du haut de page.
+# Elles sont saisies ici et non dans le gabarit : leur ordre est celui de la
+# liste, et en retirer une ne demande aucune retouche de code.
+# Chaque entree porte un libelle et une valeur. `url` est facultatif : sans
+# lui la valeur reste du texte, avec lui elle devient un lien externe.
+# Une entree sans valeur est ignoree, sans laisser de libelle orphelin.
+fiche:
+  - libelle: "Basés à"
+    valeur: "Brest et Lille"
+  - libelle: "Représentés par"
+    valeur: "Le collectif AUNORD"
+    url: "https://aunord.fr"
+  - libelle: "Podcast"
+    valeur: "Slow is Beautiful"
+    url: "https://slowisbeautiful.substack.com"
+
 # galerie : ordre et textes alternatifs du mur de photos de tournage.
 # C'est cette liste, et elle seule, qui pilote l'affichage : le mur ne ramasse
 # plus les fichiers du dossier tout seul. Deux consequences voulues.
@@ -54,12 +70,15 @@ galerie:
   - image: bts-13.jpg
     alt: "Gros plan sur des bobines de fil de lin écru, marquées d'un repère orange."
 
-# Les coordonnees ne sont plus dans ce fichier : la colonne de droite du
-# gabarit les rend depuis [params] de hugo.toml et data/pied.yaml.
+# Ne sont pas dans ce fichier, et n'ont pas a y etre saisies : l'adresse
+# e-mail, qui vient de [params] de hugo.toml, et les deux realisateurs, qui
+# viennent de data/equipe.yaml.
 ---
 
-Fondé en 2016 par Grégory Mignard et Jeremy Janin, Captain Yvon est un studio de création visuelle dédié à la vie en plein air et à l'aventure. Depuis près de 10 ans, nous racontons les histoires de ceux qui vivent, travaillent et s'épanouissent dans la nature.
+Fondé en 2016 par Grégory Mignard et Jeremy Janin, Captain Yvon est un studio de création visuelle dédié à la vie en plein air et à l'aventure. Nous racontons les histoires de ceux qui vivent, travaillent et s'épanouissent dans la nature. Nous travaillons entre Brest et Lille, et partout où le sujet nous emmène.
 
-Nous collaborons avec des agences, des destinations touristiques et des marques engagées, en mettant l'accent sur les projets qui célèbrent l'humain et son territoire. Notre expérience dans le documentaire et le tourisme d'attractivité nous permet de capturer l'âme d'un lieu et de révéler ce qui le rend unique. Notre travail a été reconnu à plusieurs reprises dans des festivals et dans les milieux de la communication et du tourisme.
+Nous ne mettons pas en scène. Nous prenons le temps, nous écoutons, nous attendons la lumière. Notre expérience du documentaire nous a appris à capter les moments honnêtes plutôt que les poses forcées, et à composer avec ce que la nature offre quand la météo tourne ou que la marée change.
 
-Notre force réside dans notre polyvalence et notre authenticité. Nous sommes à l'aise dans tous les environnements (terre, eau, air) et nous adaptons à toutes les conditions. Que la météo tourne, que la marée change ou que le plan prenne un autre virage, nous composons avec ce que la nature offre. Notre background en documentaire outdoor nous a appris à être patients, à traquer la lumière naturelle et à capturer les moments honnêtes plutôt que les poses forcées. Nous ne sommes pas juste des techniciens : nous vivons ce que nous filmons. Cette immersion nous permet de créer des images qui résonnent, des histoires qui marquent, et des contenus qui traversent le temps. Nous travaillons également avec un réseau de précieux collaborateurs, des gens qui, comme nous, s'épanouissent quand les éléments se déchaînent et que tout ne se passe pas comme prévu. De la conception à la livraison, nous collaborons étroitement avec nos clients pour créer des projets qui leur ressemblent vraiment.
+Pas d'agence, pas d'interlocuteurs multiples. Vous travaillez avec ceux qui font les images, de la conception à la livraison. Tout notre matériel tient dans un sac à dos. Cette légèreté nous rend discrets : on entre dans un atelier, sur un bateau, dans une cuisine, sans transformer l'endroit en plateau.
+
+Le résultat, c'est une image qu'on pourrait regarder dans dix ans sans rougir.

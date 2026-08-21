@@ -582,8 +582,10 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
   color: var(--texte-doux);
 }
 
-/* Filet de l'entete, repris a l'identique avant la galerie. Discret : le
-   gris de la charte, jamais le noir du texte. */
+/* Filet de l'entete, repris a l'identique avant la galerie d'une fiche projet
+   et sous le titre de la page studio. Discret : le gris de la charte, jamais
+   le noir du texte. Une seule regle pour les trois : c'est ce qui garantit
+   qu'ils ne peuvent pas diverger. */
 .projet-filet {
   margin: 0.9rem 0 0;
   border-top: 1px solid var(--trait);
@@ -892,21 +894,50 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
 .projet-retour { margin-block: clamp(2rem, 4vw, 3rem); }
 
 /* -------------------------------------------------------------------------
-   PAGE STUDIO
-   Haut de page en deux colonnes : le texte a gauche, le contact a droite.
+   PAGE STUDIO — HAUT DE PAGE
+   Le titre occupe sa propre ligne, sur toute la largeur du conteneur, et le
+   filet des pages projet le ferme. Les deux colonnes ne commencent qu'en
+   dessous : le texte de presentation a gauche, la fiche contact a droite.
+
+   Le filet lui-meme n'est pas redecrit ici. Le gabarit pose la classe
+   .projet-filet, deja definie plus haut : reprendre la regle plutot que la
+   recopier est ce qui garantit que les deux entetes du site ne peuvent pas
+   diverger d'un demi-pixel.
    ------------------------------------------------------------------------- */
+
+/* Respiration au-dessus du titre. L'entete du site pose deja la sienne sous
+   le logo ; celle-ci s'y ajoute pour degager franchement le h1, qui n'a plus
+   rien a partager avec le texte. La marge basse est celle qui separe le titre
+   de son filet, et vaut celle de la ligne de titre des pages projet. */
+.studio-titre {
+  margin-block: clamp(2rem, 4vw, 3rem) 0;
+}
+.studio-titre h1 { margin: 0; }
+
+/* Deux colonnes, sous le filet. L'ecart haut est genereux : c'est lui qui
+   fait respirer la bascule entre l'entete de page et le corps.
+
+   align-items: start pose les deux colonnes sur la meme ligne haute et rend
+   possible le comportement collant de celle de droite.
+
+   Le minimum de la piste de droite est son contenu, pas zero. La pilule
+   d'action ne se coupe pas : avec un minimum a zero, elle debordait de la
+   colonne des 701px, soit des le premier pixel ou les deux colonnes
+   s'activent. Le plancher inverse la priorite, c'est la colonne de texte qui
+   cede la place, et elle garde de quoi lire. Le texte, lui, se coupe. */
 .studio-haut {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 2fr) minmax(min-content, 1fr);
   align-items: start;
   gap: 1.75rem 4rem;
-  padding-block: clamp(1rem, 3vw, 2rem) 0;
+  margin-block: clamp(2.5rem, 5vw, 4rem) 0;
 }
 
 /* La colonne de texte garde une mesure de lecture confortable : sans elle,
    deux tiers du conteneur produiraient des lignes trop longues. */
 .studio-texte { max-width: var(--mesure); }
-.studio-texte h1 { margin-bottom: calc(var(--pas) * 1.5); }
+.studio-texte > :first-child { margin-top: 0; }
+.studio-texte > :last-child { margin-bottom: 0; }
 
 /* Colonne de droite collante. align-items: start sur la grille est ce qui la
    rend possible : etiree sur toute la hauteur de la ligne, elle n'aurait rien
@@ -928,6 +959,26 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
   }
 }
 
+/* -------------------------------------------------------------------------
+   PAGE STUDIO — FICHE CONTACT
+   Format fiche : chaque ligne est un intitule pose au-dessus de sa valeur.
+   C'est la grammaire des metadonnees d'une page projet — meme calibre, meme
+   casse, meme gris, meme interlettrage — a deux differences pres, voulues :
+   l'intitule est en Courier Prime, et il passe au-dessus de la valeur au lieu
+   d'etre a sa gauche. La colonne est trop etroite pour deux pistes.
+   ------------------------------------------------------------------------- */
+
+/* Rythme vertical de la fiche, en une seule variable : les deux blocs et le
+   filet qui les separe s'y accordent, et le resserrement mobile ne demande
+   qu'a la redefinir. */
+.studio-contact { --fiche-pas: 1.4rem; }
+
+@media (max-width: 700px) {
+  /* Empile sous le texte, la fiche deroule sur toute la largeur : le meme
+     rythme y produirait une trainee inutilement longue. */
+  .studio-contact { --fiche-pas: 1rem; }
+}
+
 .studio-action { margin: 0; }
 
 .studio-adresse {
@@ -935,12 +986,51 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
   font-size: 0.9rem;
 }
 
-.studio-collectif {
-  margin: 0.9rem 0 0;
+/* Les lignes de la fiche. L'intitule et sa valeur forment un bloc, les blocs
+   sont espaces du pas de la fiche. La marge haute de la liste vaut ce meme
+   pas : la premiere ligne se detache de l'adresse comme les suivantes se
+   detachent entre elles. */
+.studio-lignes {
+  margin: var(--fiche-pas) 0 0;
   font-size: 0.9rem;
+  line-height: 1.5;
+}
+.studio-lignes dt {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
   color: var(--texte-second);
 }
-.studio-collectif a { color: var(--texte); }
+.studio-lignes dd {
+  margin: 0.25rem 0 0;
+  color: var(--texte);
+}
+.studio-lignes dd + dt { margin-top: var(--fiche-pas); }
+
+/* Filet entre le bloc studio et le bloc des personnes. Volontairement plus
+   leger que celui du titre : celui-ci separe deux moitiees d'un meme encart,
+   pas deux zones de la page. Le gris de la charte, dilue de moitie, plutot
+   qu'une teinte inventee pour l'occasion. */
+.studio-filet {
+  margin: var(--fiche-pas) 0 0;
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--trait) 45%, transparent);
+}
+
+/* Le bloc des personnes ouvre sur une liste, sans adresse au-dessus : sa
+   marge haute est deja portee par le filet. */
+.studio-fiche--personnes .studio-lignes { margin-top: var(--fiche-pas); }
+
+/* Point median entre le site et le compte Instagram d'une personne. Il n'est
+   pose qu'entre deux entrees presentes, par le gabarit : vider un champ ne
+   peut pas laisser de ponctuation orpheline. Meme traitement que le
+   separateur des fiches projet et des vignettes d'accueil. */
+.studio-separateur {
+  margin-inline: 0.5em;
+  color: var(--texte-doux);
+}
 
 /* -------------------------------------------------------------------------
    MUR DE PHOTOS DE TOURNAGE

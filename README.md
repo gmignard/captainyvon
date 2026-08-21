@@ -100,9 +100,56 @@ ni titre.
 
 ## Page studio
 
-La page studio est un page bundle, `content/studio/`. Son texte de
-présentation vit dans `index.md`, la colonne de contact est rendue par le
-gabarit depuis `[params]` et `data/pied.yaml` : rien à saisir dans l'entête.
+La page studio est un page bundle, `content/studio/`. Elle se lit de haut en
+bas dans cet ordre : le titre seul sur sa ligne, le filet, deux colonnes, puis
+le mur de photos de tournage.
+
+Le filet sous le titre est **celui des pages projet**, le même élément et la
+même règle. Il n'est décrit qu'une fois dans la feuille de style, sous le nom
+`.projet-filet` : les deux entêtes du site ne peuvent donc pas diverger.
+
+### La fiche contact
+
+Colonne de droite du haut de page. Format fiche : un intitulé en Courier
+Prime, petite taille et casse haute, posé au-dessus de sa valeur. C'est la
+grammaire des métadonnées d'une page projet, avec l'intitulé au-dessus plutôt
+qu'à gauche, la colonne étant trop étroite pour deux pistes.
+
+Deux blocs séparés par un filet léger, plus discret que celui du titre.
+
+**Le bloc studio** : le bouton d'écriture et l'adresse viennent de
+`params.email` dans `hugo.toml`. Les lignes suivantes viennent de la clé
+`fiche` de l'entête de `content/studio/index.md` :
+
+```yaml
+fiche:
+  - libelle: "Basés à"
+    valeur: "Brest et Lille"
+  - libelle: "Représentés par"
+    valeur: "Le collectif AUNORD"
+    url: "https://aunord.fr"
+```
+
+`url` est facultatif : sans lui la valeur reste du texte, avec lui elle devient
+un lien qui s'ouvre dans un nouvel onglet. Une entrée sans libellé ou sans
+valeur est ignorée. Retirer une entrée, ou la clé entière, ne demande aucune
+retouche du gabarit.
+
+**Le bloc personnes** vient de `data/equipe.yaml`. Le nom fait l'intitulé, le
+site et le compte Instagram forment la ligne de valeur, séparés par un point
+médian. Le nom n'est jamais un lien.
+
+Le fichier ne porte que les adresses : le texte affiché d'un site est déduit de
+son adresse, protocole retiré, et le compte Instagram y est saisi sans arobase,
+le gabarit posant l'arobase et l'adresse du profil. Rien n'est écrit deux fois.
+
+Vider `site` ou `instagram` retire l'entrée et le point médian avec elle, sans
+laisser de ponctuation orpheline. Une personne sans aucun des deux n'apparaît
+pas dans la fiche. Les champs `portrait` et `bio` sont là pour un futur bloc
+équipe et restent vides aujourd'hui, sans rien produire.
+
+Orthographe : **Jeremy Janin sans accent, Grégory Mignard avec**. Les deux
+graphies sont volontaires, ne pas les uniformiser.
 
 ### Le mur de photos de tournage
 
