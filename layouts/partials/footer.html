@@ -5,24 +5,25 @@
   baseof.html et sert donc a l'identique l'accueil, la liste, la page studio
   et les pages projet.
 
-  Trois colonnes de largeur egale au-dela du point de rupture, puis la
-  mention de copyright sur toute la largeur :
-    1. nom du studio, activite, phrase de presentation, lieu
-    2. collectif, podcast
-    3. bouton d'ecriture puis reseaux sociaux, cales a droite
+  Trois colonnes de roles distincts au-dela du point de rupture, 1fr 2fr 2fr :
+    1. signature : logo clair, puis le copyright juste en dessous
+    2. discours : activite, phrase de presentation, collectif
+    3. contact : bouton d'ecriture et reseaux sociaux sur une meme ligne,
+       cales sur le bord droit du cadre et centres verticalement
   Sous 900px les trois colonnes s'empilent dans l'ordre 1, 2, 3, toutes
-  alignees a gauche, bouton et reseaux compris.
+  alignees a gauche, bouton et reseaux compris. Le copyright, seul element
+  reordonne, repart en bas de la pile : il n'est pas focalisable, l'ordre de
+  tabulation n'est donc pas affecte.
 
   L'ordre du balisage est celui de la lecture : la tabulation suit ce que
   l'oeil parcourt. Un seul groupe d'icones sociales, en colonne 3.
 
-  Aucune coordonnee n'est ecrite en dur ici : l'e-mail, le lieu et les
-  reseaux viennent de [params] dans hugo.toml, le reste de data/pied.yaml.
+  Aucune coordonnee n'est ecrite en dur ici : l'e-mail et les reseaux
+  viennent de [params] dans hugo.toml, le reste de data/pied.yaml.
   Seule l'annee de fondation est en dur, avec l'annee de fin generee au
   build : c'est la seule graphie du copyright sur tout le site.
 
-  Les liens externes du bloc d'identite — collectif et podcast — s'ouvrent
-  dans le meme onglet.
+  Le lien externe du collectif s'ouvre dans le meme onglet.
 */ -}}
 {{- $pied := site.Data.pied -}}
 <footer class="pied">
@@ -30,12 +31,11 @@
 
     <div class="pied-grille">
 
-      {{- /* Colonne 1 : nom du studio, activite, phrase de presentation, lieu.
-             Le nom est le logo clair, ou un repli texte si le fichier n'est
-             pas depose dans le depot. La phrase de presentation s'intercale
-             entre l'activite et le lieu : elle est en casse normale, les
-             lignes qui l'encadrent restent en capitales. */ -}}
-      <div class="pied-colonne">
+      {{- /* Colonne 1 : signature du studio. Le nom est le logo clair, ou un
+             repli texte si le fichier n'est pas depose dans le depot. Le
+             copyright se pose juste en dessous : il ne repete pas le nom du
+             studio, deja porte par le logo. */ -}}
+      <div class="pied-colonne pied-colonne--signature">
         <div class="pied-logo">
           {{- $logo := "" -}}
           {{- with $pied.logo_clair }}{{ $logo = resources.Get . }}{{ end -}}
@@ -47,6 +47,15 @@
           {{- end -}}
         </div>
 
+        {{- /* Annee de depart en dur, annee de fin generee depuis la date de
+               build, trait d'union simple. */ -}}
+        <p class="pied-mention">&copy; 2016-{{ now.Format "2006" }}</p>
+      </div>
+
+      {{- /* Colonne 2 : ce que fait le studio. La phrase de presentation
+             s'intercale entre l'activite et le collectif : elle est en casse
+             normale, les lignes qui l'encadrent restent en capitales. */ -}}
+      <div class="pied-colonne">
         <ul class="pied-lignes">
           {{- with $pied.activite }}<li>{{ . }}</li>{{ end }}
         </ul>
@@ -55,26 +64,15 @@
         <p class="pied-presentation">{{ . }}</p>
         {{- end }}
 
-        <ul class="pied-lignes pied-lignes--lieu">
-          {{- with site.Params.lieu }}<li>{{ . }}</li>{{ end }}
-        </ul>
-      </div>
-
-      {{- /* Colonne 2 : collectif, puis podcast en ligne secondaire. */ -}}
-      <div class="pied-colonne">
         {{- with $pied.collectif }}
           {{- if .nom }}
         <p class="pied-collectif">{{ with .intro }}{{ . }} {{ end }}{{ with .url }}<a href="{{ . }}" rel="noopener">{{ $pied.collectif.nom }}</a>{{ else }}{{ .nom }}{{ end }}</p>
           {{- end }}
         {{- end }}
-        {{- with $pied.podcast }}
-          {{- if and .nom .url }}
-        <p class="pied-podcast"><a href="{{ .url }}" rel="noopener">{{ .nom }}</a>{{ with .mention }}, {{ . }}{{ end }}</p>
-          {{- end }}
-        {{- end }}
       </div>
 
-      {{- /* Colonne 3 : bouton d'ecriture puis reseaux sociaux, cales sur le
+      {{- /* Colonne 3 : bouton d'ecriture et reseaux sociaux sur une meme
+             ligne, bouton a gauche, icones a droite, l'ensemble cale sur le
              bord droit du cadre au-dela du point de rupture.
 
              Le bouton reprend la pilule du theme sans passer par pilule.html :
@@ -95,10 +93,6 @@
       </div>
 
     </div>
-
-    {{- /* Copyright sur toute la largeur : annee de depart en dur, annee de
-           fin generee depuis la date de build, trait d'union simple. */ -}}
-    <p class="pied-mention">&copy; 2016-{{ now.Format "2006" }} {{ site.Title }}</p>
 
   </div>
 </footer>

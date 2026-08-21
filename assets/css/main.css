@@ -1348,20 +1348,27 @@ html:has(.loupe:target) { overflow: hidden; }
   font-size: 0.75rem;
 }
 
-/* Trois colonnes alignees sur leur ligne haute : le contenu occupe toute la
-   largeur du cadre, sans vide central. La premiere est deux fois plus large
-   que les autres, elle porte la phrase de presentation en plus des lignes
-   d'identite. La gouttiere est celle du theme, jamais une valeur en dur. */
+/* Trois colonnes de roles distincts, alignees sur leur ligne haute : le
+   contenu occupe toute la largeur du cadre, sans vide central. La premiere
+   ne porte que la signature du studio, elle reste etroite ; les deux autres
+   se partagent le reste a parts egales, le discours a gauche et le contact
+   a droite. La gouttiere est celle du theme, jamais une valeur en dur. */
 .pied-grille {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: 1fr 2fr 2fr;
   align-items: start;
   gap: var(--gouttiere);
 }
 
-/* Sous 900px les trois colonnes s'empilent dans l'ordre du document. */
+/* Sous 900px les trois colonnes s'empilent dans l'ordre du document. La
+   colonne de signature s'efface au profit de ses deux blocs, qui deviennent
+   des elements de la pile : le copyright peut alors etre renvoye en bas par
+   son order, au lieu de rester coince entre le nom du studio et la ligne
+   d'activite. Il n'est pas focalisable, la tabulation n'est pas affectee. */
 @media (max-width: 900px) {
   .pied-grille { grid-template-columns: 1fr; }
+  .pied-colonne--signature { display: contents; }
+  .pied-mention { order: 1; }
 }
 
 .pied-logo img { height: 34px; width: auto; display: block; }
@@ -1376,8 +1383,9 @@ html:has(.loupe:target) { overflow: hidden; }
   color: var(--blanc-casse);
 }
 
-/* Lignes d'identite, colonne 1, et mention du collectif, colonne 2 : meme
-   traitement typographique, une ligne par element. */
+/* Ligne d'activite et ligne du collectif, qui encadrent la phrase de
+   presentation en colonne 2 : meme traitement typographique, une ligne par
+   element. */
 .pied-lignes,
 .pied-collectif {
   margin: 1.1rem 0 0;
@@ -1388,9 +1396,9 @@ html:has(.loupe:target) { overflow: hidden; }
   letter-spacing: 0.08em;
   line-height: 1.35;
 }
-/* Premier element de sa colonne : sa marge haute viendrait doubler
+/* Premier bloc de sa colonne : sa marge haute viendrait doubler
    l'alignement sur la ligne haute des trois colonnes. */
-.pied-collectif { margin-top: 0; }
+.pied-colonne > :first-child { margin-top: 0; }
 .pied-lignes a,
 .pied-collectif a { color: var(--blanc-casse); }
 .pied-lignes a:hover,
@@ -1399,7 +1407,7 @@ html:has(.loupe:target) { overflow: hidden; }
 /* Phrase de presentation du studio. Casse normale, corps legerement inferieur
    aux lignes en capitales qui l'encadrent : c'est une phrase, pas un libelle.
    Sa mesure de lecture est bornee par --mesure pour qu'elle ne s'etire pas
-   sur toute la colonne, deux fois plus large que les deux autres. */
+   sur toute la colonne du discours. */
 .pied-presentation {
   margin: 0.9rem 0 0;
   max-width: var(--mesure);
@@ -1408,31 +1416,22 @@ html:has(.loupe:target) { overflow: hidden; }
   letter-spacing: 0.01em;
 }
 
-/* Le lieu reprend les capitales, detache de la phrase qui le precede. */
-.pied-lignes--lieu { margin-top: 0.9rem; }
-
-/* Le podcast est secondaire : plus petit, en gris, sans capitales, detache
-   de la ligne du collectif par une respiration. Le lien reste souligne,
-   c'est le seul indice qui le distingue du texte sur fond sombre. */
-.pied-podcast {
-  margin: 0.9rem 0 0;
-  font-size: 0.7rem;
-  letter-spacing: 0.02em;
-  color: var(--gris);
-}
-.pied-podcast a { color: inherit; }
-.pied-podcast a:hover { color: var(--blanc-casse); }
-
-/* Colonne 3 : bouton d'ecriture puis reseaux, cales sur le bord droit du
-   cadre. En pile sous 900px, tout revient a gauche. */
+/* Colonne 3 : bouton d'ecriture et reseaux sur une meme ligne, bouton a
+   gauche, icones a droite, l'ensemble cale sur le bord droit du cadre et
+   centre verticalement. Le retour a la ligne est autorise pour les largeurs
+   intermediaires, ou les deux blocs ne tiennent plus cote a cote. En pile
+   sous 900px, tout revient a gauche. */
 .pied-colonne--action {
-  display: grid;
-  justify-items: end;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
   gap: var(--pas);
 }
 
 @media (max-width: 900px) {
-  .pied-colonne--action { justify-items: start; }
+  .pied-colonne--action { justify-content: flex-start; }
 }
 
 /* Bouton d'ecriture. Il reprend la pilule du theme telle quelle — fond de
@@ -1448,9 +1447,11 @@ html:has(.loupe:target) { overflow: hidden; }
   align-items: center;
 }
 
-/* Copyright : toute la largeur, cale a gauche, detache des colonnes. */
+/* Copyright : en colonne 1, juste sous le logo, dont il reprend la marge de
+   detachement, celle des lignes d'identite. Il ne repete pas le nom du
+   studio, deja porte par le logo au-dessus. */
 .pied-mention {
-  margin: 2.5rem 0 0;
+  margin: 1.1rem 0 0;
   color: var(--gris);
   letter-spacing: 0.06em;
 }
