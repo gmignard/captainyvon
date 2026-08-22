@@ -1,6 +1,6 @@
 ---
 title: "Et si vous changiez de point de vue ?"
-date: 2019-12-12
+date: 2019-08-12
 annee: 2019
 nature: "commande"
 client: "Attitude Manche"
