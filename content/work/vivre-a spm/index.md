@@ -1,6 +1,6 @@
 ---
 title: "Vivre à Saint-Pierre-et-Miquelon"
-date: 2026-02-01
+date: 2024-11-12
 nature: "commande"
 client: "Collectivité Territoriale de Saint-Pierre-Et-Miquelon"
 extrait: "Réalisation d’un film et d’une série de portraits à Saint-Pierre-et-Miquelon pour la Collectivité Territoriale, en collaboration avec l’agence We Like Travel."
