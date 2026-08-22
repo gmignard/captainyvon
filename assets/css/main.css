@@ -149,13 +149,13 @@
   --contenu-espace-bas: clamp(2rem, 5vw, 4rem);
 
   /* Medias de la page projet. --largeur-media est la largeur naturelle d'un
-     media, celle de la colonne de contenu. --media-reserve est la hauteur
-     retiree a la fenetre avant de convertir le reste en largeur : c'est la
-     respiration laissee autour du lecteur pour qu'il se voie d'un seul coup
-     d'oeil. Mesuree sur les deux formats les plus contraints, 1440x700 et
-     1280x600. */
+     media, celle de la colonne de contenu. --media-reserve est la
+     respiration retiree a la hauteur de fenetre avant de convertir le reste
+     en largeur. Le plafond n'a de sens que quand le media serait plus haut
+     que la fenetre : la reserve reste donc mince, pour que le media garde
+     la largeur de la colonne partout ailleurs. */
   --largeur-media: 100%;
-  --media-reserve: 8rem;
+  --media-reserve: 2rem;
 
   /* Rythme vertical et mesure de lecture. --mesure est la largeur maximale
      d'un bloc de texte courant, environ 65 caracteres : elle plafonne le
