@@ -1,5 +1,5 @@
 ---
-title: "Disvare"
+title: "Slow is Beautiful"
 date: 2021-09-01
 annee: 2017
 nature: "personnel"
