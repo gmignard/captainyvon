@@ -1,10 +1,6 @@
 ---
 title: "Lecapitaine"
-
-# date : À REMPLIR, date de livraison du projet.
-# 0001-01-01 est le marqueur « non renseignée » : aucune année ne
-# s'affiche tant qu'il est là. Hugo refuse de construire sur 0000-00-00.
-date: 0001-01-01
+date: 2023-12-07
 nature: "commande"
 client: "Lecapitaine"
 extrait: "Réalisation d'un film de marque pour l'entreprise Lecapitaine, spécialisé dans le développement et la construction de camions frigorifiques."
@@ -12,11 +8,13 @@ competences:
   - "Réalisation"
   - "Cadrage"
   - "Montage"
-# livrables : conservé, plus rendu sur la fiche projet.
-livrables: []
+  - "Étalonnage" 
 avec: []
-couverture: "couverture.jpg"
-# video volontairement absente : vérifie le rendu d'un projet sans vidéo.
+couverture: "cover.webp"
+video:
+  plateforme: "youtube"
+  id: "_N7yr8e1YqI"
+  ratio: ""
 mise_en_avant: false
 draft: false
 ---
