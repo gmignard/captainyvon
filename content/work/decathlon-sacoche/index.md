@@ -22,3 +22,7 @@ video:
 mise_en_avant: false
 draft: false
 ---
+
+C’est l’histoire d’une sacoche pas comme les autres. À première vue rien ne change mais pourtant tout est différent. La matière provient d’une fibre naturelle poussant à proximité, le lin. Toutes les étapes de production sont accessibles en train, avec des partenaires européens.
+
+Ce projet est un manifeste, une invitation à explorer d’autres manières de faire.
