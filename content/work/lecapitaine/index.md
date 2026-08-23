@@ -1,6 +1,6 @@
 ---
 title: "Lecapitaine"
-date: 2023-12-07
+date: 2022-09-07
 nature: "commande"
 client: "Lecapitaine"
 extrait: "Réalisation d'un film de marque pour l'entreprise Lecapitaine, spécialisé dans le développement et la construction de camions frigorifiques."
