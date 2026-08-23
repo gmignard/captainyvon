@@ -1,7 +1,7 @@
 ---
 title: "BeLC"
 date: 2024-09-26
-annee: 2019
+annee: 2024
 nature: "commande"
 client: "BeLC - Loir & Cher Attractivité"
 extrait: "Commande de 4 portraits vidéo par l’agence d’attractivités du Loir & Cher afin d’illustrer l’art de vivre du département."
