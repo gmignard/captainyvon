@@ -1,6 +1,6 @@
 ---
 title: "Studio"
-seo_titre: "Duo de réalisateurs et photographes spécialisés dans le documentaires"
+seo_titre: "Duo de réalisateurs et photographes documentaire"
 description: "Captain Yvon Studio, duo de réalisateurs et photographes entre Brest et Lille."
 layout: "studio"
 fiche:
