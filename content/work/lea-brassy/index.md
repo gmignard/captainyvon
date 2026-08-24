@@ -1,5 +1,6 @@
 ---
 title: "Portrait de Léa Brassy"
+seo_titre: "Portrait vidéo de Léa Brassy, surfeuse et apnéiste"
 date: 2019-10-10
 nature: "commande"
 client: "Attitude Manche"

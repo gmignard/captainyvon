@@ -1,5 +1,6 @@
 ---
 title: "L’hiver à contre courant par Alex Strohl"
+seo_titre: "Film hiver dans la Manche avec le photographe Alex Strohl"
 date: 2023-01-30
 nature: "commande"
 client: "Attitude Manche"

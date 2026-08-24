@@ -1,5 +1,6 @@
 ---
 title: "Vendée Globe 2024"
+seo_titre: "Websérie du Vendée Globe 2024 avec Eric Bellion"
 date: 2025-02-10
 nature: "commande"
 client: "Stand As One Altavia"

@@ -1,5 +1,6 @@
 ---
 title: "La sacoche qui pousse dans les champs"
+seo_titre: "Film de marque Decathlon sur une sacoche de bikepacking"
 date: 2026-02-01
 nature: "commande"
 client: "Decathlon"

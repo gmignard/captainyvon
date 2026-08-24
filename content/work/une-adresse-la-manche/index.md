@@ -1,5 +1,6 @@
 ---
 title: "Une adresse, La Manche"
+seo_titre: "Film documentaire sur les producteurs et chefs de la Manche"
 date: 2025-06-01
 nature: "commande"
 client: "Attitude Manche"

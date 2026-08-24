@@ -1,5 +1,6 @@
 ---
 title: "Meneham"
+seo_titre: "Reportage photo à Meneham, sur la Côte des Légendes"
 date: 2026-03-01
 nature: "commande"
 client: "Tourisme Côte des Légendes"

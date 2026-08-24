@@ -1,5 +1,6 @@
 ---
 title: "Mytilimer"
+seo_titre: "Films documentaires sur la mytiliculture avec Mytilimer"
 date: 2024-10-01
 nature: "commande"
 client: "Mytilimer"

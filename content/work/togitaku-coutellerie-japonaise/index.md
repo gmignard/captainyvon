@@ -1,5 +1,6 @@
 ---
 title: "Togi-Taku"
+seo_titre: "Togi-Taku, film documentaire sur un coutelier en Bretagne"
 date: 2026-05-15
 nature: "personnel"
 client: "Togi Taku"

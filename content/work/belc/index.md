@@ -1,5 +1,6 @@
 ---
 title: "BeLC"
+seo_titre: "Quatre portraits vidéo sur l'art de vivre en Loir-et-Cher"
 date: 2024-09-26
 annee: 2024
 nature: "commande"
