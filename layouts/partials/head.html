@@ -36,6 +36,10 @@
 {{- end -}}
 <title>{{ $titreBalise }}</title>
 
+{{- if .IsHome }}
+{{ partial "donnees-structurees.html" . }}
+{{- end }}
+
 {{- /* Description : l'extrait du projet, sinon la description de page, sinon celle du site. */ -}}
 {{- $description := "" -}}
 {{- with .Params.extrait }}{{ $description = . }}{{ end -}}

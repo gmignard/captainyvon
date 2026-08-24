@@ -1,0 +1,36 @@
+{{- /*
+  Donnees structurees JSON-LD, type Organization. Appele uniquement sur
+  l'accueil par head.html : c'est la page qui represente le studio
+  lui-meme, inutile de repeter le bloc sur chaque page.
+
+  Organization et non LocalBusiness : le studio ne publie ni adresse
+  postale ni horaires, et declarer un LocalBusiness incomplet dessert plus
+  qu'il n'aide au referencement.
+
+  Toutes les valeurs viennent de hugo.toml / [params] : aucune identite
+  n'est ecrite en dur ici. sameAs boucle sur site.Params.social.
+
+  safeJS est necessaire : sans lui, l'echappement contextuel de Hugo pour
+  les balises <script> traite le JSON comme une chaine JS et le
+  ré-encode une seconde fois.
+*/ -}}
+{{- $logo := "" -}}
+{{- with site.Params.logo }}{{ with resources.Get . }}{{ $logo = .Permalink }}{{ end }}{{ end -}}
+
+{{- $sameAs := slice -}}
+{{- range site.Params.social -}}
+  {{- with .url }}{{ $sameAs = $sameAs | append . }}{{ end -}}
+{{- end -}}
+
+{{- $donnees := dict
+  "@context" "https://schema.org"
+  "@type" "Organization"
+  "name" site.Title
+  "url" site.BaseURL
+  "logo" $logo
+  "description" site.Params.description
+  "email" site.Params.email
+  "foundingDate" site.Params.foundingDate
+  "sameAs" $sameAs
+-}}
+<script type="application/ld+json">{{ $donnees | jsonify (dict "indent" "  ") | safeJS }}</script>
