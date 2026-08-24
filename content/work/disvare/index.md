@@ -4,7 +4,7 @@ date: 2017-02-18
 annee: 2017
 nature: "personnel"
 client: ""
-client: "Jeremy"
+avec: "Jeremy"
 extrait: "Réalisation d'un film de kayak dans le Finistère avec une passionnée de mer"
 competences: ["Réalisation", "Écriture", "Montage", "Étalonnage"]
 couverture: "cover.webp"
