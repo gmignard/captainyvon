@@ -30,14 +30,18 @@ fiche:
 # les portraits sur les emplacements les plus etroits du motif : c'est ce qui
 # evite qu'une image verticale prenne six colonnes et ecrase le reste.
 galerie:
+  - image: bts_meneham_1.webp
+    alt: "Grégory et Jeremy, pendant leur reportage photo à Meneham (Kerlouan)"
   - image: bts-cys_1.webp
     alt: "Deux femmes assises à une table de pique-nique en montagne, thermos et caméra posés devant elles, la vallée en contrebas."
   - image: bts-cys_2.webp
     alt: "Deux mains engagent un film argentique dans un dos moyen format, posé sur une valise de transport marquée Captain Yvon."
   - image: bts-cys_5.webp
     alt: "Un opérateur filme un cycliste qui se change au bord d'un muret de pierre, face à l'océan au crépuscule."
-  - image: bts-cys_12.webp
-    alt: "Une silhouette seule debout sur un plateau rocheux au bord de la mer, dans la lumière rasante du soir."
+  - image: bts_meneham_4.webp
+    alt: "Jeremy, allongé dans l'herbe, chargeant un nouveau roulant dans son Hasselblad"
+  - image: bts_meneham_2.webp
+    alt: "Grégory, chargeant un rouleau dans son Mamiya"
   - image: bts-cys_4.webp
     alt: "Un surfeur en combinaison remonte une plage recouverte de neige, le village et la falaise derrière lui."
   - image: bts-cys_3.webp
@@ -46,6 +50,8 @@ galerie:
     alt: "Deux pieds nus en combinaison sur le sable mouillé, à côté de palmes jaunes et d'un caisson étanche."
   - image: bts-cys_6.webp
     alt: "Un opérateur cadre au moniteur déporté, micro monté sur la caméra, dans la lumière rose de fin de journée."
+  - image: bts_meneham_5.webp
+    alt: "Un kit café outdoor"
   - image: bts-cys_10.webp
     alt: "Deux surfeurs en combinaison remontent la cale, l'un portant une planche blanche, l'autre un caisson photo."
   - image: bts-cys_7.webp
@@ -56,16 +62,14 @@ galerie:
     alt: "Un photographe assis sur un rocher, son appareil et sa casquette posés dans la végétation rase."
   - image: bts-cys_13.webp
     alt: "Un photographe progresse entre des sapins chargés de neige, appareil autour du cou."
+  - image: bts_meneham_3.webp
+    alt: "La pause café"
   - image: bts-cys_18.webp
     alt: "Un appareil photo couvert de neige, suspendu à sa sangle sur une veste kaki."
-  - image: bts-cys_15.webp
-    alt: "Un preneur de son tient une barrette stéréo à deux micros, casque aux oreilles, devant un dériveur à la tombée du jour."
   - image: bts-cys_11.webp
     alt: "Deux hommes adossés à un vieux panneau de bois dans les dunes, sous un ciel gris."
   - image: bts-cys_19.webp
     alt: "Un opérateur cadre sous la pluie, gouttes d'eau sur l'écran du moniteur déporté."
-  - image: bts-cys_16.webp
-    alt: "Un preneur de son accroupi oriente ses micros vers le port, les lumières des quais dans le fond."
 
 # Ne sont pas dans ce fichier, et n'ont pas a y etre saisies : l'adresse
 # e-mail, qui vient de [params] de hugo.toml, et les deux realisateurs, qui
