@@ -56,6 +56,17 @@ couverture: "couverture.jpg"
 # passe avant `_2`. Voir le README.
 galerie: []
 
+# resources : texte alternatif des images de la galerie, metadonnees de
+# ressource de page au sens de Hugo. Le title d'une ressource devient son
+# attribut alt dans la galerie. Une image sans entree ici reste en alt="",
+# donc traitee comme decorative, ce qui est le comportement voulu a defaut
+# de description. src doit correspondre au nom exact du fichier present
+# dans ce dossier. La couverture n'a pas besoin d'entree, elle n'est pas
+# affichee dans la galerie.
+# resources:
+#   - src: "nom-du-fichier.webp"
+#     title: "Description de ce que montre l'image."
+
 # video : laisser id vide pour un projet sans vidéo.
 video:
   # plateforme : youtube | vimeo
