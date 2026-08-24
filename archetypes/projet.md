@@ -10,7 +10,18 @@ seo_titre: ""
 # date : date de livraison du projet. Elle donne l'année affichée à côté du
 # titre, sur l'accueil comme sur la page projet, et elle donne l'ordre de la
 # grille, du plus récent au plus ancien.
+# Le marqueur 0001-01-01 vaut « à remplir » : tant qu'il reste en place,
+# aucune année ne s'affiche, ni sur l'accueil ni sur la page projet. La
+# règle est centralisée dans layouts/partials/annee.html.
 date: {{ .Date }}
+
+# annee : année affichée à côté du titre, sur l'accueil comme sur la page
+# projet, quand elle ne coïncide pas avec date. Renseignée, elle fait
+# autorité sur date pour l'année affichée. Elle sert aux projets dont
+# l'année de livraison ne coïncide pas avec la date choisie pour la fiche.
+# Elle ne joue aucun rôle dans l'ordre de la grille, qui trie toujours sur
+# date.
+# annee: 2025
 
 # nature : type de projet. Deux valeurs autorisées, et deux seulement :
 #   commande  -> affiche COMMISSIONNÉ à côté de l'année
@@ -53,7 +64,7 @@ couverture: "couverture.jpg"
 # dans l'ordre voulu. Liste vide ou absente : toutes les images du dossier
 # sont reprises, couverture exclue, dans l'ordre des noms de fichiers.
 # Numéroter ces noms sur deux chiffres, `_01` et non `_1`, sans quoi `_10`
-# passe avant `_2`. Voir le README.
+# passe avant `_2`. Voir docs/guide-projet.md.
 galerie: []
 
 # resources : texte alternatif des images de la galerie, metadonnees de
