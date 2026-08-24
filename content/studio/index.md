@@ -1,18 +1,8 @@
 ---
 title: "Studio"
-seo_titre: "Réalisateurs documentaires entre Brest et Lille"
+seo_titre: "Duo de réalisateurs et photographes spécialisés dans le documentaires"
 description: "Captain Yvon Studio, duo de réalisateurs et photographes entre Brest et Lille."
-
-# layout : gabarit dedie, layouts/_default/studio.html. Il scinde ce texte et
-# la colonne de contact, puis rend le mur de photos de tournage.
 layout: "studio"
-
-# fiche : les lignes de la fiche contact, colonne de droite du haut de page.
-# Elles sont saisies ici et non dans le gabarit : leur ordre est celui de la
-# liste, et en retirer une ne demande aucune retouche de code.
-# Chaque entree porte un libelle et une valeur. `url` est facultatif : sans
-# lui la valeur reste du texte, avec lui elle devient un lien externe.
-# Une entree sans valeur est ignoree, sans laisser de libelle orphelin.
 fiche:
   - libelle: "Basés à"
     valeur: "Brest et Lille"

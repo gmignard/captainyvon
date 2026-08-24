@@ -33,7 +33,7 @@ disableKinds = ["taxonomy", "term", "rss"]
   date = ["date", ":fileModTime", ":default"]
 
 [params]
-  description = "Captain Yvon Studio, duo de réalisateurs et photographes entre Brest et Lille."
+  description = "Captain Yvon Studio, films documentaires et reportages photo"
   logo = "img/logo-captainyvon-noir.svg"
   logoAlt = "Captain Yvon Studio"
   # Dimensions intrinseques du fichier logo, pour eviter tout decalage de mise en page.
