@@ -1,5 +1,6 @@
 ---
 title: "Disvare"
+seo_titre: "Disvare, film de kayak de mer dans le Finistère"
 date: 2017-02-18
 annee: 2017
 nature: "personnel"

@@ -2,13 +2,12 @@
 # La version de Hugo est épinglée sur celle utilisée pour construire le site.
 # Vérifier avec `hugo version` avant de la changer.
 
-# Netlify expose URL comme adresse principale du projet : le sous-domaine
-# .netlify.app aujourd'hui, captainyvon.fr une fois le domaine personnalisé
-# défini comme principal. Passer --baseURL "${URL}" évite donc tout commit
-# le jour de la bascule DNS.
+# La bascule DNS a eu lieu : captainyvon.fr est l'adresse de production.
+# Elle est écrite en clair ci-dessous et ne dépend plus du réglage d'URL
+# principale de l'interface Netlify.
 [build]
   publish = "public"
-  command = 'hugo --gc --minify --baseURL "${URL}"'
+  command = 'hugo --gc --minify --baseURL "https://captainyvon.fr/"'
 
 [build.environment]
   HUGO_VERSION = "0.148.2"
@@ -36,11 +35,6 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    # PRÉPROD — à retirer le jour de la bascule DNS (20 septembre 2026).
-    # Empêche l'indexation de captainyvon.netlify.app tant que le site n'est
-    # pas officiellement en ligne. Les headers de netlify.toml sont globaux :
-    # ne pas tenter de surcharge par contexte, elle fuiterait en production.
-    X-Robots-Tag = "noindex"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     X-Frame-Options = "SAMEORIGIN"

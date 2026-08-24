@@ -1,5 +1,6 @@
 ---
 title: "Studio"
+seo_titre: "Réalisateurs documentaires entre Brest et Lille"
 description: "Captain Yvon Studio, duo de réalisateurs et photographes entre Brest et Lille."
 
 # layout : gabarit dedie, layouts/_default/studio.html. Il scinde ce texte et

@@ -8,8 +8,26 @@
 /contact/  /studio/   301
 /contact/* /studio/   301
 
+# Les URLs /work/<slug> ne sont PAS identiques à celles de l'ancien site
+# Squarespace : environ la moitié des dossiers de projets ont été renommés
+# pendant la reconstruction, sans alias ni redirection automatique. Les
+# règles ci-dessous rattrapent les anciennes adresses connues. Liste
+# reconstituée depuis une copie en cache de l'ancienne home Squarespace :
+# plausible mais non certifiée au-delà de ces dix entrées.
+/work/slowisbeautiful                      /work/slow-is-beautiful           301
+/work/scott                                /work/shes-out-there              301
+/work/standasone-vg24                      /work/vendee-globe-eric-bellion   301
+/work/belc2024                             /work/belc                        301
+/work/attitude-manche                      /work/attitude-manche-2019        301
+/work/la-sacoche-qui-pousse-dans-les-champs /work/decathlon-sacoche          301
+
+# Projets Squarespace non repris sur le nouveau site.
+/work/bretagne-tourisme                    /                                 301
+/work/dehors                               /                                 301
+/work/maison-racine                        /                                 301
+/work/asymetrie                            /                                 301
+
 # Anciennes URLs Squarespace sans équivalent sur le nouveau site.
-# Les URLs /work/<slug> et /studio sont identiques, aucune redirection.
 /cart      /   301
 /cart/*    /   301
 

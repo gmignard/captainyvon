@@ -1,5 +1,6 @@
 ---
 title: "Slow is Beautiful"
+seo_titre: "Slow is Beautiful, court métrage sur le temps et les racines"
 date: 2021-09-01
 annee: 2017
 nature: "personnel"

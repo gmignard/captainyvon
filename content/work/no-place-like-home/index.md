@@ -1,5 +1,6 @@
 ---
 title: "No Place Like Home"
+seo_titre: "Mini documentaire de surf avec Yoann Renambot en Bretagne"
 date: 2022-03-03
 annee: 2022
 nature: "personnel"

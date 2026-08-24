@@ -1,5 +1,6 @@
 ---
 title: "Et si vous changiez de point de vue ?"
+seo_titre: "Film touristique sur le littoral de la Manche"
 date: 2019-08-12
 annee: 2019
 nature: "commande"

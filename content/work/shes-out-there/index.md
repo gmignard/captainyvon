@@ -1,5 +1,6 @@
 ---
 title: "From the Slopes to Trails with Mathilde Gremaud"
+seo_titre: "She's Out There, épisode Scott avec Mathilde Gremaud"
 date: 2022-11-24
 nature: "commande"
 client: "Scott Bikes"

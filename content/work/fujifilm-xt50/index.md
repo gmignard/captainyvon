@@ -1,5 +1,6 @@
 ---
 title: "X-T50: Anne Eeckeman x Family Photos"
+seo_titre: "Behind the Shoot Fujifilm X-T50 avec Anne Eeckeman"
 date: 2024-06-10
 annee: 2024
 nature: "commande"

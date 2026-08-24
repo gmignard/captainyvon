@@ -1,5 +1,6 @@
 ---
 title: "Lecapitaine"
+seo_titre: "Film de marque Lecapitaine, camions frigorifiques"
 date: 2022-09-07
 nature: "commande"
 client: "Lecapitaine"

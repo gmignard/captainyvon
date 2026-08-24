@@ -1,5 +1,6 @@
 ---
 title: "Tides of Time"
+seo_titre: "Tides of Time, documentaire sur la restauration d'un surf"
 date: 2025-08-20
 annee: 2025
 nature: "personnel"

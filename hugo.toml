@@ -42,6 +42,10 @@ disableKinds = ["taxonomy", "term", "rss"]
   ogImageDefaut = "img/og-defaut.jpg"
   email = "studio@captainyvon.fr"
   lieu = "Brest et Lille"
+  # Annee de fondation du studio, pour les donnees structurees JSON-LD de
+  # l'accueil (donnees-structurees.html). Coherente avec le "2016" en dur du
+  # copyright du pied de page.
+  foundingDate = "2016"
 
 [[params.social]]
   nom = "Instagram"

@@ -1,5 +1,6 @@
 ---
 title: "Immersion"
+seo_titre: "Immersion, documentaire de 52 minutes avec Léa Brassy"
 date: 2020-06-14
 nature: "commande"
 client: "Attitude Manche"

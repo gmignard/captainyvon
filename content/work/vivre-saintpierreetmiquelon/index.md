@@ -1,5 +1,6 @@
 ---
 title: "Vivre à Saint-Pierre-et-Miquelon"
+seo_titre: "Film et portraits à Saint-Pierre-et-Miquelon"
 date: 2024-11-12
 nature: "commande"
 client: "Collectivité Territoriale de Saint-Pierre-Et-Miquelon"

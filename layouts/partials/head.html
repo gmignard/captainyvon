@@ -2,16 +2,43 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-{{- /* Titre : le nom du site seul sur l'accueil, sinon « Page, Site ».
-       Separateur en virgule : le tiret cadratin est annonce « tiret » ou
-       ignore selon les lecteurs d'ecran. */ -}}
+{{- /* Titre affiche par les reseaux (og:title, twitter:title plus bas) : le
+       nom du site seul sur l'accueil, sinon « Page, Site ». Separateur en
+       virgule : le tiret cadratin est annonce « tiret » ou ignore selon les
+       lecteurs d'ecran. Ce titre ignore toujours seo_titre : og:title est ce
+       qu'un humain lit sur LinkedIn ou dans un message, il doit rester court
+       et editorial, pas le titre long pense pour les moteurs de recherche
+       (voir plus bas). */ -}}
 {{- $titrePage := .Title -}}
 {{- if not $titrePage }}{{ with .File }}{{ $titrePage = humanize .ContentBaseName }}{{ end }}{{ end -}}
 {{- $titre := site.Title -}}
 {{- if and (not .IsHome) $titrePage -}}
   {{- $titre = printf "%s, %s" $titrePage site.Title -}}
 {{- end }}
-<title>{{ $titre }}</title>
+
+{{- /* Titre de la balise <title>, distinct du titre ci-dessus et pense pour
+       les moteurs de recherche : seo_titre s'il est renseigne, sinon le
+       meme comportement qu'avant (title de la page, ou nom de fichier
+       humanise a defaut). Separateur en barre verticale, " | " : la virgule
+       reste disponible a l'interieur du seo_titre lui-meme, et le tiret
+       cadratin est proscrit dans tout le projet. Sur l'accueil, seo_titre
+       s'il existe est utilise seul, sans le nom du site ; ailleurs il est
+       toujours suivi du nom du site. Une page sans seo_titre produit donc
+       exactement le <title> d'avant, au separateur pres. */ -}}
+{{- $seoTitre := .Params.seo_titre -}}
+{{- $titreBalise := site.Title -}}
+{{- if .IsHome -}}
+  {{- with $seoTitre }}{{ $titreBalise = . }}{{ end -}}
+{{- else -}}
+  {{- $titreContenu := $seoTitre -}}
+  {{- if not $titreContenu }}{{ $titreContenu = $titrePage }}{{ end -}}
+  {{- with $titreContenu }}{{ $titreBalise = printf "%s | %s" . site.Title }}{{ end -}}
+{{- end -}}
+<title>{{ $titreBalise }}</title>
+
+{{- if .IsHome }}
+{{ partial "donnees-structurees.html" . }}
+{{- end }}
 
 {{- /* Description : l'extrait du projet, sinon la description de page, sinon celle du site. */ -}}
 {{- $description := "" -}}
@@ -24,17 +51,19 @@
 
 <link rel="canonical" href="{{ .Permalink }}">
 
-{{- /* Image Open Graph : la couverture du projet, sinon l'image de repli du site. */ -}}
-{{- $ogImage := "" -}}
+{{- /* Image Open Graph : la couverture du projet, sinon l'image de repli du
+       site. On garde la ressource elle-meme, pas seulement son Permalink :
+       width et height plus bas viennent de ses dimensions reelles. */ -}}
+{{- $ogImageRes := "" -}}
 {{- $couverture := "" -}}
 {{- with .Params.couverture }}{{ $couverture = $.Resources.GetMatch . }}{{ end -}}
 {{- if not $couverture }}{{ $couverture = .Resources.GetMatch "couverture.*" }}{{ end -}}
 {{- with $couverture }}
-  {{- with .Fill "1200x630 webp q82 Center" }}{{ $ogImage = .Permalink }}{{ end -}}
+  {{- with .Fill "1200x630 webp q82 Center" }}{{ $ogImageRes = . }}{{ end -}}
 {{- end -}}
-{{- if not $ogImage }}
+{{- if not $ogImageRes }}
   {{- with site.Params.ogImageDefaut }}
-    {{- with resources.Get . }}{{ $ogImage = .Permalink }}{{ end -}}
+    {{- with resources.Get . }}{{ $ogImageRes = . }}{{ end -}}
   {{- end -}}
 {{- end }}
 
@@ -46,10 +75,13 @@
 {{- with $description }}
 <meta property="og:description" content="{{ . | plainify | htmlUnescape | chomp | truncate 155 }}">
 {{- end }}
-{{- with $ogImage }}
-<meta property="og:image" content="{{ . }}">
+{{- with $ogImageRes }}
+<meta property="og:image" content="{{ .Permalink }}">
+<meta property="og:image:width" content="{{ .Width }}">
+<meta property="og:image:height" content="{{ .Height }}">
+<meta property="og:image:alt" content="{{ $titrePage | default site.Title }}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="{{ . }}">
+<meta name="twitter:image" content="{{ .Permalink }}">
 {{- else }}
 <meta name="twitter:card" content="summary">
 {{- end }}

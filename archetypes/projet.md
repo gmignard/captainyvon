@@ -1,6 +1,12 @@
 ---
 title: "{{ replace .File.ContentBaseName "-" " " | title }}"
 
+# seo_titre : facultatif. Remplace title dans la balise <title> uniquement,
+# sans effet sur le titre affiche en <h1> ni sur les apercus de partage
+# (og:title, twitter:title), qui continuent d'utiliser title. Viser 60
+# caracteres au plus : le nom du studio est ajoute ensuite par le gabarit.
+seo_titre: ""
+
 # date : date de livraison du projet. Elle donne l'année affichée à côté du
 # titre, sur l'accueil comme sur la page projet, et elle donne l'ordre de la
 # grille, du plus récent au plus ancien.
