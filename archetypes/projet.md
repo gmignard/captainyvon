@@ -85,6 +85,11 @@ video:
   id: ""
   # ratio : 16:9 par défaut. Ex. 4:3, 2.39:1, 9:16
   ratio: ""
+  # masquee : champ absent ou false -> video publiee, comportement actuel.
+  # true -> le lecteur ne s'affiche pas, la couverture seule est montree a
+  # sa place, mais id reste en place dans l'entete pour la publication a
+  # venir.
+  # masquee: false
 
 # distinctions : sélections, prix et mentions en festival. Champ facultatif.
 # Seul `nom` est requis, `mention` et `annee` sont facultatifs et leur absence

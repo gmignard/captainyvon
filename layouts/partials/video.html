@@ -45,7 +45,8 @@
 {{- $page := . -}}
 {{- with .Params.video -}}
   {{- $id := .id -}}
-  {{- if $id -}}
+  {{- /* masquee : video pas encore diffusable, id conserve pour plus tard. */ -}}
+  {{- if and $id (not .masquee) -}}
     {{- $plateforme := lower (.plateforme | default "youtube") -}}
 
     {{- /* Ratio du lecteur, repli sur 16/9 si le champ est vide ou absent. */ -}}

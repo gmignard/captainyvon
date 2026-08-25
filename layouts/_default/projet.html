@@ -74,8 +74,10 @@
 {{- if not $creditURL }}{{ with .Params.credit_photo_url }}{{ $creditURL = printf "%v" . }}{{ end }}{{ end -}}
 
 {{- $couverture := partial "couverture.html" . -}}
+{{- /* masquee : video pas encore diffusable, la fiche retombe alors sur la
+       couverture seule, comme un projet sans video. */ -}}
 {{- $aVideo := false -}}
-{{- with .Params.video }}{{ if .id }}{{ $aVideo = true }}{{ end }}{{ end -}}
+{{- with .Params.video }}{{ if and .id (not .masquee) }}{{ $aVideo = true }}{{ end }}{{ end -}}
 {{- $galerie := partial "galerie.html" . -}}
 
 {{- /* Distinctions et corps du fichier, captures ici parce que la bande de

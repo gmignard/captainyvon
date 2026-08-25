@@ -49,6 +49,7 @@ video:
   plateforme: "youtube"
   id: "TUoLJRdJL7I"
   ratio: "16:9"
+  masquee: true
 distinctions:
   - nom: "Surf Film Festival Hamburg"
     mention: "Meilleur film court"
