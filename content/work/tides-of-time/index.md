@@ -93,6 +93,7 @@ distinctions:
   - nom: "Portuguese Surf Film Festival"
     mention: "Sélection Officielle"
     annee: 2025
+mise_en_avant: true
 draft: false
 ---
 
