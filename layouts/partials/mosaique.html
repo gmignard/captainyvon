@@ -1,0 +1,326 @@
+{{- /*
+  Mosaique des fragments.
+
+  Mur de visuels preleves dans les travaux du studio : des photographies et
+  des boucles video muettes, melees dans une grille justifiee. Rien n'est
+  cliquable, aucune tuile ne pointe vers une page : beaucoup de ces visuels
+  viennent de projets qui n'ont pas de fiche sur le site.
+
+  Le gabarit sort la section de `.enveloppe`, comme le fait la page studio
+  avec mur.html : la section est un bloc de `<main>`, sa largeur est donc
+  celle du viewport, barre de defilement deduite. `100vw`, lui, ignore cette
+  barre et ferait deborder la page.
+
+  ALIMENTATION
+  Les fichiers deposes a la racine du page bundle, dans l'ordre de leurs
+  noms. Aucune liste dans l'entete : deposer un fichier suffit a le publier.
+  La numerotation va de deux en deux, `0102`, `0104`, `0106`, pour qu'une
+  insertion ne demande pas de renommage global.
+
+  Une photo est un fichier image seul : `0102.jpg`.
+  Une boucle est un couple : `0104_16x9.mp4` et son image d'affiche
+  `0104_16x9.jpg`. L'image d'affiche est obligatoire, elle porte a elle seule
+  le rendu sans JavaScript. Elle n'est jamais affichee comme photo : la
+  premiere passe releve les noms de base des MP4 pour l'ecarter.
+
+  LE SUFFIXE DE RATIO
+  Il est obligatoire sur les MP4, et sur eux seuls : Hugo lit les dimensions
+  d'une image, jamais celles d'une video. Le suffixe est lu en decoupant le
+  nom de base sur le dernier `_`, puis le segment obtenu sur `x`. Sept
+  formats sont acceptes, listes dans $formats ci-dessous.
+  Un MP4 sans suffixe exploitable, ou sans image d'affiche, est ignore et
+  signale par warnf. Jamais de tuile rendue a moitie, jamais de case vide.
+
+  LE RATIO
+  Pour une photo, la largeur divisee par la hauteur, lues sur le fichier.
+  Pour une boucle, le suffixe du nom. Chaque tuile porte sa valeur en
+  variable CSS inline, `--ratio`, sous forme de nombre decimal : la feuille
+  de style s'en sert deux fois, en `aspect-ratio` et en `flex-grow`, et
+  flex-grow n'accepte qu'un nombre. Meme idiome que video.html, qui pose
+  deja un `--ratio` en ligne sur son lecteur.
+
+  LA GRILLE JUSTIFIEE
+  Le gabarit ne calcule aucun pixel. Il accumule les ratios et ferme la
+  rangee des que leur somme atteint le seuil de params.fragments.densite,
+  4.5 par defaut. La mise en page est faite par le flex : chaque tuile porte
+  `flex: var(--ratio) 0 0`, donc une largeur proportionnelle a son ratio, et
+  `aspect-ratio: var(--ratio)` en deduit la hauteur. Toutes les tuiles d'une
+  rangee tombent alors sur la meme hauteur, a toutes les largeurs de
+  viewport, sans une seule media query de largeur et sans recadrage : chaque
+  visuel garde sa proportion d'origine.
+
+  DERNIERE RANGEE
+  Si la somme de ses ratios reste sous 70 pour cent du seuil, elle recoit une
+  classe modificatrice qui fige la hauteur de ses tuiles et les cale a
+  gauche. Sans quoi deux visuels s'etireraient sur toute la largeur de la
+  page.
+
+  LES LEGENDES
+  Elles sont saisies dans l'entete, en `resources`, comme les textes
+  alternatifs de galerie.html. `title` devient le texte alternatif d'une
+  photo ou le nom accessible d'une boucle ; `params.projet`, `params.client`
+  et `params.annee` forment la legende. Un fichier sans entree reste en
+  alt="" et sans legende, donc decoratif.
+
+  La legende est dans le DOM en permanence, donc lue par les technologies
+  d'assistance, et masquee visuellement par une opacite nulle. Elle
+  apparait au survol sur les appareils qui savent survoler.
+
+  Pour les appareils tactiles, deux liens en tete de section basculent
+  toutes les legendes en visible. Le mecanisme est le selecteur :target,
+  celui de la loupe de galerie.html : le lien vise l'identifiant de la
+  section, la feuille de style fait le reste. Aucun JavaScript, la bascule
+  fonctionne script desactive, et la touche Retour du navigateur la defait.
+  Les deux liens sont a l'interieur de la section visee, ce qui laisse la
+  feuille de style les atteindre en simple descendant, sans `:has`.
+
+  LE CHARGEMENT DIFFERE
+  Les boucles sont servies depuis le depot, sans traitement Hugo, et leur
+  adresse est portee par data-src : aucune balise video ne porte de `src`
+  dans le HTML produit, rien n'est telecharge au chargement de la page. Le
+  script en fin de partial pose la source et lance la lecture a l'entree
+  dans le viewport. Sans lui, chaque tuile affiche son image d'affiche a la
+  bonne dimension : rien de vide, rien de casse, pas de <noscript> a ecrire.
+
+  Contexte attendu : la page fragments.
+*/ -}}
+{{- $page := . -}}
+
+{{- /* Formats de ratio acceptes sur un nom de MP4. Toute autre valeur fait
+       ignorer le fichier. */ -}}
+{{- $formats := slice "16x9" "9x16" "4x3" "3x4" "3x2" "2x3" "1x1" -}}
+
+{{- /* Seuil de densite. Repli sur 4.5 si params.fragments.densite est absent.
+       La multiplication par 1.0 garde une comparaison entre flottants meme
+       si la configuration ecrit un entier. */ -}}
+{{- $seuil := 4.5 -}}
+{{- with site.Params.fragments -}}
+  {{- with .densite }}{{ $seuil = mul . 1.0 }}{{ end -}}
+{{- end -}}
+
+{{- /* Ordre explicite, sur le nom de fichier : deux constructions
+       successives produisent le meme HTML. */ -}}
+{{- $ressources := sort $page.Resources "Name" -}}
+
+{{- /* Premiere passe : les noms de base des MP4. Ils servent a reconnaitre
+       une image d'affiche, qui ne doit jamais etre rendue comme photo. */ -}}
+{{- $basesVideo := slice -}}
+{{- range $ressources -}}
+  {{- if eq (lower (path.Ext .Name)) ".mp4" -}}
+    {{- $basesVideo = $basesVideo | append (path.BaseName .Name) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* Seconde passe : construction des tuiles. Chaque entree porte son
+       ratio, son type et ses metadonnees, jamais de pixel. */ -}}
+{{- $tuiles := slice -}}
+{{- range $ressources -}}
+  {{- $nom := .Name -}}
+  {{- $base := path.BaseName $nom -}}
+  {{- $ext := lower (path.Ext $nom) -}}
+
+  {{- /* Titre explicite de la ressource, ou chaine vide. Hugo fait retomber
+         .Title sur .Name : comparer les deux est le seul moyen de
+         distinguer un titre saisi d'un nom de fichier. */ -}}
+  {{- $texte := "" -}}
+  {{- if ne .Title $nom }}{{ $texte = .Title }}{{ end -}}
+
+  {{- if eq $ext ".mp4" -}}
+
+    {{- /* Le suffixe de ratio, dernier segment du nom apres `_`. */ -}}
+    {{- $morceaux := split $base "_" -}}
+    {{- $suffixe := index $morceaux (sub (len $morceaux) 1) -}}
+
+    {{- if not (in $formats $suffixe) -}}
+      {{- warnf "mosaique : %s est ignore, suffixe de ratio absent ou non reconnu. Formats acceptes : %s." $nom (delimit $formats ", ") -}}
+      {{- continue -}}
+    {{- end -}}
+
+    {{- /* L'image d'affiche porte le nom de base du MP4. Son extension est
+           libre, c'est le seul point ou l'appariement se fait au joker. */ -}}
+    {{- $affiche := $page.Resources.GetMatch (printf "%s.{jpg,jpeg,png,webp}" $base) -}}
+    {{- if not $affiche -}}
+      {{- warnf "mosaique : %s est ignore, son image d'affiche %s.jpg est absente du bundle." $nom $base -}}
+      {{- continue -}}
+    {{- end -}}
+
+    {{- /* Les deux cotes sont des chaines : la conversion en entier est
+           explicite, et la multiplication par 1.0 force une division
+           flottante plutot qu'une division entiere. */ -}}
+    {{- $cotes := split $suffixe "x" -}}
+    {{- $ratio := div (mul (int (index $cotes 0)) 1.0) (int (index $cotes 1)) -}}
+
+    {{- $tuiles = $tuiles | append (dict
+          "type" "video"
+          "ratio" $ratio
+          "media" .
+          "affiche" $affiche
+          "texte" $texte
+          "params" .Params) -}}
+
+  {{- else if eq (lower .ResourceType) "image" -}}
+
+    {{- /* Image d'affiche d'une boucle : deja rendue par sa tuile video. */ -}}
+    {{- if in $basesVideo $base }}{{ continue }}{{ end -}}
+
+    {{- $ratio := div (mul .Width 1.0) .Height -}}
+    {{- $tuiles = $tuiles | append (dict
+          "type" "photo"
+          "ratio" $ratio
+          "media" .
+          "affiche" ""
+          "texte" $texte
+          "params" .Params) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* Regroupement en rangees. La somme des ratios d'une rangee gouverne sa
+       hauteur : plus elle est haute, plus les tuiles sont basses. */ -}}
+{{- $rangees := slice -}}
+{{- $courante := slice -}}
+{{- $somme := 0.0 -}}
+{{- range $tuiles -}}
+  {{- $courante = $courante | append . -}}
+  {{- $somme = add $somme .ratio -}}
+  {{- if ge $somme $seuil -}}
+    {{- $rangees = $rangees | append (dict "tuiles" $courante "somme" $somme) -}}
+    {{- $courante = slice -}}
+    {{- $somme = 0.0 -}}
+  {{- end -}}
+{{- end -}}
+{{- with $courante -}}
+  {{- $rangees = $rangees | append (dict "tuiles" . "somme" $somme) -}}
+{{- end -}}
+
+{{- /* Une derniere rangee trop maigre n'est pas justifiee : ses tuiles
+       prennent une hauteur fixe et se calent a gauche. */ -}}
+{{- $plancher := mul $seuil 0.7 -}}
+
+{{- with $rangees }}
+<section class="mosaique" id="fragments-mur">
+
+  {{- /* Bascule des legendes pour les appareils tactiles. Le premier lien
+         vise la section, le second remonte au titre de la page, ce qui
+         defait la cible et referme les legendes. */}}
+  <p class="mosaique-actions">
+    <a class="mosaique-bascule mosaique-bascule--afficher" href="#fragments-mur">Afficher les légendes</a>
+    <a class="mosaique-bascule mosaique-bascule--masquer" href="#fragments-titre">Masquer les légendes</a>
+  </p>
+
+  {{- range $rang, $rangee := . }}
+    {{- $courte := and (eq $rang (sub (len $rangees) 1)) (lt $rangee.somme $plancher) }}
+  <div class="mosaique-rangee{{ if $courte }} mosaique-rangee--courte{{ end }}">
+    {{- range $rangee.tuiles }}
+      {{- $ratio := printf "%.4f" .ratio -}}
+
+      {{- /* Legende : le projet sur la premiere ligne, le client et l'annee
+             sur la seconde. Le separateur n'est pose qu'entre deux entrees
+             presentes, et rien n'est rendu si les trois manquent. */ -}}
+      {{- $projet := "" -}}
+      {{- $meta := slice -}}
+      {{- with .params -}}
+        {{- with .projet }}{{ $projet = printf "%v" . }}{{ end -}}
+        {{- with .client }}{{ $meta = $meta | append (printf "%v" .) }}{{ end -}}
+        {{- with .annee }}{{ $meta = $meta | append (printf "%v" .) }}{{ end -}}
+      {{- end }}
+
+    <figure class="fragment" style="{{ printf "--ratio: %s;" $ratio | safeCSS }}">
+      {{- if eq .type "video" -}}
+        {{- /* Image d'affiche traitee par Hugo, jamais agrandie. La video,
+               elle, est servie telle quelle depuis le bundle. */ -}}
+        {{- $l := cond (gt .affiche.Width 1000) 1000 .affiche.Width -}}
+        {{- $poster := .affiche.Resize (printf "%dx webp q80" $l) -}}
+        {{- $largeur := 1000 -}}
+        {{- $hauteur := int (math.Round (div (mul $largeur 1.0) .ratio)) }}
+      <video class="fragment-media fragment-video"
+             poster="{{ $poster.RelPermalink }}"
+             data-src="{{ .media.RelPermalink }}"
+             width="{{ $largeur }}" height="{{ $hauteur }}"
+             muted loop playsinline preload="none"
+             {{- with .texte }} aria-label="{{ . }}"{{ end }}></video>
+      {{- else -}}
+        {{- /* Trois paliers, jamais au-dela de la source : un palier plus
+               large que l'image est ramene a la largeur de celle-ci plutot
+               qu'ecarte, ce qui evite de servir du 600 a une source de 900.
+               Les doublons ainsi crees sont retires, une source de 1400 ou
+               plus produit donc bien trois sorties, et une source de 500 une
+               seule. Aucun agrandissement dans aucun cas. */ -}}
+        {{- $src := .media -}}
+        {{- $jeu := slice -}}
+        {{- range slice 600 1000 1400 -}}
+          {{- $l := cond (gt . $src.Width) $src.Width . -}}
+          {{- if not (in $jeu $l) }}{{ $jeu = $jeu | append $l }}{{ end -}}
+        {{- end -}}
+        {{- $sorties := slice -}}
+        {{- range $jeu -}}
+          {{- $sorties = $sorties | append ($src.Resize (printf "%dx webp q80" .)) -}}
+        {{- end -}}
+        {{- $defaut := index $sorties 0 -}}
+        {{- $srcset := slice -}}
+        {{- range $sorties -}}
+          {{- $srcset = $srcset | append (printf "%s %dw" .RelPermalink .Width) -}}
+        {{- end }}
+      <img class="fragment-media"
+           src="{{ $defaut.RelPermalink }}"
+           {{ if gt (len $sorties) 1 }}srcset="{{ delimit $srcset ", " }}"
+           sizes="(max-width: 700px) 92vw, 33vw"{{ end }}
+           width="{{ $defaut.Width }}" height="{{ $defaut.Height }}"
+           alt="{{ .texte }}"
+           {{ if eq $rang 0 }}loading="eager" fetchpriority="high"{{ else }}loading="lazy" decoding="async"{{ end }}>
+      {{- end }}
+      {{- if or $projet $meta }}
+      <figcaption class="fragment-legende">
+        {{- with $projet }}<span class="fragment-legende-projet">{{ . }}</span>{{ end }}
+        {{- with $meta }}
+        <span class="fragment-legende-meta">
+          {{- range $i, $valeur := . }}
+            {{- if $i }}<span class="fragment-separateur" aria-hidden="true">&middot;</span>{{ end }}
+            {{- $valeur }}
+          {{- end }}
+        </span>
+        {{- end }}
+      </figcaption>
+      {{- end }}
+    </figure>
+    {{- end }}
+  </div>
+  {{- end }}
+
+</section>
+
+{{- /* Chargement differe des boucles. Meme registre que le script de
+       video.html : inline, court, sans dependance.
+
+       Deux sorties immediates. Sans IntersectionObserver, aucune source
+       n'est posee et chaque tuile en reste a son image d'affiche. Sous
+       `prefers-reduced-motion: reduce`, de meme : la lecture est coupee a la
+       source, c'est le seul endroit ou elle peut l'etre, une feuille de
+       style ne sait pas mettre un media en pause.
+
+       La source n'est posee qu'une fois, au premier passage dans le
+       viewport. La marge de 200px lance le telechargement juste avant que la
+       tuile n'arrive a l'ecran. La sortie du viewport met en pause, sans
+       jamais retirer la source. */}}
+<script>
+(function () {
+  if (!('IntersectionObserver' in window)) { return; }
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
+  var boucles = document.querySelectorAll('.fragment-video');
+  if (!boucles.length) { return; }
+  var vue = new IntersectionObserver(function (entrees) {
+    entrees.forEach(function (e) {
+      var v = e.target;
+      if (!e.isIntersecting) { v.pause(); return; }
+      if (!v.getAttribute('src')) {
+        var s = v.getAttribute('data-src');
+        if (!s) { return; }
+        v.setAttribute('src', s);
+      }
+      var p = v.play();
+      if (p && p.catch) { p.catch(function () {}); }
+    });
+  }, { rootMargin: '200px' });
+  boucles.forEach(function (v) { vue.observe(v); });
+})();
+</script>
+{{- end -}}

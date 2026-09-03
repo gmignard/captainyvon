@@ -1,0 +1,40 @@
+{{ define "main" }}
+{{- /*
+  Page Fragments.
+
+  Deux zones, dans cet ordre :
+    a. l'entete de page, dans `.enveloppe` : le titre et, s'il existe, le
+       texte du fichier. Memes bords que l'entete du site et que le pied ;
+    b. la mosaique, rendue par son partial et posee hors de `.enveloppe`.
+       C'est un mur pleine largeur, il doit sortir du cadre de contenu.
+       Le partial ne rend rien si le bundle ne contient aucun media
+       exploitable : ni section vide, ni bascule de legendes orpheline.
+
+  Le titre porte un identifiant : c'est la cible du lien qui referme les
+  legendes, et il donne son nom accessible a la section de la mosaique.
+
+  Le <title> et la meta description sont servis par head.html sans qu'il ait
+  a connaitre cette page : ils viennent de `title`, `seo_titre` et
+  `description` de l'entete, comme partout ailleurs.
+
+  Repli de titre : si `title` manque, le nom du dossier humanise, plutot
+  qu'un <h1> vide. Meme regle que list.html.
+*/ -}}
+{{- $titre := .Title -}}
+{{- if not $titre }}{{ with .File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
+
+<article class="fragments">
+
+  <div class="enveloppe">
+    <div class="page-texte">
+      {{- with $titre }}
+      <h1 id="fragments-titre">{{ . }}</h1>
+      {{- end }}
+      {{- with .Content }}{{ . }}{{ end }}
+    </div>
+  </div>
+
+  {{ partial "mosaique.html" . }}
+
+</article>
+{{ end }}
