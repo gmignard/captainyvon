@@ -78,17 +78,10 @@
   et `params.annee` forment la legende. Un fichier sans entree reste en
   alt="" et sans legende, donc decoratif.
 
-  La legende est dans le DOM en permanence, donc lue par les technologies
-  d'assistance, et masquee visuellement par une opacite nulle. Elle
-  apparait au survol sur les appareils qui savent survoler.
-
-  Pour les appareils tactiles, deux liens en tete de section basculent
-  toutes les legendes en visible. Le mecanisme est le selecteur :target,
-  celui de la loupe de galerie.html : le lien vise l'identifiant de la
-  section, la feuille de style fait le reste. Aucun JavaScript, la bascule
-  fonctionne script desactive, et la touche Retour du navigateur la defait.
-  Les deux liens sont a l'interieur de la section visee, ce qui laisse la
-  feuille de style les atteindre en simple descendant, sans `:has`.
+  La legende est visible en permanence, sur tous les appareils. Elle n'est
+  ni revelee au survol, ni cachee derriere une bascule : le contexte d'une
+  image fait partie de l'image, il n'a pas a se meriter. Un ecran tactile et
+  un ecran de bureau montrent donc exactement la meme chose.
 
   LE CHARGEMENT DIFFERE
   Les boucles sont servies depuis le depot, sans traitement Hugo, et leur
@@ -224,15 +217,7 @@
 {{- $plancher := mul $seuil 0.7 -}}
 
 {{- with $rangees }}
-<section class="mosaique" id="fragments-mur">
-
-  {{- /* Bascule des legendes pour les appareils tactiles. Le premier lien
-         vise la section, le second remonte au titre de la page, ce qui
-         defait la cible et referme les legendes. */}}
-  <p class="mosaique-actions">
-    <a class="mosaique-bascule mosaique-bascule--afficher" href="#fragments-mur">Afficher les légendes</a>
-    <a class="mosaique-bascule mosaique-bascule--masquer" href="#fragments-titre">Masquer les légendes</a>
-  </p>
+<section class="mosaique">
 
   {{- /* Le conteneur des rangees existe pour la bande intermediaire : la
          feuille de style y efface les rangees et le laisse recomposer le

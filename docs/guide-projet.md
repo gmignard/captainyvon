@@ -256,15 +256,17 @@ resources:
 ```
 
 `title` est le texte alternatif d'une photo, ou le nom accessible d'une
-boucle. `projet`, `client` et `annee` forment la légende affichée au survol,
-en deux lignes. Un champ absent ne laisse ni virgule ni point médian
-orphelin, et une entrée sans aucun des trois ne produit aucune légende.
+boucle. `projet`, `client` et `annee` forment la légende, en deux lignes. Un
+champ absent ne laisse ni virgule ni point médian orphelin, et une entrée
+sans aucun des trois ne produit aucune légende.
 
 Un fichier sans entrée reste affiché. Il est simplement traité comme
 décoratif, sans texte alternatif et sans légende.
 
-Sur un écran tactile, où le survol n'existe pas, un lien en tête de mur
-affiche toutes les légendes d'un coup.
+Les légendes sont visibles en permanence, sur tous les appareils. Il n'y a
+ni survol à attendre ni bouton à trouver. Une tuile dont les trois champs
+sont vides n'affiche rien du tout, ce qui rend le mur silencieux tant que
+l'échafaudage n'est pas rempli.
 
 ### La densité du mur
 

@@ -1826,34 +1826,6 @@ html:has(.loupe:target) { overflow: hidden; }
   padding-inline: var(--conteneur-gouttiere);
 }
 
-/* Bascule des legendes, pour les appareils sans survol. Le mecanisme est le
-   selecteur :target, celui de la loupe : le lien vise l'identifiant de la
-   section, le second lien remonte au titre de la page et defait la cible.
-   Les deux liens sont a l'interieur de la section visee, ce qui les rend
-   atteignables en simple descendant, sans `:has`. */
-.mosaique-actions {
-  margin: 0 0 var(--mosaique-gap);
-}
-
-.mosaique-bascule {
-  font-size: 0.8125rem;
-  letter-spacing: 0.02em;
-  color: var(--couleur-texte-secondaire);
-  text-decoration: none;
-  border-bottom: 1px solid var(--trait);
-  padding-bottom: 2px;
-}
-
-.mosaique-bascule:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 4px;
-}
-
-/* Un seul des deux liens est propose a la fois. */
-.mosaique-bascule--masquer { display: none; }
-#fragments-mur:target .mosaique-bascule--afficher { display: none; }
-#fragments-mur:target .mosaique-bascule--masquer { display: inline; }
-
 /* Une rangee tient sur une seule ligne : la base des tuiles est nulle, elles
    ne peuvent donc pas deborder et le groupement decide par le gabarit est
    celui qui s'affiche. C'est le regime des grandes largeurs. */
@@ -1914,9 +1886,9 @@ html:has(.loupe:target) { overflow: hidden; }
   object-fit: cover;
 }
 
-/* Legende : deux lignes en surimpression, en bas a gauche. Elle est dans le
-   DOM en permanence, donc lue par les technologies d'assistance, et masquee
-   visuellement par une opacite nulle.
+/* Legende : deux lignes en surimpression, en bas a gauche, visibles en
+   permanence sur tous les appareils. Ni survol a attendre, ni bascule a
+   trouver : le contexte d'une image fait partie de l'image.
 
    Le degrade n'est pas un ornement : la legende est posee sur une photo dont
    on ne connait ni la clarte ni le contraste, et c'est lui seul qui garantit
@@ -1933,8 +1905,6 @@ html:has(.loupe:target) { overflow: hidden; }
   padding: calc(var(--mosaique-marge-legende) * 3) var(--mosaique-marge-legende) var(--mosaique-marge-legende);
   background: linear-gradient(to top, color-mix(in srgb, var(--noir) 72%, transparent), transparent);
   color: var(--blanc-casse);
-  opacity: 0;
-  transition: opacity 200ms ease;
   pointer-events: none;
 }
 
@@ -1962,24 +1932,11 @@ html:has(.loupe:target) { overflow: hidden; }
   color: var(--texte-doux);
 }
 
-/* Survol, sur les seuls appareils qui savent survoler. Opacite seule, ni
-   zoom ni deplacement : meme registre que les vignettes d'accueil. */
-@media (hover: hover) and (pointer: fine) {
-  .fragment:hover .fragment-legende { opacity: 1; }
-}
-
-/* Bascule tactile : toutes les legendes visibles tant que la section est la
-   cible de l'adresse. */
-#fragments-mur:target .fragment-legende { opacity: 1; }
-
-/* Mouvement reduit. Le fondu de la legende est coupe ici ; la lecture des
-   boucles, elle, est coupee dans le script du partial, qui sort avant de
-   poser la moindre source. Une feuille de style ne sait pas mettre un media
-   en pause : sans source posee, chaque tuile en reste a son image
-   d'affiche, donc a une image fixe. */
-@media (prefers-reduced-motion: reduce) {
-  .fragment-legende { transition: none; }
-}
+/* Mouvement reduit : plus rien a neutraliser ici depuis que la legende est
+   posee sans fondu. La lecture des boucles, elle, est coupee dans le script
+   du partial, qui sort avant de poser la moindre source. Une feuille de
+   style ne sait pas mettre un media en pause : sans source posee, chaque
+   tuile en reste a son image d'affiche, donc a une image fixe. */
 
 /* Bande intermediaire : entre la colonne unique et la largeur ou les
    rangees construites tiennent encore.
