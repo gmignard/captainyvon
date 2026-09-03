@@ -546,21 +546,26 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
    la respiration d'entete, qui detache le bloc de la grille et le fait lire
    comme une fin de page plutot que comme une vignette de plus.
 
-   Le bloc est cale a gauche, sur le bord de la grille et sur la gouttiere du
-   site, a toute largeur. Le texte garde le corps courant, il ne cherche pas
-   a peser plus que la ligne de metadonnees d'une vignette. */
+   Le bloc est centre dans la largeur de la grille. C'est une adresse au
+   lecteur, pas une quatorzieme vignette : la centrer la detache de la trame
+   reguliere des rangees, qui est calee a gauche. Le texte garde le corps
+   courant, il ne cherche pas a peser plus que la ligne de metadonnees d'une
+   vignette. */
 .accueil-suite {
   margin-top: var(--entete-espace-bas);
+  text-align: center;
 }
 
 .accueil-suite-texte {
-  margin: 0 0 calc(var(--pas) * 1.5);
+  /* La marge automatique centre le bloc de texte lui-meme, que text-align
+     seul laisserait cale a gauche une fois sa mesure atteinte. */
+  margin: 0 auto calc(var(--pas) * 1.5);
   max-width: var(--mesure-appoint);
   color: var(--couleur-texte-secondaire);
 }
 
 /* En une colonne, la phrase prend toute la largeur : la mesure d'appoint
-   n'a plus rien a menager a sa droite. */
+   n'a plus rien a menager de part et d'autre. */
 @media (max-width: 700px) {
   .accueil-suite-texte { max-width: none; }
 }
