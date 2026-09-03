@@ -32,10 +32,9 @@
   Un projet sans couverture n'est pas rendu : l'appelant l'a deja ecarte,
   cette garde evite toute case vide si le partial est appele ailleurs.
 
-  Le champ `accueil` n'a aucun effet ici : le filtrage est fait par
-  l'appelant, qui ecarte le projet avant d'appeler ce partial. Une vignette
-  rendue est une vignette a afficher, ce partial n'en sait pas davantage.
-  L'ordre de la grille vient lui aussi de l'appelant, du seul tri par date.
+  La selection et l'ordre de la grille sont entierement decides par
+  l'appelant, du seul tri par date : ce partial ne fait que rendre la
+  vignette qu'on lui passe.
 */ -}}
 {{- $page := .page -}}
 {{- $rang := .rang | default 0 -}}

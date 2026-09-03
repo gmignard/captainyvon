@@ -102,15 +102,6 @@ video:
 #   - nom: "Rencontres de la Photographie"
 #     annee: 2024
 
-# accueil : presence du projet dans la grille de l'accueil. Champ absent
-# ou true -> le projet est affiche, c'est le comportement par defaut.
-# false -> le projet sort de la grille sans etre depublie : sa page reste
-# construite, son adresse ne change pas et reste accessible par lien
-# direct comme par le sitemap.
-# La grille se lit sur deux colonnes : viser un nombre pair de projets
-# affiches, sinon la derniere rangee reste a moitie vide.
-# accueil: true
-
 draft: true
 ---
 

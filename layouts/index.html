@@ -1,59 +1,60 @@
 {{ define "main" }}
 {{- /*
-  Accueil : grille de vignettes seule, sans texte entre les images.
-  Les projets sans couverture, et ceux ecartes a la main par le champ
-  `accueil`, sont retires avant le rendu, pour qu'aucune case vide ne
-  s'ouvre dans la grille et pour que le rang servant a decider du
-  chargement immediat corresponde a la position reellement affichee.
+  Accueil : mur de fragments, precede d'un texte de presentation.
+
+  Trois zones, dans cet ordre :
+    a. l'entete de page, dans .enveloppe : le <h1> et le texte de
+       content/_index.md. Reprend telle quelle la structure de l'ancienne
+       page /fragments/, dont l'accueil prend desormais la place ;
+    b. la mosaique, rendue par son partial et posee hors de .enveloppe,
+       pleine largeur, comme sur l'ancienne page fragments ;
+    c. la sortie de fin de grille, .accueil-suite, dans une .enveloppe,
+       apres la mosaique.
+
+  L'accueil ne connait plus les projets : ni tri, ni filtre, ni grille de
+  vignettes. Le catalogue complet vit desormais sur /work/, rendu par
+  layouts/_default/list.html sans aucun filtrage.
+
+  content/fragments/ n'est plus une page, son entete porte build.render:
+  never. Il reste lu ici par site.GetPage, pour son bundle de medias et de
+  legendes. Si ce bundle disparaissait, un avertissement au build vaut
+  mieux qu'une section vide et silencieuse.
 */ -}}
-{{- /* Tri explicite : projet le plus recent en premier. L'ordre par defaut
-       de Hugo applique le poids avant la date, on ne s'y repose pas. */ -}}
-{{- $projets := sort (where site.RegularPages "Section" "work") "Date" "desc" -}}
-{{- /* Curation de la grille : un projet dont `accueil` vaut explicitement
-       false en sort, sans etre depublie pour autant. Sa page reste
-       construite et son adresse ne change pas. Le champ absent laisse le
-       projet affiche, c'est le comportement par defaut.
-       Le filtre est applique apres le tri et avant le calcul du rang, pour
-       que le chargement immediat des deux premieres vignettes suive les
-       deux vignettes reellement affichees. */ -}}
-{{- $avecCouverture := slice -}}
-{{- range $projets -}}
-  {{- if eq false .Params.accueil }}{{ continue }}{{ end -}}
-  {{- if partial "couverture.html" . }}{{ $avecCouverture = $avecCouverture | append . }}{{ end -}}
-{{- end -}}
-<div class="enveloppe enveloppe--pleine">
+{{- $titre := .Title -}}
+{{- if not $titre }}{{ with .File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
 
-  <h1 class="visuellement-cache">{{ .Title | default site.Title }}</h1>
-
-  {{- with .Content }}
-  <div class="page-texte">{{ . }}</div>
-  {{- end }}
-
-  {{- with $avecCouverture }}
-  <ul class="grille-projets">
-    {{- range $rang, $projet := . }}
-    {{ partial "vignette.html" (dict "page" $projet "rang" $rang) }}
+<div class="enveloppe">
+  <div class="page-texte">
+    {{- with $titre }}
+    <h1 id="fragments-titre">{{ . }}</h1>
     {{- end }}
-  </ul>
+    {{- with .Content }}{{ . }}{{ end }}
+  </div>
+</div>
 
-  {{- /* Sortie de fin de grille : une phrase et un lien vers le mur des
-         fragments, sous la derniere rangee. Le bloc vient de la cle `suite`
-         de l'entete, chaque clef testee avant usage. Bloc absent, rien n'est
-         rendu. Texte absent, le lien seul. Libelle ou cible absent, le texte
-         seul : jamais de lien orphelin, jamais de lien sans cible.
-         Le bloc ne vit que dans cette branche : une grille vide n'a pas de
-         fin de grille a annoncer.
-         Le lien est la pilule du theme, appelee par son partial et reprise
-         telle quelle. */ -}}
-  {{- with $.Params.suite }}
-    {{- $texte := "" -}}
-    {{- with .texte }}{{ $texte = printf "%v" . }}{{ end -}}
-    {{- $libelle := "" -}}
-    {{- with .libelle }}{{ $libelle = printf "%v" . }}{{ end -}}
-    {{- $href := "" -}}
-    {{- with .href }}{{ $href = printf "%v" . }}{{ end -}}
-    {{- $lien := and (ne $libelle "") (ne $href "") -}}
-    {{- if or (ne $texte "") $lien }}
+{{- with site.GetPage "/fragments" -}}
+  {{ partial "mosaique.html" . }}
+{{- else -}}
+  {{- warnf "layouts/index.html : le bundle /fragments est introuvable, aucune mosaique n'est rendue sur l'accueil." -}}
+{{- end }}
+
+{{- /* Sortie de fin de grille : une phrase et un lien vers le catalogue
+       complet, sous la mosaique. Le bloc vient de la cle `suite` de
+       l'entete, chaque clef testee avant usage. Bloc absent, rien n'est
+       rendu. Texte absent, le lien seul. Libelle ou cible absent, le texte
+       seul : jamais de lien orphelin, jamais de lien sans cible.
+       Le lien est la pilule du theme, appelee par son partial et reprise
+       telle quelle. */ -}}
+{{- with .Params.suite }}
+  {{- $texte := "" -}}
+  {{- with .texte }}{{ $texte = printf "%v" . }}{{ end -}}
+  {{- $libelle := "" -}}
+  {{- with .libelle }}{{ $libelle = printf "%v" . }}{{ end -}}
+  {{- $href := "" -}}
+  {{- with .href }}{{ $href = printf "%v" . }}{{ end -}}
+  {{- $lien := and (ne $libelle "") (ne $href "") -}}
+  {{- if or (ne $texte "") $lien }}
+<div class="enveloppe">
   <div class="accueil-suite">
     {{- with $texte }}
     <p class="accueil-suite-texte">{{ . }}</p>
@@ -62,11 +63,7 @@
     {{ partial "pilule.html" (dict "href" ($href | relURL) "libelle" $libelle) }}
     {{- end }}
   </div>
-    {{- end }}
-  {{- end }}
-  {{- else }}
-  <p>Aucun projet publié pour le moment.</p>
-  {{- end }}
-
 </div>
+  {{- end }}
+{{- end }}
 {{ end }}

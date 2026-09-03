@@ -21,40 +21,6 @@ Les champs de l'entête et leur usage sont documentés dans l'archétype, qui
 est le fichier que la commande vient de générer. Il n'y a rien à chercher
 ailleurs.
 
-## Retirer un projet de la grille d'accueil
-
-La grille d'accueil est une sélection, pas l'archive complète. Le champ
-`accueil` de l'entête décide de la présence d'un projet dans cette grille.
-
-```yaml
-accueil: false
-```
-
-Sans ce champ, le projet est affiché. C'est le comportement par défaut, et
-rien n'est à ajouter dans l'entête d'un projet qui doit rester sur
-l'accueil.
-
-Avec `accueil: false`, le projet sort de la grille sans être dépublié. Sa
-page reste construite, son adresse ne change pas, elle reste accessible par
-lien direct, depuis un partage ou depuis le sitemap. C'est bien un retrait
-de la vitrine, pas une suppression. Pour dépublier vraiment un projet, c'est
-`draft: true` qu'il faut poser, ce qui est une autre décision.
-
-La grille se lit sur deux colonnes. Viser un nombre pair de projets
-affichés, sinon la dernière rangée reste à moitié vide. Retirer un projet en
-appelle donc un second, ou un retour à seize.
-
-L'ordre de la grille ne change pas : il reste le tri par `date`, du plus
-récent au plus ancien. `accueil` ne fait que retirer, il ne remonte ni ne
-descend rien.
-
-Le champ est décrit dans `archetypes/projet.md`, comme tous les autres.
-
-Sous la dernière rangée de la grille, une phrase et un bouton renvoient
-vers les fragments. Ils viennent du bloc `suite` de l'entête de
-`content/_index.md`. Retirer ce bloc retire la phrase et le bouton, sans
-toucher à aucun gabarit.
-
 ## Conventions de fichiers
 
 Les images d'un projet, dans `content/work/<projet>/`, sont numérotées sur
@@ -131,19 +97,17 @@ large au plus et 300 Ko par fichier au plus.
 Le lot `bts_meneham_*` sort de cette règle et reste à retraiter. Ce n'est
 pas fait ici.
 
-## La page Fragments
+## Le mur de fragments sur l'accueil
 
-La page `/fragments/` est le bundle `content/fragments/`. C'est un mur de
+Le mur qui ouvre le site, avant même la grille des projets, est fait de
 visuels prélevés dans nos travaux, photos et boucles vidéo muettes mêlées.
 Rien n'y est cliquable et rien ne renvoie vers une fiche projet.
 
-Déposer les fichiers à la racine de `content/fragments/`. Il n'y a aucune
-liste à tenir dans l'entête pour l'affichage. Déposer un fichier suffit à le
-publier, et l'ordre du mur est celui des noms de fichiers.
-
-Le squelette de l'entête vit dans `archetypes/fragments.md`, comme celui
-d'un projet vit dans `archetypes/projet.md`. La page existe déjà, il n'y a
-donc rien à générer, mais c'est là que le détail des champs est décrit.
+Le bundle `content/fragments/` n'est plus une page, il n'a plus d'adresse
+propre. C'est un magasin : `layouts/index.html` va y chercher les médias et
+leurs légendes pour construire le mur de l'accueil. Déposer un fichier
+suffit à le publier sur l'accueil, il n'y a aucune liste à tenir ailleurs
+pour l'affichage, et l'ordre du mur est celui des noms de fichiers.
 
 ### La numérotation
 
@@ -292,6 +256,13 @@ s'étirer sur toute la largeur.
 
 Dans tous les cas, un visuel garde sa proportion d'origine. Rien n'est
 jamais recadré, ni étiré.
+
+### Le renvoi vers le catalogue
+
+Sous le mur, une phrase et un bouton renvoient vers `/work/`, le catalogue
+complet des projets. Ils viennent du bloc `suite` de l'entête de
+`content/_index.md`. Retirer ce bloc retire la phrase et le bouton, sans
+toucher à aucun gabarit.
 
 ## Déployer
 

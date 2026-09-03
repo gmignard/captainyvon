@@ -11,17 +11,11 @@ disableKinds = ["taxonomy", "term", "rss"]
   pagerSize = 100
 
 [[menus.main]]
-  name = "Work"
-  url = "/"
+  name = "Projets"
+  url = "/work/"
   weight = 10
   [menus.main.params]
-    accueil = true
     prefixes = ["/work/"]
-
-[[menus.main]]
-  name = "Fragments"
-  url = "/fragments/"
-  weight = 15
 
 [[menus.main]]
   name = "Studio"

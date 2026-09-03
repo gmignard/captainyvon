@@ -1,8 +1,12 @@
 ---
-title: "Fragments"
-seo_titre: "Fragments, images et boucles prélevées dans nos travaux"
-description: "Un mur d'images fixes et de boucles muettes prélevées dans les films et les reportages de Captain Yvon Studio."
-layout: "fragments"
+# Ce dossier n'est plus une page : build.render = never empeche toute
+# construction de /fragments/. Il reste lu par layouts/index.html, qui y
+# puise les medias du mur affiche sur l'accueil. Deposer un fichier ici le
+# publie donc sur la page d'accueil, pas a une adresse /fragments/.
+build:
+  render: never
+  list: never
+  publishResources: true
 
 # resources : légendes et textes alternatifs du mur. Le mécanisme est celui
 # des `alt` de la galerie d'une fiche projet.
@@ -121,8 +125,3 @@ resources:
 
 draft: false
 ---
-
-Des images et des boucles prélevées dans nos films et nos reportages. Des
-cadres retenus en repérage, des gestes vus de près ou des plans qui n'ont
-pas trouvé leur place au montage. Rien ici ne renvoie vers une fiche
-projet : ce sont des fragments, on les regarde pour eux-mêmes.
