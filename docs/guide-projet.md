@@ -184,20 +184,41 @@ L'image d'affiche porte exactement le même nom que le MP4, extension mise à
 part. Elle est ce que voient les visiteurs avant que la boucle démarre, et
 elle est le rendu complet de la tuile quand le JavaScript est désactivé.
 
-Un MP4 sans suffixe exploitable, ou sans image d'affiche, est ignoré. Le
-build le signale par un avertissement nommant le fichier, la tuile n'est
-jamais rendue à moitié.
+Une boucle sans image d'affiche s'affiche quand même, à sa bonne dimension,
+et le build le signale par un avertissement nommant le fichier. Mais sa
+tuile reste un aplat vide pour les visiteurs qui ont demandé la réduction
+des animations dans leur système : chez eux aucune boucle n'est jamais
+chargée, et l'image d'affiche est le seul contenu qu'ils verraient. C'est
+pour cette raison que la commande ci-dessous n'est pas facultative.
 
-### Encoder une boucle
+Un MP4 sans suffixe de ratio exploitable est le seul cas qui reste écarté du
+rendu. Sans ratio la tuile n'a pas de hauteur, et l'afficher casserait la
+rangée entière.
 
-Deux commandes, dans cet ordre.
+### Mettre les boucles en conformité
 
+Le flux réel est celui-ci. Le studio dépose ses exports bruts dans
+`content/fragments/`, sans se soucier du poids ni de l'image d'affiche. Une
+passe Claude Code les met en conformité. Le studio ne renseigne ensuite que
+les légendes.
+
+La commande de mise en conformité traite tout le dossier en une passe, elle
+fait l'encodage et l'extraction de l'image d'affiche pour chaque boucle.
+
+```bash
+cd content/fragments
+for f in *.mp4; do
+  ffmpeg -y -i "$f" -an \
+    -vf "scale=w=1280:h=1280:force_original_aspect_ratio=decrease:force_divisible_by=2" \
+    -c:v libx264 -profile:v high -pix_fmt yuv420p \
+    -crf 28 -preset slow -movflags +faststart -map_metadata -1 \
+    "tmp_$f" && mv "tmp_$f" "$f"
+  ffmpeg -y -i "$f" -frames:v 1 -q:v 3 "${f%.mp4}.jpg"
+done
 ```
-ffmpeg -i source.mov -an -vf "scale=1280:-2" -c:v libx264 -profile:v high \
-  -pix_fmt yuv420p -crf 28 -preset slow -movflags +faststart 0104_16x9.mp4
 
-ffmpeg -i 0104_16x9.mp4 -frames:v 1 -q:v 3 0104_16x9.jpg
-```
+Le plafond de 1280 porte sur le plus grand côté et non sur la largeur, pour
+qu'une boucle verticale ne finisse pas démesurément haute.
 
 `-an` supprime la piste audio. Les boucles sont muettes, le son ne serait
 jamais joué et pèserait pour rien.
@@ -206,9 +227,17 @@ jamais joué et pèserait pour rien.
 lecture progressive attend le téléchargement complet du MP4 avant de
 démarrer.
 
-La seconde commande extrait la première image du MP4 encodé. Prendre
-l'affiche dans le fichier final, et non dans le master, garantit qu'elle a
-exactement les dimensions et le cadrage de la boucle.
+`-map_metadata -1` retire les métadonnées de caméra et de montage.
+
+La seconde commande extrait la première image du MP4 encodé, et pas une
+image du milieu. C'est celle que le spectateur voit juste avant le démarrage
+de la boucle, elle doit raccorder. La prendre dans le fichier final, et non
+dans le master, garantit qu'elle a exactement les dimensions et le cadrage
+de la boucle.
+
+Viser 300 à 700 Ko par boucle. Au-delà de 1 Mo, c'est la durée qu'il faut
+regarder avant la qualité : une boucle de vingt secondes pèsera toujours
+plus qu'une boucle de quatre.
 
 ### Les légendes
 

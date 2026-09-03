@@ -19,17 +19,27 @@
 
   Une photo est un fichier image seul : `0102.jpg`.
   Une boucle est un couple : `0104_16x9.mp4` et son image d'affiche
-  `0104_16x9.jpg`. L'image d'affiche est obligatoire, elle porte a elle seule
-  le rendu sans JavaScript. Elle n'est jamais affichee comme photo : la
-  premiere passe releve les noms de base des MP4 pour l'ecarter.
+  `0104_16x9.jpg`. Elle n'est jamais affichee comme photo : la premiere
+  passe releve les noms de base des MP4 pour l'ecarter.
+
+  L'image d'affiche n'est pas exigee, mais elle est ce qui rend le mur
+  lisible quand le script ne s'execute pas, et en particulier sous
+  `prefers-reduced-motion: reduce`, ou aucune boucle n'est jamais chargee et
+  ou elle est le seul contenu visible de la tuile. Une boucle qui n'en a pas
+  est donc rendue normalement, avec son ratio, sa legende et son chargement
+  differe, mais sa tuile reste un aplat pour ces visiteurs. Le fichier est
+  signale au build, jamais escamote : un fichier depose par le studio ne
+  doit pas disparaitre en silence.
 
   LE SUFFIXE DE RATIO
   Il est obligatoire sur les MP4, et sur eux seuls : Hugo lit les dimensions
   d'une image, jamais celles d'une video. Le suffixe est lu en decoupant le
   nom de base sur le dernier `_`, puis le segment obtenu sur `x`. Sept
   formats sont acceptes, listes dans $formats ci-dessous.
-  Un MP4 sans suffixe exploitable, ou sans image d'affiche, est ignore et
-  signale par warnf. Jamais de tuile rendue a moitie, jamais de case vide.
+  Un MP4 sans suffixe exploitable est le seul cas qui reste ecartant, et il
+  l'est par necessite : sans ratio, la tuile n'a pas de hauteur, et la rendre
+  casserait la mise en page de toute la rangee. Il n'existe aucun repli, la
+  hauteur d'une video ne se devine pas.
 
   LE RATIO
   Pour une photo, la largeur divisee par la hauteur, lues sur le fichier.
@@ -143,11 +153,12 @@
     {{- end -}}
 
     {{- /* L'image d'affiche porte le nom de base du MP4. Son extension est
-           libre, c'est le seul point ou l'appariement se fait au joker. */ -}}
+           libre, c'est le seul point ou l'appariement se fait au joker.
+           Son absence n'ecarte pas le fichier : la tuile est rendue sans
+           attribut poster, sur un aplat de surface. */ -}}
     {{- $affiche := $page.Resources.GetMatch (printf "%s.{jpg,jpeg,png,webp}" $base) -}}
     {{- if not $affiche -}}
-      {{- warnf "mosaique : %s est ignore, son image d'affiche %s.jpg est absente du bundle." $nom $base -}}
-      {{- continue -}}
+      {{- warnf "mosaique : %s est rendu sans image d'affiche, %s.jpg est absente du bundle. Sa tuile restera un aplat vide pour les visiteurs en reduction de mouvement, qui ne chargent jamais la boucle." $nom $base -}}
     {{- end -}}
 
     {{- /* Les deux cotes sont des chaines : la conversion en entier est
@@ -235,16 +246,23 @@
         {{- with .annee }}{{ $meta = $meta | append (printf "%v" .) }}{{ end -}}
       {{- end }}
 
-    <figure class="fragment" style="{{ printf "--ratio: %s;" $ratio | safeCSS }}">
+      {{- $sansAffiche := and (eq .type "video") (not .affiche) }}
+    <figure class="fragment{{ if $sansAffiche }} fragment--sans-affiche{{ end }}" style="{{ printf "--ratio: %s;" $ratio | safeCSS }}">
       {{- if eq .type "video" -}}
         {{- /* Image d'affiche traitee par Hugo, jamais agrandie. La video,
-               elle, est servie telle quelle depuis le bundle. */ -}}
-        {{- $l := cond (gt .affiche.Width 1000) 1000 .affiche.Width -}}
-        {{- $poster := .affiche.Resize (printf "%dx webp q80" $l) -}}
+               elle, est servie telle quelle depuis le bundle. Sans affiche,
+               l'attribut poster n'est pas pose du tout : une adresse vide
+               ferait une requete inutile et un carre casse sur certains
+               navigateurs. */ -}}
+        {{- $poster := "" -}}
+        {{- with .affiche -}}
+          {{- $l := cond (gt .Width 1000) 1000 .Width -}}
+          {{- $poster = .Resize (printf "%dx webp q80" $l) -}}
+        {{- end -}}
         {{- $largeur := 1000 -}}
         {{- $hauteur := int (math.Round (div (mul $largeur 1.0) .ratio)) }}
       <video class="fragment-media fragment-video"
-             poster="{{ $poster.RelPermalink }}"
+             {{ with $poster }}poster="{{ .RelPermalink }}" {{ end -}}
              data-src="{{ .media.RelPermalink }}"
              width="{{ $largeur }}" height="{{ $hauteur }}"
              muted loop playsinline preload="none"

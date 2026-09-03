@@ -4,13 +4,6 @@ seo_titre: "Fragments, images et boucles prélevées dans nos travaux"
 description: "Un mur d'images fixes et de boucles muettes prélevées dans les films et les reportages de Captain Yvon Studio."
 layout: "fragments"
 
-# ATTENTION, JEU D'ESSAI
-# Les fichiers numérotés 0102 à 0126 présents dans ce dossier sont des mires
-# de recette, générées pour vérifier la grille sur la deploy preview. Elles
-# ne sont pas des images du studio. Les remplacer par les vrais fichiers
-# avant la mise en production, et mettre à jour les entrées `resources`
-# ci-dessous en conséquence.
-#
 # resources : légendes et textes alternatifs du mur. Le mécanisme est celui
 # des `alt` de la galerie d'une fiche projet.
 #   src    : le nom exact du fichier présent dans ce dossier.
@@ -23,89 +16,108 @@ layout: "fragments"
 #
 # Les fichiers sont affichés dans l'ordre de leurs noms, cette liste ne
 # décide de rien d'autre que des textes.
+#
+# Échafaudage : une entrée par fichier du dossier, dans l'ordre, champs
+# vides. Un champ laissé vide se comporte exactement comme un champ absent,
+# la page est donc juste en l'état. Remplir au fur et à mesure.
 resources:
-  - src: "0102.jpg"
-    title: "Mire de recette au format 3:2."
+  - src: "0102_16x9.mp4"
+    title: ""
     params:
-      projet: "Hiver à contre-courant"
-      client: "Brest Métropole"
-      annee: 2023
+      projet: ""
+      client: ""
+      annee: ""
 
   - src: "0104_16x9.mp4"
+    title: ""
     params:
-      projet: "Portrait de Léa Brassy"
-      client: "Attitude Manche"
-      annee: 2019
+      projet: ""
+      client: ""
+      annee: ""
 
-  - src: "0106.jpg"
-    title: "Mire de recette au format 2:3."
+  - src: "0106_9x16.mp4"
+    title: ""
     params:
-      projet: "Meneham"
-      client: "Captain Yvon Originals"
-      annee: 2024
+      projet: ""
+      client: ""
+      annee: ""
 
-  - src: "0108_9x16.mp4"
-    title: "Immersion"
+  - src: "0108.jpg"
+    title: ""
     params:
-      projet: "Immersion"
-      client: "Attitude Manche"
-      annee: 2020
+      projet: ""
+      client: ""
+      annee: ""
 
-  - src: "0110.jpg"
+  - src: "0110_9x16.mp4"
+    title: ""
     params:
-      projet: "Récolte d'algues dans les Abers"
-      client: "Bord à Bord"
-      annee: 2023
+      projet: ""
+      client: ""
+      annee: ""
 
-  - src: "0112_4x3.mp4"
-    title: "Mire de recette animée au format 4:3."
+  - src: "0112_16x9.mp4"
+    title: ""
     params:
-      projet: "Immersion"
-      client: "Decathlon"
+      projet: ""
+      client: ""
+      annee: ""
 
-  - src: "0114.jpg"
-    title: "Mire de recette au format carré."
+  - src: "0114_16x9.mp4"
+    title: ""
     params:
-      projet: "Togitaku"
-      client: "Togitaku"
-      annee: 2023
+      projet: ""
+      client: ""
+      annee: ""
 
   - src: "0116_16x9.mp4"
-    title: "Mire de recette animée au format 16:9."
+    title: ""
     params:
-      projet: "She's Out There"
-      client: "Captain Yvon Originals"
-      annee: 2021
+      projet: ""
+      client: ""
+      annee: ""
 
-  # 0118.jpg n'a volontairement aucune entrée : la tuile reste décorative,
-  # sans texte alternatif et sans légende. C'est le comportement attendu
-  # d'un fichier déposé sans métadonnées.
-
-  - src: "0120_3x4.mp4"
-    title: "Mire de recette animée au format 3:4."
+  - src: "0118_16x9.mp4"
+    title: ""
     params:
-      projet: "Le Capitaine"
-      client: "Le Capitaine"
-      annee: 2022
+      projet: ""
+      client: ""
+      annee: ""
 
-  # 0122.jpg porte un texte alternatif mais aucune métadonnée de contexte :
-  # l'image est décrite, aucune ligne de légende n'est rendue.
-  - src: "0122.jpg"
-    title: "Mire de recette au format 2:3."
+  - src: "0120_9x16.mp4"
+    title: ""
+    params:
+      projet: ""
+      client: ""
+      annee: ""
+
+  - src: "0122_16x9.mp4"
+    title: ""
+    params:
+      projet: ""
+      client: ""
+      annee: ""
 
   - src: "0124_16x9.mp4"
-    title: "Mire de recette animée au format 16:9."
+    title: ""
     params:
-      projet: "Vendée Globe"
-      client: "Éric Bellion"
-      annee: 2024
+      projet: ""
+      client: ""
+      annee: ""
 
-  - src: "0126_1x1.mp4"
-    title: "Mire de recette animée au format carré."
+  - src: "0126_16x9.mp4"
+    title: ""
     params:
-      projet: "Une adresse, la Manche"
-      client: "Département de la Manche"
-      annee: 2023
+      projet: ""
+      client: ""
+      annee: ""
+
+  - src: "0128_9x16.mp4"
+    title: ""
+    params:
+      projet: ""
+      client: ""
+      annee: ""
 
 draft: false
 ---

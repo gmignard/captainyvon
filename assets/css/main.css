@@ -1814,6 +1814,10 @@ html:has(.loupe:target) { overflow: hidden; }
      est en pixels parce qu'elle repond a une hauteur lisible a l'ecran, pas
      a une fraction de la fenetre. La seconde suit la fenetre : un visuel
      reste seul sur sa ligne bien plus souvent sur un ecran etroit. */
+  /* Aplat d'une tuile : fond tenu avant l'arrivee d'un media, et fond
+     definitif d'une boucle privee d'image d'affiche. Un seul jeton pour les
+     deux, rebascule plus bas avec le reste de la page. */
+  --mosaique-surface: var(--surface);
   --mosaique-hauteur-min: 200px;
   --mosaique-hauteur-max: clamp(320px, 34vw, 480px);
   --mosaique-marge-legende: clamp(0.5rem, 1.1vw, 0.9rem);
@@ -1884,7 +1888,19 @@ html:has(.loupe:target) { overflow: hidden; }
   border-radius: var(--rayon);
   /* Fond tenu avant l'arrivee du media : la place est deja reservee par
      `aspect-ratio`, rien ne se decale, mais la case ne reste pas blanche. */
-  background: var(--surface);
+  background: var(--mosaique-surface);
+}
+
+/* Boucle privee d'image d'affiche. La balise video reste transparente tant
+   qu'aucune image n'est decodee, et sous mouvement reduit aucune ne l'est
+   jamais : le script sort avant de poser la moindre source. L'aplat de la
+   tuile est alors le seul contenu visible, il est donc pose sur la balise
+   elle-meme et pas seulement sous elle. C'est un repli, pas un etat
+   souhaite : la commande de traitement par lot du guide produit l'image
+   d'affiche de chaque boucle, et le build signale chaque manquante. */
+.fragment--sans-affiche,
+.fragment--sans-affiche .fragment-media {
+  background: var(--mosaique-surface);
 }
 
 /* La tuile porte le ratio du media lui-meme : `cover` ne recadre donc rien,
@@ -2060,8 +2076,8 @@ body.page-fragments {
    sombre sur texte sombre. Le seul endroit qui avait besoin d'une surface
    sombre est le fond tenu par une tuile avant l'arrivee de son media, et il
    le demande ici, pour lui seul. */
-body.page-fragments .fragment {
-  background: color-mix(in srgb, var(--blanc-casse) 12%, var(--noir));
+body.page-fragments .mosaique {
+  --mosaique-surface: color-mix(in srgb, var(--blanc-casse) 12%, var(--noir));
 }
 
 /* Le logo du depot est un SVG noir a fill fixe, servi en <img> : la feuille
