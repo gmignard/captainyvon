@@ -35,6 +35,35 @@
     {{ partial "vignette.html" (dict "page" $projet "rang" $rang) }}
     {{- end }}
   </ul>
+
+  {{- /* Sortie de fin de grille : une phrase et un lien vers le mur des
+         fragments, sous la derniere rangee. Le bloc vient de la cle `suite`
+         de l'entete, chaque clef testee avant usage. Bloc absent, rien n'est
+         rendu. Texte absent, le lien seul. Libelle ou cible absent, le texte
+         seul : jamais de lien orphelin, jamais de lien sans cible.
+         Le bloc ne vit que dans cette branche : une grille vide n'a pas de
+         fin de grille a annoncer.
+         Le lien est la pilule du theme, appelee par son partial et reprise
+         telle quelle. */ -}}
+  {{- with $.Params.suite }}
+    {{- $texte := "" -}}
+    {{- with .texte }}{{ $texte = printf "%v" . }}{{ end -}}
+    {{- $libelle := "" -}}
+    {{- with .libelle }}{{ $libelle = printf "%v" . }}{{ end -}}
+    {{- $href := "" -}}
+    {{- with .href }}{{ $href = printf "%v" . }}{{ end -}}
+    {{- $lien := and (ne $libelle "") (ne $href "") -}}
+    {{- if or (ne $texte "") $lien }}
+  <div class="accueil-suite">
+    {{- with $texte }}
+    <p class="accueil-suite-texte">{{ . }}</p>
+    {{- end }}
+    {{- if $lien }}
+    {{ partial "pilule.html" (dict "href" ($href | relURL) "libelle" $libelle) }}
+    {{- end }}
+  </div>
+    {{- end }}
+  {{- end }}
   {{- else }}
   <p>Aucun projet publié pour le moment.</p>
   {{- end }}

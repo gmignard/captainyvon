@@ -50,6 +50,11 @@ descend rien.
 
 Le champ est décrit dans `archetypes/projet.md`, comme tous les autres.
 
+Sous la dernière rangée de la grille, une phrase et un bouton renvoient
+vers les fragments. Ils viennent du bloc `suite` de l'entête de
+`content/_index.md`. Retirer ce bloc retire la phrase et le bouton, sans
+toucher à aucun gabarit.
+
 ## Conventions de fichiers
 
 Les images d'un projet, dans `content/work/<projet>/`, sont numérotées sur

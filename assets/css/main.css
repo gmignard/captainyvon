@@ -534,6 +534,37 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
   color: var(--couleur-texte-secondaire);
 }
 
+/* Sortie de fin de grille : une phrase et un lien, poses sous la derniere
+   rangee de vignettes. Ils disent que l'accueil est une selection et
+   renvoient vers le mur des fragments.
+
+   Le lien est la pilule du theme, appelee par son partial et reprise telle
+   quelle : aucune regle ici ne la touche, et il n'existe pas de
+   modificateur. Une seule definition de la pilule dans toute la feuille.
+
+   Ni filet, ni aplat, ni encadre : c'est l'espace au-dessus, de l'ordre de
+   la respiration d'entete, qui detache le bloc de la grille et le fait lire
+   comme une fin de page plutot que comme une vignette de plus.
+
+   Le bloc est cale a gauche, sur le bord de la grille et sur la gouttiere du
+   site, a toute largeur. Le texte garde le corps courant, il ne cherche pas
+   a peser plus que la ligne de metadonnees d'une vignette. */
+.accueil-suite {
+  margin-top: var(--entete-espace-bas);
+}
+
+.accueil-suite-texte {
+  margin: 0 0 calc(var(--pas) * 1.5);
+  max-width: var(--mesure-appoint);
+  color: var(--couleur-texte-secondaire);
+}
+
+/* En une colonne, la phrase prend toute la largeur : la mesure d'appoint
+   n'a plus rien a menager a sa droite. */
+@media (max-width: 700px) {
+  .accueil-suite-texte { max-width: none; }
+}
+
 /* -------------------------------------------------------------------------
    PAGE PROJET
    Aucune largeur maximale ici : la page projet vit dans le conteneur du
