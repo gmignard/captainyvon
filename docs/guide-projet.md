@@ -269,8 +269,10 @@ affiche toutes les légendes d'un coup.
 ### La densité du mur
 
 Le mur est une grille justifiée. Le gabarit accumule les proportions des
-visuels et ferme une rangée dès que leur somme atteint un seuil, réglé par
-`params.fragments.densite` dans `hugo.toml`, à 4.5 par défaut.
+visuels et ferme une rangée quand leur somme approche un seuil, réglé par
+`params.fragments.densite` dans `hugo.toml`, à 4.5 par défaut. Devant chaque
+visuel il compare deux possibilités, fermer avant lui ou le faire entrer, et
+retient celle qui tombe le plus près du seuil.
 
 Monter la valeur met plus de visuels par rangée, donc des rangées plus
 basses. La descendre fait l'inverse. Rien d'autre n'est à toucher, aucune

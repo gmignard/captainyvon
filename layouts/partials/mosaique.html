@@ -192,18 +192,28 @@
 {{- end -}}
 
 {{- /* Regroupement en rangees. La somme des ratios d'une rangee gouverne sa
-       hauteur : plus elle est haute, plus les tuiles sont basses. */ -}}
+       hauteur : plus elle est haute, plus les tuiles sont basses.
+
+       Devant chaque tuile, on compare deux bornes : fermer la rangee avant
+       elle, ou l'y faire entrer. On garde celle dont la somme tombe le plus
+       pres du seuil.
+
+       Fermer des que le seuil est atteint, plus simple, depassait largement
+       sur un lot homogene : quatre visuels en 16:9 et 9:16 donnaient une
+       somme de 5.9 pour un seuil de 4.5, soit des rangees d'un tiers plus
+       basses que le reglage ne le demande. La comparaison des deux bornes
+       fait tomber ce depassement de 1.4 a 0.8 au pire. */ -}}
 {{- $rangees := slice -}}
 {{- $courante := slice -}}
 {{- $somme := 0.0 -}}
 {{- range $tuiles -}}
-  {{- $courante = $courante | append . -}}
-  {{- $somme = add $somme .ratio -}}
-  {{- if ge $somme $seuil -}}
+  {{- if and $courante (le (math.Abs (sub $somme $seuil)) (math.Abs (sub (add $somme .ratio) $seuil))) -}}
     {{- $rangees = $rangees | append (dict "tuiles" $courante "somme" $somme) -}}
     {{- $courante = slice -}}
     {{- $somme = 0.0 -}}
   {{- end -}}
+  {{- $courante = $courante | append . -}}
+  {{- $somme = add $somme .ratio -}}
 {{- end -}}
 {{- with $courante -}}
   {{- $rangees = $rangees | append (dict "tuiles" . "somme" $somme) -}}
