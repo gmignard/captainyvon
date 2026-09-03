@@ -242,10 +242,18 @@ Monter la valeur met plus de visuels par rangée, donc des rangées plus
 basses. La descendre fait l'inverse. Rien d'autre n'est à toucher, aucune
 hauteur n'est écrite nulle part.
 
+Ce réglage gouverne les grands écrans, au-delà de 1300 pixels de large. En
+dessous, une rangée de quatre visuels deviendrait trop basse pour se lire,
+et le mur se recompose alors tout seul, ligne par ligne, en mettant sur
+chaque ligne ce qui y tient à une hauteur correcte. Il n'y a rien à régler
+pour ça. Sous 700 pixels, un visuel par ligne, pleine largeur.
+
 Une remarque de mise en page. La dernière rangée est presque toujours
-incomplète, c'est normal et prévu. Quand elle est vraiment maigre, ses
-visuels gardent une hauteur fixe et se calent à gauche plutôt que de
+incomplète, c'est normal et prévu. Elle se cale à gauche plutôt que de
 s'étirer sur toute la largeur.
+
+Dans tous les cas, un visuel garde sa proportion d'origine. Rien n'est
+jamais recadré, ni étiré.
 
 ## Déployer
 

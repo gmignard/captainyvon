@@ -45,9 +45,15 @@
   4.5 par defaut. La mise en page est faite par le flex : chaque tuile porte
   `flex: var(--ratio) 0 0`, donc une largeur proportionnelle a son ratio, et
   `aspect-ratio: var(--ratio)` en deduit la hauteur. Toutes les tuiles d'une
-  rangee tombent alors sur la meme hauteur, a toutes les largeurs de
-  viewport, sans une seule media query de largeur et sans recadrage : chaque
-  visuel garde sa proportion d'origine.
+  rangee tombent alors sur la meme hauteur, sans recadrage : chaque visuel
+  garde sa proportion d'origine.
+
+  Ce groupement gouverne les grandes largeurs. En dessous, une rangee de
+  quatre deviendrait trop basse pour se lire, et la feuille de style efface
+  les rangees pour laisser le conteneur recomposer le mur ligne par ligne.
+  Les rangees construites ici sont donc un groupement maximal, pas un
+  groupement fige. Le detail est dans la feuille de style, c'est elle qui
+  porte cette bascule.
 
   DERNIERE RANGEE
   Si la somme de ses ratios reste sous 70 pour cent du seuil, elle recoit une
@@ -207,6 +213,11 @@
     <a class="mosaique-bascule mosaique-bascule--masquer" href="#fragments-titre">Masquer les légendes</a>
   </p>
 
+  {{- /* Le conteneur des rangees existe pour la bande intermediaire : la
+         feuille de style y efface les rangees et le laisse recomposer le
+         mur ligne par ligne. Au-dela, il est transparent et ce sont les
+         rangees construites ici qui gouvernent. */}}
+  <div class="mosaique-grille">
   {{- range $rang, $rangee := . }}
     {{- $courte := and (eq $rang (sub (len $rangees) 1)) (lt $rangee.somme $plancher) }}
   <div class="mosaique-rangee{{ if $courte }} mosaique-rangee--courte{{ end }}">
@@ -285,6 +296,7 @@
     {{- end }}
   </div>
   {{- end }}
+  </div>
 
 </section>
 

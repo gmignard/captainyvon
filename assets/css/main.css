@@ -1777,6 +1777,14 @@ html:has(.loupe:target) { overflow: hidden; }
      gouttiere, elle, est celle du site. */
   --mosaique-gap: var(--grille-gap);
   --mosaique-hauteur-courte: clamp(180px, 20vw, 300px);
+  /* Hauteur en dessous de laquelle le mur se recompose plutot que de tasser
+     ses visuels, et hauteur au-dela de laquelle une ligne incomplete cesse
+     de grandir. La premiere est le vrai reglage de lisibilite du mur, elle
+     est en pixels parce qu'elle repond a une hauteur lisible a l'ecran, pas
+     a une fraction de la fenetre. La seconde suit la fenetre : un visuel
+     reste seul sur sa ligne bien plus souvent sur un ecran etroit. */
+  --mosaique-hauteur-min: 200px;
+  --mosaique-hauteur-max: clamp(320px, 34vw, 480px);
   --mosaique-marge-legende: clamp(0.5rem, 1.1vw, 0.9rem);
 
   margin-block: clamp(2rem, 5vw, 3.5rem) 0;
@@ -1811,6 +1819,9 @@ html:has(.loupe:target) { overflow: hidden; }
 #fragments-mur:target .mosaique-bascule--afficher { display: none; }
 #fragments-mur:target .mosaique-bascule--masquer { display: inline; }
 
+/* Une rangee tient sur une seule ligne : la base des tuiles est nulle, elles
+   ne peuvent donc pas deborder et le groupement decide par le gabarit est
+   celui qui s'affiche. C'est le regime des grandes largeurs. */
 .mosaique-rangee {
   display: flex;
   gap: var(--mosaique-gap);
@@ -1818,6 +1829,8 @@ html:has(.loupe:target) { overflow: hidden; }
 }
 
 .mosaique-rangee:last-child { margin-bottom: 0; }
+
+
 
 /* Derniere rangee trop maigre pour etre justifiee : ses tuiles prennent une
    hauteur fixe, leur largeur est deduite par `aspect-ratio`, et la rangee se
@@ -1827,6 +1840,7 @@ html:has(.loupe:target) { overflow: hidden; }
 .mosaique-rangee--courte .fragment {
   flex: 0 0 auto;
   width: auto;
+  max-width: none;
   height: var(--mosaique-hauteur-courte);
 }
 
@@ -1920,6 +1934,52 @@ html:has(.loupe:target) { overflow: hidden; }
   .fragment-legende { transition: none; }
 }
 
+/* Bande intermediaire : entre la colonne unique et la largeur ou les
+   rangees construites tiennent encore.
+
+   Au-dela de 1300px, une rangee construite garde une hauteur lisible et
+   c'est le reglage de densite qui gouverne, comme prevu. En dessous, elle
+   ne tient plus : a 800px de fenetre, quatre visuels tombaient a 123px de
+   haut et la portrait 9:16 a 69px de large. Le rapport etait juste, le mur
+   ne se lisait plus.
+
+   La rangee s'efface alors, en `display: contents`, et ses tuiles remontent
+   dans le conteneur, qui les repartit lui-meme. Le mur se recompose ligne
+   par ligne sur toute sa longueur : une tuile qui ne rentre plus est suivie
+   de la suivante, il n'y a jamais de solitaire au milieu du mur.
+
+   Base et croissance sont ici toutes deux proportionnelles au ratio. La
+   largeur finale d'une tuile vaut base + part de l'espace libre, soit
+   ratio x (hauteur-min + reste), donc toujours un multiple de son ratio :
+   chaque ligne reste justifiee et ses tuiles a la meme hauteur, quel que
+   soit le nombre qui y tient.
+
+   Le plafond retient la derniere ligne, forcement incomplete, qui sans lui
+   s'etirerait sur toute la largeur. Il est lui aussi proportionnel au
+   ratio : toutes les tuiles d'une ligne l'atteignent a la meme hauteur, les
+   proportions tiennent donc jusque dans ce cas.
+
+   La derniere rangee reprend le regime commun : sa hauteur fixe n'a plus de
+   sens une fois les rangees effacees, elle melangerait deux hauteurs sur une
+   meme ligne. */
+@media (min-width: 701px) and (max-width: 1300px) {
+  .mosaique-grille {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mosaique-gap);
+  }
+
+  .mosaique-rangee { display: contents; }
+
+  .mosaique-rangee .fragment,
+  .mosaique-rangee--courte .fragment {
+    flex: var(--ratio) 1 calc(var(--ratio) * var(--mosaique-hauteur-min));
+    max-width: calc(var(--ratio) * var(--mosaique-hauteur-max));
+    width: auto;
+    height: auto;
+  }
+}
+
 /* Sous 700px, une tuile par rangee, pleine largeur, ratio conserve. La
    regle vaut aussi pour la derniere rangee : sa hauteur fixe n'a plus de
    sens sur une colonne unique. */
@@ -1930,6 +1990,53 @@ html:has(.loupe:target) { overflow: hidden; }
   .mosaique-rangee--courte .fragment {
     flex: 0 0 auto;
     width: 100%;
+    max-width: none;
     height: auto;
   }
+}
+
+/* -------------------------------------------------------------------------
+   FRAGMENTS — bascule sombre, page entiere
+   Cette page seule passe sur le fond du pied, en rupture avec l'ivoire du
+   reste du site : le mur y gagne, les visuels ne sont plus poses sur un
+   fond plus clair qu'eux.
+
+   La bascule ne reecrit aucune regle. Elle redefinit les roles de couleur
+   sur le corps de la page, et toute la feuille suit : l'entete, le titre,
+   le texte, la bascule des legendes, le fond tenu par une tuile avant
+   l'arrivee de son media. Les couleurs elles-memes ne bougent pas, ce sont
+   les memes jetons de la charte, redistribues.
+
+   La classe vient du `layout` de l'entete, posee par baseof.html : aucune
+   autre page ne peut recevoir ces regles.
+
+   Le pied etait deja sur ce fond. Il rejoint donc la page sans couture, la
+   ou il tranchait auparavant.
+   ------------------------------------------------------------------------- */
+body.page-fragments {
+  --fond: var(--noir);
+  --texte: var(--blanc-casse);
+  /* Le gris clair passe le seuil sur le fond sombre, la ou le gris fonce du
+     texte secondaire, calibre pour l'ivoire, tomberait a 2.6:1. */
+  --couleur-texte-secondaire: var(--gris);
+}
+
+/* --surface et --trait ne sont volontairement pas rebascules. Les deux
+   servent au pied de page, qui vit deja sur ce fond sombre et les attend
+   dans leurs valeurs de charte : --surface y porte la pilule claire du
+   bouton d'ecriture, --trait les filets. Les redefinir sur le corps de la
+   page les aurait suivis jusque-la et rendu la pilule invisible, fond
+   sombre sur texte sombre. Le seul endroit qui avait besoin d'une surface
+   sombre est le fond tenu par une tuile avant l'arrivee de son media, et il
+   le demande ici, pour lui seul. */
+body.page-fragments .fragment {
+  background: color-mix(in srgb, var(--blanc-casse) 12%, var(--noir));
+}
+
+/* Le logo du depot est un SVG noir a fill fixe, servi en <img> : la feuille
+   ne peut pas atteindre son trace. L'inversion le rend clair sans ajouter
+   un second fichier a tenir en phase avec le premier. Le pied, lui, a deja
+   son repli texte. */
+body.page-fragments .entete-logo img {
+  filter: invert(1);
 }
