@@ -32,13 +32,10 @@
   Un projet sans couverture n'est pas rendu : l'appelant l'a deja ecarte,
   cette garde evite toute case vide si le partial est appele ailleurs.
 
-  `mise_en_avant` est conserve dans le schema mais n'a aucun effet ici :
-  l'ordre de la grille vient uniquement du tri par date de l'appelant.
-
-  Le champ `accueil` n'a lui non plus aucun effet ici : le filtrage est fait
-  par l'appelant, qui ecarte le projet avant d'appeler ce partial. Une
-  vignette rendue est une vignette a afficher, ce partial n'en sait pas
-  davantage.
+  Le champ `accueil` n'a aucun effet ici : le filtrage est fait par
+  l'appelant, qui ecarte le projet avant d'appeler ce partial. Une vignette
+  rendue est une vignette a afficher, ce partial n'en sait pas davantage.
+  L'ordre de la grille vient lui aussi de l'appelant, du seul tri par date.
 */ -}}
 {{- $page := .page -}}
 {{- $rang := .rang | default 0 -}}

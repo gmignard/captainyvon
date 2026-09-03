@@ -111,9 +111,6 @@ video:
 # affiches, sinon la derniere rangee reste a moitie vide.
 # accueil: true
 
-# mise_en_avant : réservé, sans effet sur l'ordre de la grille.
-mise_en_avant: false
-
 draft: true
 ---
 

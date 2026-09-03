@@ -39,7 +39,6 @@ distinctions:
   - nom: "Rencontres du E-Tourisme"
     mention: "Prix du jury"
     annee: 2023
-mise_en_avant: false
 draft: false
 ---
 
