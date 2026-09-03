@@ -9,7 +9,7 @@ description: "Films documentaires et reportages photo pour les marques et les te
 # page, sans toucher aux gabarits. Sans `texte`, le lien seul. Sans
 # `libelle` ou sans `href`, le texte seul : jamais de lien orphelin.
 suite:
-  texte: "Cette page est une sélection. Le reste de nos images vit ailleurs."
+  texte: "Cette page est une sélection de projets récents. Plus d'images sont à voir ailleurs."
   libelle: "Voir les fragments"
   href: "/fragments/"
 ---
