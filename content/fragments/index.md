@@ -24,37 +24,37 @@ resources:
   - src: "0102_16x9.mp4"
     title: ""
     params:
-      projet: ""
-      client: ""
-      annee: ""
+      projet: "Portrait de Léa Brassy"
+      client: "Attitude Manche"
+      annee: "2019"
 
   - src: "0104_16x9.mp4"
     title: ""
     params:
-      projet: ""
-      client: ""
-      annee: ""
+      projet: "Reportage Mytiliculture"
+      client: "Mytilimer"
+      annee: "2024"
 
   - src: "0106_9x16.mp4"
     title: ""
     params:
-      projet: ""
-      client: ""
-      annee: ""
+      projet: "Immersion"
+      client: "Attitude Manche"
+      annee: "2020"
 
   - src: "0108.jpg"
     title: ""
     params:
-      projet: ""
-      client: ""
-      annee: ""
+      projet: "Reportage - Récolte d'algues"
+      client: "Bord à Bord"
+      annee: "2023"
 
   - src: "0110_9x16.mp4"
     title: ""
     params:
-      projet: ""
-      client: ""
-      annee: ""
+      projet: "Ahoy"
+      client: "Eric Bellion"
+      annee: "2025"
 
   - src: "0112_16x9.mp4"
     title: ""
