@@ -112,6 +112,6 @@ draft: false
 ---
 
 Des images et des boucles prélevées dans nos films et nos reportages. Des
-plans qui n'ont pas trouvé leur place au montage, des cadres retenus en
-repérage, des gestes vus de près. Rien ici ne renvoie vers une fiche
+cadres retenus en repérage, des gestes vus de près ou des plans qui n'ont
+pas trouvé leur place au montage. Rien ici ne renvoie vers une fiche
 projet : ce sont des fragments, on les regarde pour eux-mêmes.
