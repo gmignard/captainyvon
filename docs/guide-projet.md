@@ -126,6 +126,127 @@ large au plus et 300 Ko par fichier au plus.
 Le lot `bts_meneham_*` sort de cette règle et reste à retraiter. Ce n'est
 pas fait ici.
 
+## La page Fragments
+
+La page `/fragments/` est le bundle `content/fragments/`. C'est un mur de
+visuels prélevés dans nos travaux, photos et boucles vidéo muettes mêlées.
+Rien n'y est cliquable et rien ne renvoie vers une fiche projet.
+
+Déposer les fichiers à la racine de `content/fragments/`. Il n'y a aucune
+liste à tenir dans l'entête pour l'affichage. Déposer un fichier suffit à le
+publier, et l'ordre du mur est celui des noms de fichiers.
+
+Le squelette de l'entête vit dans `archetypes/fragments.md`, comme celui
+d'un projet vit dans `archetypes/projet.md`. La page existe déjà, il n'y a
+donc rien à générer, mais c'est là que le détail des champs est décrit.
+
+### La numérotation
+
+Quatre chiffres, avec un pas de 2.
+
+```
+0102.jpg
+0104_16x9.mp4
+0106.jpg
+```
+
+Le pas de 2 laisse une place libre entre deux visuels. Insérer une image
+entre `0104` et `0106` se fait en la nommant `0105`, sans renommer tout le
+dossier derrière elle.
+
+### Une photo
+
+Un fichier image seul, `0102.jpg`. Rien d'autre à faire. Hugo lit ses
+dimensions et en déduit sa place dans la grille.
+
+### Une boucle vidéo
+
+Deux fichiers obligatoires, et ils vont toujours par paire.
+
+```
+0104_16x9.mp4     la boucle
+0104_16x9.jpg     son image d'affiche
+```
+
+Le suffixe de ratio est obligatoire sur le MP4, et sur lui seul. Hugo sait
+lire les dimensions d'une image, jamais celles d'une vidéo. Sans ce suffixe
+la tuile n'aurait pas de hauteur avant l'arrivée du fichier, et la page se
+décalerait au chargement. Sept valeurs sont acceptées.
+
+`16x9`, `9x16`, `4x3`, `3x4`, `3x2`, `2x3`, `1x1`
+
+L'image d'affiche porte exactement le même nom que le MP4, extension mise à
+part. Elle est ce que voient les visiteurs avant que la boucle démarre, et
+elle est le rendu complet de la tuile quand le JavaScript est désactivé.
+
+Un MP4 sans suffixe exploitable, ou sans image d'affiche, est ignoré. Le
+build le signale par un avertissement nommant le fichier, la tuile n'est
+jamais rendue à moitié.
+
+### Encoder une boucle
+
+Deux commandes, dans cet ordre.
+
+```
+ffmpeg -i source.mov -an -vf "scale=1280:-2" -c:v libx264 -profile:v high \
+  -pix_fmt yuv420p -crf 28 -preset slow -movflags +faststart 0104_16x9.mp4
+
+ffmpeg -i 0104_16x9.mp4 -frames:v 1 -q:v 3 0104_16x9.jpg
+```
+
+`-an` supprime la piste audio. Les boucles sont muettes, le son ne serait
+jamais joué et pèserait pour rien.
+
+`-movflags +faststart` place les métadonnées en tête du fichier. Sans lui, la
+lecture progressive attend le téléchargement complet du MP4 avant de
+démarrer.
+
+La seconde commande extrait la première image du MP4 encodé. Prendre
+l'affiche dans le fichier final, et non dans le master, garantit qu'elle a
+exactement les dimensions et le cadrage de la boucle.
+
+### Les légendes
+
+Elles sont saisies dans l'entête de `content/fragments/index.md`, sous la
+clé `resources`. C'est le même mécanisme que les textes alternatifs de la
+galerie d'une fiche projet.
+
+```yaml
+resources:
+  - src: "0104_16x9.mp4"
+    title: "Ponçage d'une planche de surf dans un atelier."
+    params:
+      projet: "Tides of Time"
+      client: "Captain Yvon Originals"
+      annee: 2025
+```
+
+`title` est le texte alternatif d'une photo, ou le nom accessible d'une
+boucle. `projet`, `client` et `annee` forment la légende affichée au survol,
+en deux lignes. Un champ absent ne laisse ni virgule ni point médian
+orphelin, et une entrée sans aucun des trois ne produit aucune légende.
+
+Un fichier sans entrée reste affiché. Il est simplement traité comme
+décoratif, sans texte alternatif et sans légende.
+
+Sur un écran tactile, où le survol n'existe pas, un lien en tête de mur
+affiche toutes les légendes d'un coup.
+
+### La densité du mur
+
+Le mur est une grille justifiée. Le gabarit accumule les proportions des
+visuels et ferme une rangée dès que leur somme atteint un seuil, réglé par
+`params.fragments.densite` dans `hugo.toml`, à 4.5 par défaut.
+
+Monter la valeur met plus de visuels par rangée, donc des rangées plus
+basses. La descendre fait l'inverse. Rien d'autre n'est à toucher, aucune
+hauteur n'est écrite nulle part.
+
+Une remarque de mise en page. La dernière rangée est presque toujours
+incomplète, c'est normal et prévu. Quand elle est vraiment maigre, ses
+visuels gardent une hauteur fixe et se calent à gauche plutôt que de
+s'étirer sur toute la largeur.
+
 ## Déployer
 
 Une branche par chantier, une pull request, une validation visuelle sur la
