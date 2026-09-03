@@ -21,6 +21,35 @@ Les champs de l'entête et leur usage sont documentés dans l'archétype, qui
 est le fichier que la commande vient de générer. Il n'y a rien à chercher
 ailleurs.
 
+## Retirer un projet de la grille d'accueil
+
+La grille d'accueil est une sélection, pas l'archive complète. Le champ
+`accueil` de l'entête décide de la présence d'un projet dans cette grille.
+
+```yaml
+accueil: false
+```
+
+Sans ce champ, le projet est affiché. C'est le comportement par défaut, et
+rien n'est à ajouter dans l'entête d'un projet qui doit rester sur
+l'accueil.
+
+Avec `accueil: false`, le projet sort de la grille sans être dépublié. Sa
+page reste construite, son adresse ne change pas, elle reste accessible par
+lien direct, depuis un partage ou depuis le sitemap. C'est bien un retrait
+de la vitrine, pas une suppression. Pour dépublier vraiment un projet, c'est
+`draft: true` qu'il faut poser, ce qui est une autre décision.
+
+La grille se lit sur deux colonnes. Viser un nombre pair de projets
+affichés, sinon la dernière rangée reste à moitié vide. Retirer un projet en
+appelle donc un second, ou un retour à seize.
+
+L'ordre de la grille ne change pas : il reste le tri par `date`, du plus
+récent au plus ancien. `accueil` ne fait que retirer, il ne remonte ni ne
+descend rien.
+
+Le champ est décrit dans `archetypes/projet.md`, comme tous les autres.
+
 ## Conventions de fichiers
 
 Les images d'un projet, dans `content/work/<projet>/`, sont numérotées sur
