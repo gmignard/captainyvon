@@ -52,11 +52,10 @@ resources:
       annee: 2020
 
   - src: "0110.jpg"
-    title: "Mire de recette au format 3:2."
     params:
-      projet: "Mytilimer"
-      client: "Mytilimer Production"
-      annee: 2024
+      projet: "Récolte d'algues dans les Abers"
+      client: "Bord à Bord"
+      annee: 2023
 
   - src: "0112_4x3.mp4"
     title: "Mire de recette animée au format 4:3."
