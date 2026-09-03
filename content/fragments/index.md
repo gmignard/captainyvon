@@ -32,11 +32,10 @@ resources:
       annee: 2023
 
   - src: "0104_16x9.mp4"
-    title: "Mire de recette animée au format 16:9."
     params:
-      projet: "Tides of Time"
-      client: "Captain Yvon Originals"
-      annee: 2025
+      projet: "Portrait de Léa Brassy"
+      client: "Attitude Manche"
+      annee: 2019
 
   - src: "0106.jpg"
     title: "Mire de recette au format 2:3."
@@ -46,10 +45,11 @@ resources:
       annee: 2024
 
   - src: "0108_9x16.mp4"
-    title: "Mire de recette animée au format 9:16."
+    title: "Immersion"
     params:
-      projet: "Léa Brassy"
-      annee: 2022
+      projet: "Immersion"
+      client: "Attitude Manche"
+      annee: 2020
 
   - src: "0110.jpg"
     title: "Mire de recette au format 3:2."
