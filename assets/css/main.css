@@ -1974,11 +1974,21 @@ html:has(.loupe:target) { overflow: hidden; }
 /* La tuile porte le ratio du media lui-meme : `cover` ne recadre donc rien,
    il absorbe le pixel d'arrondi. Il ne mordrait que sur un MP4 dont le
    suffixe de nom annonce un autre rapport que son encodage, cas ou un
-   recadrage discret vaut mieux que deux bandes de fond. */
+   recadrage discret vaut mieux que deux bandes de fond.
+
+   aspect-ratio est repete ici, en plus de la tuile qui le porte deja, en
+   defense contre un bug connu de WebKit : Safari met en cache la taille
+   calculee d'un item flex portant aspect-ratio au moment ou le media n'a
+   pas encore ses dimensions decodees, et ne l'invalide pas de facon fiable
+   au redimensionnement, un rechargement complet restant seul a corriger
+   l'affichage. Poser le meme ratio sur le media que sur la tuile qui le
+   contient est la parade documentee. Non verifiee faute de Safari
+   disponible ici, a confirmer sur la prochaine preview. */
 .fragment-media {
   display: block;
   width: 100%;
   height: 100%;
+  aspect-ratio: var(--ratio);
   object-fit: cover;
 }
 
