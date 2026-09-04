@@ -102,9 +102,6 @@ video:
 #   - nom: "Rencontres de la Photographie"
 #     annee: 2024
 
-# mise_en_avant : réservé, sans effet sur l'ordre de la grille.
-mise_en_avant: false
-
 draft: true
 ---
 

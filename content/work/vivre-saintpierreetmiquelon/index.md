@@ -34,6 +34,5 @@ video:
   plateforme: "youtube"
   id: "QBtNp4RaeRU"
   ratio: ""
-mise_en_avant: false
 draft: false
 ---

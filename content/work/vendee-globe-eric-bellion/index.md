@@ -40,6 +40,5 @@ video:
   plateforme: "youtube"
   id: "rPgaEjIt_KA"
   ratio: ""
-mise_en_avant: false
 draft: false
 ---

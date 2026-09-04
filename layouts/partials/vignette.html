@@ -32,8 +32,9 @@
   Un projet sans couverture n'est pas rendu : l'appelant l'a deja ecarte,
   cette garde evite toute case vide si le partial est appele ailleurs.
 
-  `mise_en_avant` est conserve dans le schema mais n'a aucun effet ici :
-  l'ordre de la grille vient uniquement du tri par date de l'appelant.
+  La selection et l'ordre de la grille sont entierement decides par
+  l'appelant, du seul tri par date : ce partial ne fait que rendre la
+  vignette qu'on lui passe.
 */ -}}
 {{- $page := .page -}}
 {{- $rang := .rang | default 0 -}}

@@ -57,6 +57,5 @@ resources:
     title: "Un moniteur de caméra affiche le cadrage d’une personne en ciré jaune, homme flou au premier plan."
   - src: "mytilimer_24.webp"
     title: "Un homme casquette et lunettes lève les yeux vers le ciel, bouées d’un parc à moules floues sur la mer derrière lui."
-mise_en_avant: false
 draft: false
 ---

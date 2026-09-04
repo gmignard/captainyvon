@@ -97,6 +97,173 @@ large au plus et 300 Ko par fichier au plus.
 Le lot `bts_meneham_*` sort de cette règle et reste à retraiter. Ce n'est
 pas fait ici.
 
+## Le mur de fragments sur l'accueil
+
+Le mur qui ouvre le site, avant même la grille des projets, est fait de
+visuels prélevés dans nos travaux, photos et boucles vidéo muettes mêlées.
+Rien n'y est cliquable et rien ne renvoie vers une fiche projet.
+
+Le bundle `content/fragments/` n'est plus une page, il n'a plus d'adresse
+propre. C'est un magasin : `layouts/index.html` va y chercher les médias et
+leurs légendes pour construire le mur de l'accueil. Déposer un fichier
+suffit à le publier sur l'accueil, il n'y a aucune liste à tenir ailleurs
+pour l'affichage, et l'ordre du mur est celui des noms de fichiers.
+
+### La numérotation
+
+Quatre chiffres, avec un pas de 2.
+
+```
+0102.jpg
+0104_16x9.mp4
+0106.jpg
+```
+
+Le pas de 2 laisse une place libre entre deux visuels. Insérer une image
+entre `0104` et `0106` se fait en la nommant `0105`, sans renommer tout le
+dossier derrière elle.
+
+### Une photo
+
+Un fichier image seul, `0102.jpg`. Rien d'autre à faire. Hugo lit ses
+dimensions et en déduit sa place dans la grille.
+
+### Une boucle vidéo
+
+Deux fichiers obligatoires, et ils vont toujours par paire.
+
+```
+0104_16x9.mp4     la boucle
+0104_16x9.jpg     son image d'affiche
+```
+
+Le suffixe de ratio est obligatoire sur le MP4, et sur lui seul. Hugo sait
+lire les dimensions d'une image, jamais celles d'une vidéo. Sans ce suffixe
+la tuile n'aurait pas de hauteur avant l'arrivée du fichier, et la page se
+décalerait au chargement. Sept valeurs sont acceptées.
+
+`16x9`, `9x16`, `4x3`, `3x4`, `3x2`, `2x3`, `1x1`
+
+L'image d'affiche porte exactement le même nom que le MP4, extension mise à
+part. Elle est ce que voient les visiteurs avant que la boucle démarre, et
+elle est le rendu complet de la tuile quand le JavaScript est désactivé.
+
+Une boucle sans image d'affiche s'affiche quand même, à sa bonne dimension,
+et le build le signale par un avertissement nommant le fichier. Mais sa
+tuile reste un aplat vide pour les visiteurs qui ont demandé la réduction
+des animations dans leur système : chez eux aucune boucle n'est jamais
+chargée, et l'image d'affiche est le seul contenu qu'ils verraient. C'est
+pour cette raison que la commande ci-dessous n'est pas facultative.
+
+Un MP4 sans suffixe de ratio exploitable est le seul cas qui reste écarté du
+rendu. Sans ratio la tuile n'a pas de hauteur, et l'afficher casserait la
+rangée entière.
+
+### Mettre les boucles en conformité
+
+Le flux réel est celui-ci. Le studio dépose ses exports bruts dans
+`content/fragments/`, sans se soucier du poids ni de l'image d'affiche. Une
+passe Claude Code les met en conformité. Le studio ne renseigne ensuite que
+les légendes.
+
+La commande de mise en conformité traite tout le dossier en une passe, elle
+fait l'encodage et l'extraction de l'image d'affiche pour chaque boucle.
+
+```bash
+cd content/fragments
+for f in *.mp4; do
+  ffmpeg -y -i "$f" -an \
+    -vf "scale=w=1280:h=1280:force_original_aspect_ratio=decrease:force_divisible_by=2" \
+    -c:v libx264 -profile:v high -pix_fmt yuv420p \
+    -crf 28 -preset slow -movflags +faststart -map_metadata -1 \
+    "tmp_$f" && mv "tmp_$f" "$f"
+  ffmpeg -y -i "$f" -frames:v 1 -q:v 3 "${f%.mp4}.jpg"
+done
+```
+
+Le plafond de 1280 porte sur le plus grand côté et non sur la largeur, pour
+qu'une boucle verticale ne finisse pas démesurément haute.
+
+`-an` supprime la piste audio. Les boucles sont muettes, le son ne serait
+jamais joué et pèserait pour rien.
+
+`-movflags +faststart` place les métadonnées en tête du fichier. Sans lui, la
+lecture progressive attend le téléchargement complet du MP4 avant de
+démarrer.
+
+`-map_metadata -1` retire les métadonnées de caméra et de montage.
+
+La seconde commande extrait la première image du MP4 encodé, et pas une
+image du milieu. C'est celle que le spectateur voit juste avant le démarrage
+de la boucle, elle doit raccorder. La prendre dans le fichier final, et non
+dans le master, garantit qu'elle a exactement les dimensions et le cadrage
+de la boucle.
+
+Viser 300 à 700 Ko par boucle. Au-delà de 1 Mo, c'est la durée qu'il faut
+regarder avant la qualité : une boucle de vingt secondes pèsera toujours
+plus qu'une boucle de quatre.
+
+### Les légendes
+
+Elles sont saisies dans l'entête de `content/fragments/index.md`, sous la
+clé `resources`. C'est le même mécanisme que les textes alternatifs de la
+galerie d'une fiche projet.
+
+```yaml
+resources:
+  - src: "0104_16x9.mp4"
+    title: "Ponçage d'une planche de surf dans un atelier."
+    params:
+      projet: "Tides of Time"
+      client: "Captain Yvon Originals"
+      annee: 2025
+```
+
+`title` est le texte alternatif d'une photo, ou le nom accessible d'une
+boucle. `projet`, `client` et `annee` forment la légende, en deux lignes. Un
+champ absent ne laisse ni virgule ni point médian orphelin, et une entrée
+sans aucun des trois ne produit aucune légende.
+
+Un fichier sans entrée reste affiché. Il est simplement traité comme
+décoratif, sans texte alternatif et sans légende.
+
+Les légendes sont visibles en permanence, sur tous les appareils. Il n'y a
+ni survol à attendre ni bouton à trouver. Une tuile dont les trois champs
+sont vides n'affiche rien du tout, ce qui rend le mur silencieux tant que
+l'échafaudage n'est pas rempli.
+
+### La densité du mur
+
+Le mur est une grille justifiée. Le gabarit accumule les proportions des
+visuels et ferme une rangée quand leur somme approche un seuil, réglé par
+`params.fragments.densite` dans `hugo.toml`, à 4.5 par défaut. Devant chaque
+visuel il compare deux possibilités, fermer avant lui ou le faire entrer, et
+retient celle qui tombe le plus près du seuil.
+
+Monter la valeur met plus de visuels par rangée, donc des rangées plus
+basses. La descendre fait l'inverse. Rien d'autre n'est à toucher, aucune
+hauteur n'est écrite nulle part.
+
+Ce réglage gouverne les grands écrans, au-delà de 1300 pixels de large. En
+dessous, une rangée de quatre visuels deviendrait trop basse pour se lire,
+et le mur se recompose alors tout seul, ligne par ligne, en mettant sur
+chaque ligne ce qui y tient à une hauteur correcte. Il n'y a rien à régler
+pour ça. Sous 700 pixels, un visuel par ligne, pleine largeur.
+
+Une remarque de mise en page. La dernière rangée est presque toujours
+incomplète, c'est normal et prévu. Elle se cale à gauche plutôt que de
+s'étirer sur toute la largeur.
+
+Dans tous les cas, un visuel garde sa proportion d'origine. Rien n'est
+jamais recadré, ni étiré.
+
+### Le renvoi vers le catalogue
+
+Sous le mur, une phrase et un bouton renvoient vers `/work/`, le catalogue
+complet des projets. Ils viennent du bloc `suite` de l'entête de
+`content/_index.md`. Retirer ce bloc retire la phrase et le bouton, sans
+toucher à aucun gabarit.
+
 ## Déployer
 
 Une branche par chantier, une pull request, une validation visuelle sur la

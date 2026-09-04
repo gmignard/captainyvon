@@ -1,5 +1,7 @@
 ---
-title: "Réalisations"
+title: "Films et reportages photo, commandes et projets personnels"
+seo_titre: "Réalisations, films et reportages photo de Captain Yvon Studio"
+description: "Les films de marque et les reportages photo de Captain Yvon Studio, commandes pour des marques, des artisans et des territoires, et projets personnels."
 
 # cascade.layout : force le gabarit des pages projet.
 # `type` est un mot-clé réservé de Hugo : il pilote la résolution des
@@ -17,3 +19,6 @@ cascade:
       kind: page
     layout: "projet"
 ---
+
+Des commandes pour des marques, des artisans et des territoires, et des
+sujets que nous portons nous-mêmes sous le label Captain Yvon Originals.

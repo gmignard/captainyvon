@@ -11,11 +11,10 @@ disableKinds = ["taxonomy", "term", "rss"]
   pagerSize = 100
 
 [[menus.main]]
-  name = "Work"
-  url = "/"
+  name = "Projets"
+  url = "/work/"
   weight = 10
   [menus.main.params]
-    accueil = true
     prefixes = ["/work/"]
 
 [[menus.main]]
@@ -46,6 +45,14 @@ disableKinds = ["taxonomy", "term", "rss"]
   # l'accueil (donnees-structurees.html). Coherente avec le "2016" en dur du
   # copyright du pied de page.
   foundingDate = "2016"
+
+# Densite de la mosaique de la page Fragments : somme des ratios a partir de
+# laquelle une rangee est fermee. Plus la valeur monte, plus les visuels
+# d'une rangee sont nombreux et bas. 4.5 tient trois formats paysage, ou
+# deux paysages et deux portraits. Le gabarit retombe sur cette meme valeur
+# si la cle est retiree.
+[params.fragments]
+  densite = 4.5
 
 [[params.social]]
   nom = "Instagram"

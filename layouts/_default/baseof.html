@@ -3,7 +3,12 @@
 <head>
 {{ partial "head.html" . }}
 </head>
-<body>
+{{- /* Classe de page, tiree du `layout` de l'entete : `page-fragments`
+       pour la page Fragments, `page-studio` pour le studio. Elle sert de
+       point d'accroche a une page qui redefinit les roles de couleur pour
+       elle seule, sans qu'aucune autre page puisse les recevoir. Une page
+       sans `layout` n'en porte aucune. */ -}}
+<body{{ with .Layout }} class="page-{{ . }}"{{ end }}>
   <a class="saut" href="#contenu">Aller au contenu</a>
 
   {{ partial "header.html" . }}

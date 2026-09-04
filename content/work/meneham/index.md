@@ -47,7 +47,6 @@ resources:
     title: "Un grimpeur minuscule escalade le dévers d’un énorme rocher au-dessus de vagues déferlantes, noir et blanc."
   - src: "meneham_18.webp"
     title: "Une petite maison en pierre illuminée la nuit parmi des blocs rocheux, sous un ciel étoilé, noir et blanc."
-mise_en_avant: false
 draft: false
 ---
 
