@@ -14,4 +14,4 @@ suite:
   href: "/work/"
 ---
 
-Nous filmons des gens en train de travailler. Des ateliers, des bateaux, des cuisines, des chantiers, le littoral. Nous abordons chaque commande en documentaire, même quand ce n'est pas dans le brief, parce que c'est ce qui fait la différence entre un film qu'on regarde une fois et un film qu'on garde. Nous sommes deux, et vous travaillez directement avec ceux qui font les images.
+Nous filmons des gens et les lieux qui vont avec. Nous partons toujours d'une histoire vraie et nous cherchons ensuite la forme qui lui correspond, pas l'inverse. C'est ce qui fait la différence entre un film qu'on regarde une fois et un film qui tient dix ans. Nous sommes deux, et vous travaillez directement avec ceux qui font les images.
