@@ -348,4 +348,46 @@
   boucles.forEach(function (v) { vue.observe(v); });
 })();
 </script>
+
+{{- /* Contournement d'un bug de WebKit, verifie sur un vrai moteur WebKit
+       (WebKitGTK) avec une video reellement decodee : entre 701 et 1300px,
+       .mosaique-rangee passe en display: contents pour laisser .mosaique-
+       grille recomposer le mur en flex-wrap, tuiles de plusieurs rangees
+       melangees. WebKit met alors en cache la hauteur d'une tuile calculee
+       avant un redimensionnement en direct et ne l'invalide pas de facon
+       fiable : la largeur suit le nouveau flex-grow mais la hauteur reste
+       celle du palier precedent, le ratio se deforme. Reelargir ne corrige
+       rien, seul un rechargement complet repart d'un calcul propre.
+
+       Une simple lecture d'offsetHeight ou de getComputedStyle, qui force
+       un calcul de mise en page dans tous les moteurs, s'est revelee sans
+       effet ici : verifie et ecarte sur le meme banc WebKit. Seul un
+       retrait puis une reinsertion reelle dans l'arbre de rendu, via un
+       aller-retour display: none, force WebKit a tout recalculer et
+       corrige l'affichage : verifie de la meme facon.
+
+       Le retrait est synchrone, dans la meme tache JavaScript que sa
+       reinsertion, avant tout rafraichissement d'affichage : aucune image
+       ne s'affiche entre les deux, rien ne clignote. Le declenchement
+       reste limite au repos apres un redimensionnement, jamais pendant :
+       sans le delai, chaque evenement resize forcerait ce recalcul et
+       couterait cher en performance.
+
+       Chromium et Firefox n'ont pas ce defaut : l'aller-retour y est sans
+       effet visible, rien ne distingue leur rendu avant et apres. */}}
+<script>
+(function () {
+  var delaiRedim;
+  window.addEventListener('resize', function () {
+    clearTimeout(delaiRedim);
+    delaiRedim = setTimeout(function () {
+      document.querySelectorAll('.mosaique-rangee').forEach(function (r) {
+        r.style.display = 'none';
+        r.offsetHeight;
+        r.style.display = '';
+      });
+    }, 120);
+  });
+})();
+</script>
 {{- end -}}
