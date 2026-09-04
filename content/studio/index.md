@@ -1,6 +1,6 @@
 ---
 title: "Studio"
-seo_titre: "Duo de réalisateurs et photographes documentaire"
+seo_titre: "Duo de réalisateurs et photographes, films de marque et reportage documentaire"
 description: "Captain Yvon Studio, duo de réalisateurs et photographes entre Brest et Lille."
 layout: "studio"
 fiche:
@@ -76,14 +76,20 @@ galerie:
 # viennent de data/equipe.yaml.
 ---
 
-Fondé en 2016 par Grégory Mignard et Jeremy Janin, Captain Yvon est un studio de création visuelle dédié à la vie en plein air et à l'aventure. Nous racontons les histoires de ceux qui vivent, travaillent et s'épanouissent dans la nature. Nous travaillons entre Brest et Lille, et partout où le sujet nous emmène.
+Fondé en 2016 par Grégory Mignard et Jeremy Janin, Captain Yvon réalise des films et des reportages photo. Nous filmons des gens en train de travailler, là où ils travaillent, dans des ateliers, sur des bateaux, dans des cuisines, sur des chantiers, sur le littoral. Nous travaillons entre Brest et Lille, et partout où le sujet nous emmène.
 
-Nous collaborons avec des agences, des destinations touristiques et des marques engagées, sur des projets qui célèbrent l'humain et son territoire. Notre travail a été distingué à plusieurs reprises en festival et dans les milieux de la communication et du tourisme.
+Films de marque, films de savoir-faire, reportages photo. Artisanat, pêche et agriculture, tourisme et territoires, sport et plein air, marques indépendantes. Nos clients sont des entreprises et des collectivités qui ont quelque chose de réel à montrer, et qui veulent des images qui tiennent debout sans commentaire et qui servent à quelque chose. Notre travail a été distingué à plusieurs reprises en festival et dans les milieux de la communication et du tourisme.
 
 Nous ne mettons pas en scène. Nous prenons le temps, nous écoutons, nous attendons la lumière. Notre expérience du documentaire nous a appris à capter les moments honnêtes plutôt que les poses forcées, et à composer avec ce que la nature offre quand la météo tourne ou que la marée change. Nous sommes à l'aise à terre, sur l'eau et en l'air, et nous nous adaptons aux conditions plutôt que de les combattre.
 
 Nous ne cherchons pas la perfection technique mais la vérité d'un instant. Une lumière qui baisse trop vite, un visage à contre-jour, un mouvement qu'on n'avait pas prévu. Nous ne corrigeons pas ces accidents, nous les accueillons. C'est souvent dans ce léger écart avec l'image idéale que quelque chose de vrai se glisse. Le son suit la même logique : nous l'enregistrons avec le même soin que l'image, parce qu'un film sans matière sonore n'est qu'une belle image muette.
 
-Pas d'agence, pas d'interlocuteurs multiples. Vous travaillez avec ceux qui font les images, de la conception à la livraison. Tout notre matériel tient dans un sac à dos. Cette légèreté nous rend discrets : on entre dans un atelier, sur un bateau, dans une cuisine, sans transformer l'endroit en plateau. Elle nous laisse aussi une liberté totale, celle de rester quand la scène se prolonge et de partir quand elle est finie.
+Nous sommes deux, et c'est un choix. Pas d'agence, pas d'interlocuteurs multiples. Vous travaillez avec ceux qui font les images, de la conception à la livraison. Tout notre matériel tient dans un sac à dos, et une partie de nos photos se fait en argentique, en 135 et en 120, ce qui impose de réfléchir avant de déclencher. Cette légèreté nous rend discrets : on entre dans un atelier, sur un bateau, dans une cuisine, sans transformer l'endroit en plateau. Nous venons du film indépendant, celui qui se fait avec peu de moyens et beaucoup de temps, et nous n'avons jamais eu envie d'en sortir.
+
+Quand un projet demande plus que deux paires de mains, nous montons une équipe autour de nous, avec des gens avec qui nous avons déjà tourné. Le collectif AUNORD, qui nous représente, sert aussi à ça. Ce sont eux qui s'ajoutent, jamais nous qui nous retirons.
+
+Grégory réalise et photographie depuis plus de quinze ans, presque toujours en documentaire et presque toujours dehors. Il vit dans le Finistère Nord, à quelques minutes de la mer, ce qui explique une bonne partie de ce qu'il filme. C'est lui qui attend la lumière plus longtemps que de raison, et qui a souvent raison de l'attendre.
+
+Jeremy est basé à Lille. Il photographie beaucoup en argentique, et il fabrique. Sacs, vestes, matériel de terrain, cousus par lui sous le nom de Fieldpacks. C'est cette part-là qui compte le plus ici : quand on filme un atelier, il sait ce que coûte un geste bien fait, parce qu'il le fait aussi. Il défend une aventure de tous les jours plutôt que la grande expédition, et ça se voit dans ses images.
 
 Le résultat, c'est une image qu'on pourrait regarder dans dix ans sans rougir. Pas parce qu'elle suit une mode, mais parce qu'elle cherchait quelque chose de juste.

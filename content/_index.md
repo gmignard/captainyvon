@@ -1,7 +1,7 @@
 ---
-title: "Films documentaires et reportages photo"
-seo_titre: "Captain Yvon Studio, films documentaires et reportages photo"
-description: "Grégory Mignard et Jérémy Janin filment et photographient le travail réel des marques, des artisans et des territoires. Studio documentaire entre Brest et Lille."
+title: "Films et reportages photo pour les marques et les territoires"
+seo_titre: "Captain Yvon Studio, films et reportages photo pour les marques et les territoires"
+description: "Grégory Mignard et Jeremy Janin filment et photographient le travail réel des marques, des artisans et des territoires. Films de marque et reportages photo documentaire, entre Brest et Lille."
 
 # suite : sortie de fin de grille, sous la mosaique. Une phrase et un lien
 # qui renvoient vers le catalogue complet des projets.
@@ -12,19 +12,6 @@ suite:
   texte: "Ces images sont des fragments. Les projets dont elles viennent sont racontés en entier."
   libelle: "Voir tous les projets"
   href: "/work/"
-
-# Ancien texte de présentation de la page /fragments/, conservé ici pour
-# mémoire si le studio veut en reprendre une formule pour le texte
-# ci-dessous :
-#
-# Des images et des boucles prélevées dans nos films et nos reportages.
-# Des cadres retenus en repérage, des gestes vus de près ou des plans qui
-# n'ont pas trouvé leur place au montage. Rien ici ne renvoie vers une
-# fiche projet : ce sont des fragments, on les regarde pour eux-mêmes.
 ---
 
-Captain Yvon Studio réalise des films documentaires et des reportages photo
-pour des marques, des artisans et des territoires. Nous sommes deux,
-Grégory à Brest et Jérémy à Lille, en relation directe avec ceux qui nous
-commandent. Les images ci-dessous sont prélevées dans nos films et nos
-reportages.
+Nous filmons des gens en train de travailler. Des ateliers, des bateaux, des cuisines, des chantiers, le littoral. Nous abordons chaque commande en documentaire, même quand ce n'est pas dans le brief, parce que c'est ce qui fait la différence entre un film qu'on regarde une fois et un film qu'on garde. Nous sommes deux, et vous travaillez directement avec ceux qui font les images.

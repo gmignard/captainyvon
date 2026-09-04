@@ -1,6 +1,6 @@
 ---
 title: "Réalisations"
-description: "Les films documentaires et les reportages photo de Captain Yvon Studio, commandes pour des marques et des territoires, et projets personnels."
+description: "Les films de marque et les reportages photo de Captain Yvon Studio, commandes pour des marques, des artisans et des territoires, et projets personnels."
 
 # cascade.layout : force le gabarit des pages projet.
 # `type` est un mot-clé réservé de Hugo : il pilote la résolution des
