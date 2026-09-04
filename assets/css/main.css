@@ -424,6 +424,51 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
 .page-texte h1 { margin-bottom: calc(var(--pas) * 1.5); }
 .page-texte ul { padding-left: 1.2em; }
 
+/* Variante a deux colonnes de .page-texte, qui reste intacte : elle ne sert
+   que l'entete de l'accueil et de la liste des projets. La page studio et
+   les fiches projet gardent .page-texte, en colonne unique.
+
+   Le titre a gauche, le texte de presentation a droite. max-width reprend
+   --contenu-max pour que le bloc tienne dans la largeur de l'entete et du
+   pied meme pose dans .enveloppe--pleine, qui elle n'a pas de plafond.
+
+   align-items: baseline aligne la premiere ligne du titre sur la premiere
+   ligne du paragraphe : sans cet alignement, un titre sur deux lignes et un
+   paragraphe sur trois partiraient chacun du haut de sa cellule et
+   sembleraient assembles au hasard plutot que composes ensemble. */
+.page-entete {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: var(--grille-gap);
+  align-items: baseline;
+  max-width: var(--contenu-max);
+  padding-block: clamp(1rem, 3vw, 2rem) 0;
+}
+
+/* Sur deux colonnes la marge basse du titre ne separe plus rien : elle ne
+   ferait que decaler sa ligne de base par rapport a celle du paragraphe.
+   La media query plus bas la retablit des que les colonnes se replient. */
+.page-entete h1 { margin-bottom: 0; }
+
+/* Sans texte de presentation, .page-entete-texte n'est pas rendu : le
+   titre est alors seul dans la grille, et cette regle lui rend la seconde
+   colonne plutot que de laisser un vide a sa droite. */
+.page-entete h1:only-child { grid-column: 1 / -1; }
+
+/* Plafond de lecture sur la colonne de texte seule : au-dela de
+   --contenu-max, un ecran large etirerait le paragraphe bien plus loin
+   que --mesure ne le permet ailleurs sur le site. */
+.page-entete-texte { max-width: var(--mesure); }
+
+/* Sous 1000px, deux colonnes de texte cote a cote deviennent illisibles :
+   la grille repasse en une seule colonne, titre puis texte. 1000px n'a pas
+   de variable dediee : le reste de la feuille ecrit deja ses points de
+   bascule en dur dans chaque media query, aucune convention a suivre ici. */
+@media (max-width: 1000px) {
+  .page-entete { grid-template-columns: 1fr; }
+  .page-entete h1 { margin-bottom: calc(var(--pas) * 1.5); }
+}
+
 /* -------------------------------------------------------------------------
    ACCUEIL — grille des projets
    Deux colonnes en CSS Grid, jamais trois. Largeur fluide : la grille

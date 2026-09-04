@@ -11,11 +11,17 @@
 {{- end -}}
 <div class="enveloppe enveloppe--pleine">
 
-  <div class="page-texte">
+  {{- /* Entete a deux colonnes, titre puis texte : voir .page-entete dans
+         la feuille de style. Sans corps de texte, .page-entete-texte n'est
+         pas rendu du tout, et une regle CSS fait alors occuper au titre les
+         deux colonnes plutot que de laisser un vide a droite. */ -}}
+  <div class="page-entete">
     {{- with $titre }}
     <h1>{{ . }}</h1>
     {{- end }}
-    {{- with .Content }}{{ . }}{{ end }}
+    {{- with .Content }}
+    <div class="page-entete-texte">{{ . }}</div>
+    {{- end }}
   </div>
 
   {{- with $avecCouverture }}

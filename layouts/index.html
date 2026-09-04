@@ -23,12 +23,18 @@
 {{- $titre := .Title -}}
 {{- if not $titre }}{{ with .File }}{{ $titre = humanize .ContentBaseName }}{{ end }}{{ end -}}
 
+{{- /* Entete a deux colonnes, titre puis texte : voir .page-entete dans la
+       feuille de style. Sans corps de texte, .page-entete-texte n'est pas
+       rendu du tout, et une regle CSS fait alors occuper au titre les deux
+       colonnes plutot que de laisser un vide a droite. */ -}}
 <div class="enveloppe">
-  <div class="page-texte">
+  <div class="page-entete">
     {{- with $titre }}
     <h1 id="fragments-titre">{{ . }}</h1>
     {{- end }}
-    {{- with .Content }}{{ . }}{{ end }}
+    {{- with .Content }}
+    <div class="page-entete-texte">{{ . }}</div>
+    {{- end }}
   </div>
 </div>
 
