@@ -148,6 +148,13 @@
      negative de meme valeur. Une seule valeur, pas deux a tenir en phase. */
   --contenu-espace-bas: clamp(2rem, 5vw, 4rem);
 
+  /* Respiration entre le bas de l'entete a deux colonnes et le debut de la
+     section qui suit, mur de fragments ou grille de projets. Une seule
+     valeur pour les deux, sans quoi elles derivaient l'une de l'autre : le
+     mur la portait deja dans son propre margin-top, la grille n'en avait
+     aucune et le texte d'intro y restait colle. */
+  --section-espace-haut: clamp(2rem, 5vw, 3.5rem);
+
   /* Medias de la page projet. --largeur-media est la largeur naturelle d'un
      media, celle de la colonne de contenu. --media-reserve est la
      respiration retiree a la hauteur de fenetre avant de convertir le reste
@@ -483,7 +490,10 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
    ------------------------------------------------------------------------- */
 .grille-projets {
   list-style: none;
-  margin: 0;
+  /* Meme respiration que le mur de fragments au-dessus de sa propre
+     section, --section-espace-haut : sans elle la grille restait collee
+     au texte d'introduction, alors que le mur en gardait une. */
+  margin: var(--section-espace-haut) 0 0;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -1872,7 +1882,7 @@ html:has(.loupe:target) { overflow: hidden; }
   --mosaique-hauteur-max: clamp(320px, 34vw, 480px);
   --mosaique-marge-legende: clamp(0.5rem, 1.1vw, 0.9rem);
 
-  margin-block: clamp(2rem, 5vw, 3.5rem) 0;
+  margin-block: var(--section-espace-haut) 0;
   padding-inline: var(--conteneur-gouttiere);
 }
 
