@@ -1946,6 +1946,14 @@ html:has(.loupe:target) { overflow: hidden; }
   aspect-ratio: var(--ratio);
   overflow: hidden;
   border-radius: var(--rayon);
+  /* Un element flex vaut min-width: auto par defaut, sa taille intrinseque :
+     une tuile qui atteint ce plancher refuse de retrecir et fausse la
+     repartition au prorata des ratios. Le plancher d'une video change en
+     plus au chargement de la boucle, d'ou un rendu different avant et
+     apres. Les deux proprietes annulent le plancher dans les deux sens, la
+     largeur reste dictee par flex-grow et la hauteur par aspect-ratio. */
+  min-width: 0;
+  min-height: 0;
   /* Fond tenu avant l'arrivee du media : la place est deja reservee par
      `aspect-ratio`, rien ne se decale, mais la case ne reste pas blanche. */
   background: var(--mosaique-surface);
