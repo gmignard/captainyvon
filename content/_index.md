@@ -1,5 +1,5 @@
 ---
-title: "Films et reportages photo pour les marques et les territoires"
+title: "Films et reportages photo pour les marques et les territoires"
 seo_titre: "Captain Yvon Studio, films et reportages photo pour les marques et les territoires"
 description: "Grégory Mignard et Jeremy Janin filment et photographient le travail réel des marques, des artisans et des territoires. Films de marque et reportages photo documentaire, entre Brest et Lille."
 

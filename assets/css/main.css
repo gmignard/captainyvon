@@ -445,17 +445,45 @@ main { display: block; flex: 1 0 auto; padding-block: 0 var(--contenu-espace-bas
    sembleraient assembles au hasard plutot que composes ensemble. */
 .page-entete {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* Le titre legerement plus large que le texte : les deux colonnes ne
+     portent pas la meme densite de lecture, un h1 en grandes capitales
+     respire moins qu'un paragraphe de corps courant. */
+  grid-template-columns: 1.1fr 1fr;
   column-gap: var(--grille-gap);
-  align-items: baseline;
+  /* start, pas baseline : entre un titre a 64px et un paragraphe a 19px,
+     aligner les lignes de base alignait un artefact typographique invisible
+     au lecteur, pas les deux blocs de texte. Le haut des capitales, lui, se
+     voit. C'est text-box-trim ci-dessous qui rend cet alignement exact :
+     il rogne le demi-interlignage au-dessus des capitales et en dessous de
+     la ligne de base sur les deux blocs, qui commencent alors tous deux au
+     sommet des capitales plutot qu'au sommet de leur boite de ligne. */
+  align-items: start;
   max-width: var(--contenu-max);
   padding-block: clamp(1rem, 3vw, 2rem) 0;
 }
+
+/* text-box-trim retire l'espace sous la derniere ligne de chaque bloc, mais
+   sans consequence sur l'ecart avec la section suivante : ce dernier vient
+   de la marge haute de cette section, --section-espace-haut, qui fusionne
+   avec la marge basse de .page-entete plutot que de s'y ajouter — regle de
+   fusion des marges entre blocs adjacents. Comme --section-espace-haut vaut
+   toujours au moins 2rem, largement plus que ce que le rognage retire,
+   c'est elle qui l'emporte a chaque fois : verifie au pixel pres, ecart
+   inchange avant et apres rognage. Rien a compenser ici. */
 
 /* Sur deux colonnes la marge basse du titre ne separe plus rien : elle ne
    ferait que decaler sa ligne de base par rapport a celle du paragraphe.
    La media query plus bas la retablit des que les colonnes se replient. */
 .page-entete h1 { margin-bottom: 0; }
+
+/* cap alphabetic : la boite commence au sommet des capitales et finit sur
+   la ligne de base, sans le demi-interlignage de part et d'autre. C'est ce
+   qui rend l'alignement de align-items: start exact au pixel entre les
+   deux colonnes, malgre leurs corps tres differents. */
+.page-entete h1,
+.page-entete-texte {
+  text-box: trim-both cap alphabetic;
+}
 
 /* Sans texte de presentation, .page-entete-texte n'est pas rendu : le
    titre est alors seul dans la grille, et cette regle lui rend la seconde
