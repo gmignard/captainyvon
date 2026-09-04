@@ -88,6 +88,12 @@ resources:
       client: ""
       annee: ""
 
+  - src: "0115.jpg"
+    title: ""
+    params:
+      projet: "Campagne d'affichage"
+      client: "Bretagne Tourisme"
+      annee: ""
   - src: "0120_9x16.mp4"
     title: ""
     params:
