@@ -9,22 +9,34 @@
 {{- range sort .RegularPages "Date" "desc" -}}
   {{- if partial "couverture.html" . }}{{ $avecCouverture = $avecCouverture | append . }}{{ end -}}
 {{- end -}}
-<div class="enveloppe enveloppe--pleine">
 
-  <div class="page-texte">
+{{- /* Entete a deux colonnes, titre puis texte : voir .page-entete dans la
+       feuille de style. Sans corps de texte, .page-entete-texte n'est pas
+       rendu du tout, et une regle CSS fait alors occuper au titre les deux
+       colonnes plutot que de laisser un vide a droite.
+       Pose dans une .enveloppe plafonnee, comme sur l'accueil, et non dans
+       la .enveloppe--pleine qui porte la grille juste apres : sans ce
+       plafond propre, l'entete restait calee sur le bord gauche du
+       viewport au lieu de se recentrer avec le reste de la mise en page
+       au-dela de 1600px. */ -}}
+<div class="enveloppe">
+  <div class="page-entete">
     {{- with $titre }}
     <h1>{{ . }}</h1>
     {{- end }}
-    {{- with .Content }}{{ . }}{{ end }}
+    {{- with .Content }}
+    <div class="page-entete-texte">{{ . }}</div>
+    {{- end }}
   </div>
+</div>
 
-  {{- with $avecCouverture }}
+{{- with $avecCouverture }}
+<div class="enveloppe enveloppe--pleine">
   <ul class="grille-projets">
     {{- range $rang, $projet := . }}
     {{ partial "vignette.html" (dict "page" $projet "rang" $rang) }}
     {{- end }}
   </ul>
-  {{- end }}
-
 </div>
+{{- end }}
 {{ end }}
